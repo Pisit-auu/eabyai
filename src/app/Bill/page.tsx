@@ -136,11 +136,6 @@ export default function Bill() {
   ];
 
 
-  useEffect(() => {
-    if (status === 'unauthenticated' ) {
-      router.push('/')
-    }
-  }, [status, router])
 
 
 const fetchData = useCallback(async () => {

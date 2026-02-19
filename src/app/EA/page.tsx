@@ -88,11 +88,7 @@ export default function EA() {
   // --- ACTIONS ---
 
   // --- EFFECTS ---
-  useEffect(() => {
-    if (status === 'unauthenticated' ) {
-      router.push('/')
-    }
-  }, [status, router])
+
 
   // ฟังก์ชันดึงข้อมูล (แยกออกมาเพื่อให้เรียกใช้ใหม่ได้เมื่อมีการเพิ่มข้อมูล)
   const fetchData = useCallback(async () => {
