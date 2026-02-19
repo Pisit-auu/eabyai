@@ -3,7 +3,6 @@ import NextAuth, { AuthOptions, DefaultSession } from "next-auth"
 import EmailProvider from "next-auth/providers/email"
 import prisma from "@/lib/prisma"
 import { Resend } from 'resend'
-// 1. Module Augmentation (ส่วนขยาย Type)
 declare module "next-auth" {
   interface Session {
     user: {
@@ -17,7 +16,6 @@ declare module "next-auth" {
 }
 
 // สร้าง Instance ของ Resend นอก Handler เพื่อ Performance
-const resend = new Resend(process.env.RESEND_API_KEY)
 
 export const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
@@ -40,6 +38,7 @@ export const authOptions: AuthOptions = {
       // ฟังก์ชันส่งอีเมลด้วย Resend
       sendVerificationRequest: async ({ identifier: email, token }) => {
         try {
+          const resend = new Resend(process.env.RESEND_API_KEY!)
           await resend.emails.send({
             from: 'EA by Ai <onboarding@resend.dev>', // หรือ process.env.EMAIL_FROM
             to: email,
