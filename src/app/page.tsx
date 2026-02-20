@@ -4,12 +4,13 @@ import Link from "next/link";
 export default function EAPage() {
 
   const handlePay = async () => {
+    console.log("do")
     const res = await fetch("/api/checkout", {
       method: "POST",
     });
 
     const data = await res.json();
-
+    console.log(data)
     if (data.url) {
       window.location.href = data.url;
     }
@@ -93,16 +94,16 @@ export default function EAPage() {
             Go to Home
           </Link>
            <button
-        onClick={handlePay}
-        className="bg-purple-600 px-6 py-3 rounded-xl"
-         style={{
-                                      backgroundColor: '#f0fdf4', // สี bg-green-50
-                                      borderColor: '#bbf7d0',     // สี border-green-200
-                                      color: '#16a34a'            // สี text-green-600
-                                    }}
-          
-      >
-        ปุ่มทดสอบ จ่ายเงินจริง 30 บาท
+              onClick={handlePay}
+              className="bg-purple-600 px-6 py-3 rounded-xl"
+              style={{
+                                            backgroundColor: '#f0fdf4', // สี bg-green-50
+                                            borderColor: '#bbf7d0',     // สี border-green-200
+                                            color: '#16a34a'            // สี text-green-600
+                                          }}
+                
+            >
+              ปุ่มทดสอบ จ่ายเงินจริง 30 บาท
       </button>
         </div>
                                      <div className="flex min-h-screen items-center justify-center">
