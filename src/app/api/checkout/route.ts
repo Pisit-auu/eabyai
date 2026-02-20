@@ -4,10 +4,21 @@ import { NextResponse } from "next/server";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(req: Request) {
-  const origin = req.headers.get("origin");
+  try {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-  const session = await stripe.checkout.sessions.create({
-    success_url: `${origin}/`,
-    cancel_url: `${origin}/`,
-  });
+    const session = await stripe.checkout.sessions.create({
+      // ...
+    });
+
+    return Response.json({ url: session.url });
+
+  } catch (err) {
+    console.error(err);
+
+    return Response.json(
+      { error: "checkout failed" },
+      { status: 500 }
+    );
+  }
 }
