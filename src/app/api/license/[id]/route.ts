@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { addDays } from "date-fns";
 
 
 export async function GET(
@@ -9,12 +10,17 @@ export async function GET(
   const { id } = await params; // id ในที่นี้คือ licensekey string
 
   try {
-    const license = await prisma.licenseKey.findUnique({
-      where: { licensekey: id },
+    const license = await prisma.licenseKey.findMany({
+      where: {
+        OR: [
+          { email: id },
+          { licensekey: id }
+        ]
+      },
       include: {
         tradeAccount: true, // ดึงข้อมูลพอร์ตที่ผูกอยู่
         model: true,        // ดึงข้อมูล EA ที่ผูกอยู่
-        bill : true
+         bills: true,
       },
     });
 
@@ -31,9 +37,9 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = await params;
+  const { id } = params;
 
   try {
     const body = await request.json();
@@ -41,22 +47,44 @@ export async function PUT(
     const updatedLicense = await prisma.licenseKey.update({
       where: { licensekey: id },
       data: {
-        // อัปเดตเฉพาะค่าที่ส่งมา (ใช้ Direct Field Mapping)
-        ...(body.valid !== undefined && { valid: body.valid }),
+        ...(body.expire !== undefined && { expire: body.expire }),
         ...(body.status !== undefined && { status: body.status }),
         ...(body.active !== undefined && { active: body.active }),
-        ...(body.expireDate && { expireDate: new Date(body.expireDate) }),
-        ...(body.platformAccountId && { platformAccountId: body.platformAccountId }),
-        ...(body.nameEA && { nameEA: body.nameEA }),
+        ...(body.email !== undefined && { email: body.email }),
+        ...(body.expireDate &&
+          !isNaN(new Date(body.expireDate).getTime()) &&
+          (() => {
+            const newExpireDate = new Date(body.expireDate);
+            return {
+              expireDate: newExpireDate,
+              billOpenDate: addDays(newExpireDate, -2),
+            };
+          })()),
+
+        ...(body.platformAccountId && {
+          tradeAccount: {
+            connect: { platformAccountId: body.platformAccountId },
+          },
+        }),
+
+        ...(body.nameEA && {
+          model: {
+            connect: { nameEA: body.nameEA },
+          },
+        }),
       },
     });
 
     return NextResponse.json(updatedLicense);
   } catch (error) {
     console.error("Update License Error:", error);
-    return NextResponse.json({ error: "อัปเดตล้มเหลว", details: String(error) }, { status: 500 });
+    return NextResponse.json(
+      { error: "อัปเดตล้มเหลว", details: String(error) },
+      { status: 500 }
+    );
   }
 }
+
 
 
 export async function DELETE(

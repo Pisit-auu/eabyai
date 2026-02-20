@@ -86,7 +86,7 @@ export default function Dashborad() {
     try {
       // ดึงข้อมูล ID/Pass/Server จาก TraderAccount ที่มีอยู่ใน State (traderAccountAll)
       const accData = traderAccountAll.find(a => a.platformAccountId === platform.platformAccountId);
-      
+      console.log(traderAccountAll)
       if (!accData) return alert("Account data not found");
 
       const res = await axios.post("/api/account/details", {
@@ -135,7 +135,11 @@ export default function Dashborad() {
   // --- ACTIONS ---
 
   // --- EFFECTS ---
-
+  useEffect(() => {
+    if (status === 'unauthenticated' ) {
+      router.push('/')
+    }
+  }, [status, router])
 
   // ฟังก์ชันดึงข้อมูล (แยกออกมาเพื่อให้เรียกใช้ใหม่ได้เมื่อมีการเพิ่มข้อมูล)
   const fetchData = useCallback(async () => {
@@ -143,15 +147,20 @@ export default function Dashborad() {
     
     setIsLoading(true);
     try {
-      const [getTraderAccount,getlicense] = await Promise.all([
+      const [getTraderAccount, getlicense] = await Promise.all([
         axios.get(`/api/tradeaccount/${session.user.email}`),
-        axios.get(`/api/license`)
+        axios.get(`/api/license/${session.user.email}`)
       ]);
-      setTraderAccountAll(getTraderAccount.data);
-      setlicenseall(getlicense.data);
-   
 
-      
+      // 1. ดึงข้อมูล JSON ที่ได้จาก API
+      const userData = getTraderAccount.data;
+      console.log(userData)
+
+
+      // 3. เซ็ตค่าลง State
+      setTraderAccountAll(userData);
+      setlicenseall(getlicense.data);
+
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -261,18 +270,18 @@ export default function Dashborad() {
                     actions={getActions(license)}
                     styles={{ body: { padding: '20px' } }}
                   >
-                    <div className="flex items-start justify-between mb-2">
-                      {/* ✅ เช็คค่า Boolean จริงๆ (true/false) */}
+                     <div className="flex items-start justify-between mb-2">
                       <Tag 
-                        color={license.active ? 'success' : 'error'} 
+                        color={license.expire ? 'error' : 'success'} 
                         className="m-0 px-3 py-0.5 rounded-full uppercase text-xs font-bold"
                       >
-                        {license.active ? 'Active' : 'Inactive'}
+                        {license.expire ? 'Expired : โปรดต่ออายุ' : 'Active'}
                       </Tag>
                       <span className="text-xs text-slate-400">
                         {new Date(license.createdAt).toLocaleDateString()}
                       </span>
                     </div>
+
 
                     <Card.Meta
                       avatar={

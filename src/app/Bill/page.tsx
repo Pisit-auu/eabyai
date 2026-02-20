@@ -17,11 +17,23 @@ import {
 export default function Bill() {
 
 
+  const [rateTHBtoUSD, setRate] = useState<number | 0>(0);
+
+    useEffect(() => {
+  const fetchRate = async () => {
+    const res = await fetch("https://open.er-api.com/v6/latest/USD");
+    const data = await res.json();
+
+    setRate(data?.rates?.THB);
+  };
+
+  fetchRate();
+}, []);
 
 
   const [filterStatus, setFilterStatus] = useState('UNPAID');
   const [isSidebarOpen, setSidebarOpen] = useState(true)
-  const [licenseall, setlicenseall] = useState<LicenseKeyType[]>([])
+  const [billall, setbillall] = useState<BillType[]>([])
   
   const [isLoading, setIsLoading] = useState(true);
 
@@ -29,16 +41,17 @@ export default function Bill() {
   const { data: session, status } = useSession()
 
 
-  const filteredLicenses = licenseall.filter((license: any) => {
-  const isPaid = license.bill?.isPaid || false;
+  const filteredbillall = billall.filter((billall: any) => {
+  const isPaid = billall.isPaid || false;
   
   if (filterStatus === 'PAID') return isPaid === true;
   if (filterStatus === 'UNPAID') return isPaid === false;
   return true; 
 });
 
+
  //bill detail
-  const [platformselect, setplatformselect] = useState<any>(null);
+  const [billselect, setbillselect] = useState<any>(null);
   const [selectedStats, setSelectedStats] = useState<any>(null);
   const [isDetailLoading, setIsDetailLoading] = useState(false);
   const [SymbolOpen ,SetSymbolOpen ] = useState("")
@@ -93,25 +106,47 @@ export default function Bill() {
     render: (profit:any) => <span className="font-mono text-slate-700">{profit.toFixed(5)}</span>,
   }
 ];
-  const handleBill = async (platform: any) => {
-    setplatformselect(platform)
+
+const purchecsebill = async (amount: number,billId:number,commission:number) => {
+  console.log("do")
+  console.log(billselect.license.model.commission)
+  const response = await fetch('/api/checkout', {
+    method: 'POST',
+    body: JSON.stringify({ 
+    amount: amount*commission/100*rateTHBtoUSD , 
+    billId: billId ,
+    license: billselect.license.licensekey,
+    email : billselect.license.email,
+    commission : billselect.license.model.commission
+  
+  }),
+    headers: { 'Content-Type': 'application/json' },
+  });
+  
+  const data = await response.json();
+  if (data.url) {
+    window.location.href = data.url; 
+  }
+};
+  const handleBill = async (bill: any) => {
+    console.log(bill)
+    setbillselect(bill)
    setBillOpen(true)
    setIsDetailLoading(true);
-    SetSymbolOpen(platform.model.nameSymbol)
+    SetSymbolOpen(bill.license.model.nameSymbol)
     try {
-      // ดึงข้อมูล ID/Pass/Server จาก TraderAccount ที่มีอยู่ใน State (traderAccountAll)
-      const accData = traderAccountAll.find(a => a.platformAccountId === platform.platformAccountId);
-      
-      if (!accData) return alert("Account data not found");
+
+      if(bill.license.tradeAccount.Server===null){
+        return
+      }
 
       const res = await axios.post("/api/account/details", {
-        accountId: parseInt(accData.platformAccountId),
-        investorPassword: accData.InvestorPassword , // ต้องมั่นใจว่ามีฟิลด์นี้
-        server: accData.Server,
-        symbol: platform.model.nameSymbol
+        accountId: parseInt(bill.license.tradeAccount.platformAccountId),
+        investorPassword: bill.license.tradeAccount.InvestorPassword , // ต้องมั่นใจว่ามีฟิลด์นี้
+        server: bill.license.tradeAccount.Server,
+        symbol: bill.license.model.nameSymbol
       });
       console.log(res.data)
-      console.log(platform)
       setSelectedStats(res.data);
     } catch (error) {
       console.error(error);
@@ -119,10 +154,6 @@ export default function Bill() {
       setIsDetailLoading(false);
     }
   };
-
- 
-
- 
 
 
   const getActions = (platform: any) => [
@@ -136,19 +167,24 @@ export default function Bill() {
   ];
 
 
-
+  useEffect(() => {
+    if (status === 'unauthenticated' ) {
+      router.push('/')
+    }
+  }, [status, router])
 
 const fetchData = useCallback(async () => {
     if (!session?.user?.email) return;
     
     setIsLoading(true);
     try {
-      const [getTraderAccount,getlicense] = await Promise.all([
+      const [getTraderAccount,getbill] = await Promise.all([
         axios.get(`/api/tradeaccount/${session.user.email}`),
-        axios.get(`/api/license`)
+        axios.get(`/api/bill/${session?.user?.email}`)
       ]);
       setTraderAccountAll(getTraderAccount.data);
-      setlicenseall(getlicense.data);
+
+      setbillall(getbill.data.filter((b: any) => b.expire));
    
 
       
@@ -224,7 +260,7 @@ const fetchData = useCallback(async () => {
 
                 {/* อัปเดตตัวเลขให้แสดงตามจำนวนที่ Filter แล้ว */}
                 <div className="bg-blue-50 px-4 py-2 rounded-lg text-blue-700 font-semibold h-10 flex items-center">
-                  Total Your Bill: {filteredLicenses.length}
+                  Total Your Bill: {filteredbillall.length}
                 </div>
                 
                 <Button 
@@ -244,34 +280,46 @@ const fetchData = useCallback(async () => {
               
               {isLoading ? (
                   <div className="flex justify-center py-20"><Spin size="large" /></div>
-                ) : filteredLicenses.length === 0 ? ( // ✅ เปลี่ยนตรงนี้
+                ) : filteredbillall.length === 0 ? ( // ✅ เปลี่ยนตรงนี้
                   <div className="bg-white rounded-2xl p-12 text-center border border-dashed border-slate-300">
                     <Empty description="ไม่มีบิลในสถานะที่คุณเลือก" />
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {filteredLicenses.map((license: any) => { // ✅ เปลี่ยนตรงนี้
-                      const bill = license.bill; 
+                    {filteredbillall.map((bill: any) => { // ✅ เปลี่ยนตรงนี้
+                  
                       const isPaid = bill?.isPaid || false;
                       const billId = bill?.id ? String(bill.id).padStart(5, '0') : 'N/A';
-                      const amount = bill?.totalAmount || 0;
-
+                      const amount = bill?.profit || 0;
+                      const commission = bill?.commission
+                        console.log(commission)
                       return (
                         <Card
-                          key={license.id}
+                          key={bill.license.id}
                       hoverable
                       className={`rounded-2xl border-2 shadow-sm hover:shadow-md transition-all overflow-hidden relative ${
                         isPaid ? 'border-transparent' : 'border-orange-200 bg-orange-50/30'
                       }`}
                       actions={
+                        
                         // ถ้ายังไม่จ่ายเงิน ให้ปุ่มเด่นๆ หน่อย
                         !isPaid 
                           ? [
                               <button
                                 key="pay" 
                                 className="text-orange-600 font-bold hover:text-orange-700 w-full py-1 flex items-center justify-center gap-2"
-                                onClick={() => handleBill(license)}
-                              >
+                                onClick={() => handleBill(bill)}
+                                style={{
+                                color: "#38ac3e",       // orange-600
+                                  fontWeight: "bold",
+                                  width: "100%",
+                                  padding: "4px 0",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  gap: "8px"
+                                }}
+                                                          >
                             <DollarOutlined className="text-lg" /> ชำระเงินทันที
                           </button>
                             ]
@@ -279,7 +327,7 @@ const fetchData = useCallback(async () => {
                               <button 
                                 key="view" 
                                 className="text-slate-500 hover:text-blue-600 w-full py-1"
-                                onClick={() => handleBill(license)} // อาจจะเปลี่ยนเป็นดูใบเสร็จ
+                                onClick={() => handleBill(bill)} // อาจจะเปลี่ยนเป็นดูใบเสร็จ
                               >
                                 ดูรายละเอียดใบเสร็จ
                               </button>
@@ -295,9 +343,9 @@ const fetchData = useCallback(async () => {
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
                   Invoice #INV-{billId}
                 </span>
-                <div className="text-xs text-slate-400 mt-1">
-                  {new Date(license.createdAt).toLocaleDateString()}
-                </div>
+                <div style={{ color: 'red' }} className="text-xs mt-1">
+                Expired : {new Date(bill.exirelicendate).toLocaleDateString()}
+              </div>
               </div>
               
               {/* Status Tag */}
@@ -312,14 +360,14 @@ const fetchData = useCallback(async () => {
             <div className="py-4 border-t border-b border-slate-100 border-dashed mb-4">
               {/* รายละเอียดสินค้า */}
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-bold text-slate-700">{license.nameEA}</span>
-                <span className="text-sm text-slate-500 font-mono">1 x License</span>
+                <span className="text-sm font-bold text-slate-700">{bill.license.nameEA}</span>
+
               </div>
               <div className="flex items-center gap-2 text-slate-500 text-xs mb-1">
-                <DesktopOutlined /> Account: <span className="font-mono">{license.platformAccountId}</span>
+                <DesktopOutlined /> Account: <span className="font-mono">{bill.license.platformAccountId}</span>
               </div>
               <div className="flex items-center gap-2 text-slate-500 text-xs">
-                <span>License: <span className="text-blue-600 font-mono">{license.licensekey}</span></span>
+                <span>License: <span className="text-blue-600 font-mono">{bill.license.licensekey}</span></span>
               </div>
             </div>
 
@@ -328,7 +376,7 @@ const fetchData = useCallback(async () => {
               <span className="text-sm text-slate-500 font-semibold">Total Amount</span>
               <div className="text-right">
                 <span className={`text-2xl font-black ${isPaid ? 'text-slate-800' : 'text-orange-600'}`}>
-                  ฿{amount.toLocaleString('th-TH', { minimumFractionDigits: 2 })}
+                  { Number((parseFloat(amount) * parseFloat(commission)*0.01 * rateTHBtoUSD ).toFixed(3))} THB
                 </span>
               </div>
             </div>
@@ -408,9 +456,9 @@ const fetchData = useCallback(async () => {
                             {/* Profit */}
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-slate-500 font-medium">Profit</span>
-                              <span className={`font-bold ${Number(selectedStats.filtered_profit) >= 0 ? 'text-green-600' : 'text-red-500'}`}>
-                                {Number(selectedStats.filtered_profit) >= 0 ? '+' : ''}
-                                {Number(selectedStats.filtered_profit).toLocaleString('th-TH', { minimumFractionDigits: 2 })}
+                              <span className={`font-bold ${Number(billselect?.profit) >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                                {Number(billselect?.profit) >= 0 ? '+' : ''}
+                                {Number(billselect?.profit).toLocaleString('th-TH', { minimumFractionDigits: 2 })} USD
                               </span>
                             </div>
 
@@ -419,14 +467,21 @@ const fetchData = useCallback(async () => {
                               <span className="text-slate-500 font-medium">Commission</span>
                               <span className="font-bold text-slate-700">
                                 {/* สมมติว่าค่าคอมมิชชั่นอยู่ใน selectedStats.commission */}
-                                {Number(platformselect?.model?.commission || 0)}%   
+                                {Number(billselect?.license?.model?.commission || 0)}%   
                               </span>
                             </div>
                              <div className="flex justify-between items-center text-sm">
                               <span className="text-slate-500 font-medium">ProfitxCommision</span>
                               <span className="font-bold text-slate-700">
                                 {/* สมมติว่าค่าคอมมิชชั่นอยู่ใน selectedStats.commission */}
-                                {Number(selectedStats.filtered_profit)} x {Number(platformselect?.model?.commission/100 ||0)} = {Number(selectedStats.filtered_profit)*Number(platformselect?.model?.commission/100 ||0)}
+                                {Number(billselect?.profit)} x {Number(billselect?.commission/100 ||0)} = {(Number(billselect?.profit)*Number(billselect?.commission/100 ||0)).toFixed(3)} USD
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-slate-500 font-medium">USD to THB </span>
+                              <span className="font-bold text-slate-700">
+                                {/* สมมติว่าค่าคอมมิชชั่นอยู่ใน selectedStats.commission */}
+                               {(Number(billselect?.profit)*Number(billselect?.commission/100 ||0)* rateTHBtoUSD).toFixed(3)} THB
                               </span>
                             </div>
 
@@ -437,18 +492,18 @@ const fetchData = useCallback(async () => {
                               <span className="text-slate-800 font-bold uppercase tracking-wide text-sm">Total Amount</span>
                               <span className="text-xl font-black text-blue-600">
                                 {/* สมมติว่ายอดรวมอยู่ใน selectedStats.total_amount หรือคุณบวก/ลบเอาเองตรงนี้ได้เลย */}
-                                {Number(selectedStats.total_amount || 0).toLocaleString('th-TH', { minimumFractionDigits: 2 })}
+                                {(Number(billselect?.profit)*Number(billselect?.commission/100 ||0)* rateTHBtoUSD).toFixed(3)} THB
                               </span>
                             </div>
 
                           </div>
                         </div>
-                        {platformselect?.bill?.isPaid === false && (
+                        {billselect?.isPaid === false && (
                             <Button
                               type="primary"
                               size="large"
                               icon={<DollarOutlined />}
-                              onClick={() => handleBill(selectedStats.licensekey)}
+                              onClick={() => purchecsebill(billselect?.profit,billselect?.id, billselect?.commission) }
                               className="w-full mt-2 rounded-xl shadow-md flex items-center justify-center font-bold border-none"
                               style={{ 
                                 backgroundColor: '#2b0b9e', 
@@ -456,12 +511,12 @@ const fetchData = useCallback(async () => {
                                 height: '48px' // ปรับให้ปุ่มสูงขึ้น กดง่ายๆ
                               }} 
                             >
-                              ชำระเงินทันที
+                              ชำระเงินทันที 
                             </Button>
                           )}
 
                             {/* ถ้าจ่ายแล้ว โชว์เป็นป้ายกำกับแทน */}
-                            {platformselect?.bill?.isPaid && (
+                            {billselect?.isPaid && (
                                   <div 
                                     className="w-full mt-2 py-3 px-4 text-sm font-bold rounded-xl border flex items-center justify-center gap-2"
                                     // 2. ยัดสไตล์สีเขียวลงไปตรงๆ ป้องกัน CSS ตีกัน

@@ -14,28 +14,33 @@ type UserType = {
 type BillType = {
   id: number;
   isPaid: boolean;
-  isReadyBill: boolean;
-  totalAmount: number;
-  createdAt: string; 
+  email:string
+  profit: number;
+  commission: number;
 
-  license?: LicenseKeyType | null; 
+  exirelicendate: string;
+  createdAt: string;
+
+  licenseId: number;
+
+  license?: LicenseKeyType | null;
 };
 type LicenseKeyType = {
   id: number;
+  
   licensekey: string;
-  valid: boolean;
+  expire: boolean;
   status: boolean;
   active: boolean;
-  expireDate: string | null; // หรือ Date | null ขึ้นอยู่กับการใช้งานของคุณ
+  expireDate: string | null; 
   platformAccountId: string;
   nameEA: string;
   createdAt: string;
   updatedAt: string;
   billId: number | null;
-  // Relations (ถ้าคุณใช้ include ใน Prisma อย่าลืมเพิ่มตัวแปรเหล่านี้)
   tradeAccount?: TradeAccount; 
   model?: ModelType; // แทนค่าที่ดึงมาจาก model Model
-  bill?: BillType | null;
+   bills?: BillType[];
 };
 
 type TradeAccount = {

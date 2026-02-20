@@ -46,7 +46,7 @@ export default function UserPage() {
       setplatformedit(account.PlatformName)
      
     }
-
+    
 
     // 2. สร้างฟังก์ชันที่ return array ของ actions โดยรับ account เป็น parameter
     const getActions = (account: any) => [
@@ -85,7 +85,11 @@ export default function UserPage() {
   const { data: session, status } = useSession()
 
   // --- ACTIONS ---
-
+  useEffect(() => {
+    if (status === 'unauthenticated' ) {
+      router.push('/')
+    }
+  }, [status, router])
   // --- EFFECTS ---
  
 

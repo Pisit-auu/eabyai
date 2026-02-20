@@ -88,7 +88,11 @@ export default function EA() {
   // --- ACTIONS ---
 
   // --- EFFECTS ---
-
+  useEffect(() => {
+    if (status === 'unauthenticated' ) {
+      router.push('/')
+    }
+  }, [status, router])
 
   // ฟังก์ชันดึงข้อมูล (แยกออกมาเพื่อให้เรียกใช้ใหม่ได้เมื่อมีการเพิ่มข้อมูล)
   const fetchData = useCallback(async () => {
@@ -101,7 +105,7 @@ export default function EA() {
         axios.get(`/api/tradeaccount/${session.user.email}`),
         axios.get(`/api/timeframe`),
         axios.get(`/api/model`),
-        axios.get(`/api/license`)
+        axios.get(`/api/license/${session?.user?.email}`)
       ]);
       setSymbolAll(getSymbol.data);
       setTraderAccountAll(getTraderAccount.data);
@@ -167,6 +171,7 @@ const onChangeSymbol = (value: string) => {
     );
 
     setModelSelect(value)
+   
     setcomissionofModelselect(findcommision[0].commission)
   };
 
@@ -213,6 +218,7 @@ useEffect(() => {
     const nextWeekStr = nextWeekObj.format('YYYYMMDD'); 
     // 2. เตรียมค่าอื่นๆ (สมมติว่าคุณดึงมาจาก State หรือ Form)
     // ถ้าอยากให้ใช้ได้ทุกคู่เงิน ให้ส่งคำว่า "ALL" หรือ "" (ว่าง)
+
     const currentPlatform = findPlatform[0].PlatformName ; 
     const currentSymbol = SymbolSelect ;     // ถ้า User ไม่เลือกเจาะจง ให้เป็น ALL
     const currentTimeframe = timeframeSelect; 
@@ -230,11 +236,13 @@ useEffect(() => {
     console.log(currentSymbol)
     console.log(currentTimeframe)
     console.log(nextWeekStr)
+     console.log(comissionofModelselect)
     const payload = {
         licensekey: key, 
-        expireDate: nextWeekObj.toISOString(), 
         platformAccountId: tradderAccountSelect,
-        nameEA: ModelSelect 
+        nameEA: ModelSelect ,
+        email: session?.user?.email,
+        commission : comissionofModelselect
     };
 
 
@@ -577,12 +585,11 @@ useEffect(() => {
                     styles={{ body: { padding: '20px' } }}
                   >
                     <div className="flex items-start justify-between mb-2">
-                      {/* ✅ เช็คค่า Boolean จริงๆ (true/false) */}
                       <Tag 
-                        color={license.active ? 'success' : 'error'} 
+                        color={license.expire ? 'error' : 'success'} 
                         className="m-0 px-3 py-0.5 rounded-full uppercase text-xs font-bold"
                       >
-                        {license.active ? 'Active' : 'Inactive'}
+                        {license.expire ? 'Expired : โปรดต่ออายุ' : 'Active'}
                       </Tag>
                       <span className="text-xs text-slate-400">
                         {new Date(license.createdAt).toLocaleDateString()}

@@ -19,6 +19,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   tradeAccounts TradeAccount[]
+ 
 }
 
 model TradeAccount{
@@ -61,33 +62,31 @@ model Model {
 model Bill {
   id             Int          @id @default(autoincrement())
   isPaid         Boolean      @default(false) 
-  isReadyBill    Boolean      @default(false)
-  totalAmount    Float        @default(0)    
-
-  
+  expire             Boolean  @default(false) 
+  profit    Float        @default(0)    
+  exirelicendate DateTime 
+  commission Float
   createdAt      DateTime     @default(now())
-
-  license     LicenseKey?
+  licenseId   String
+  email String?
+  license     LicenseKey @relation(fields: [licenseId], references: [licensekey])
+  
 }
 model LicenseKey {
   id                Int      @id @default(autoincrement())
   licensekey         String   @unique 
-  valid             Boolean  @default(false) 
+  expire             Boolean  @default(false) 
+  email String?
   active            Boolean  @default(true)
-  expireDate        DateTime? 
+  expireDate        DateTime?
   tradeAccount      TradeAccount @relation(fields: [platformAccountId], references: [platformAccountId])
   platformAccountId String
-
-  status            Boolean  @default(false)
+  status            Boolean  @default(true)
   deletedAt         DateTime?    
   cancelReason      String?    
-
-  billId            Int?         @unique
-  bill              Bill?     @relation(fields: [billId], references: [id])
-
+  bills       Bill[] 
   model             Model    @relation(fields: [nameEA], references: [nameEA])
   nameEA           String
-
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }
