@@ -19,7 +19,7 @@ export async function POST(req: Request) {
           price_data: {
             currency: "thb",
             product_data: { name: "Test Payment" },
-            unit_amount: 1000,
+            unit_amount: 3000,
           },
           quantity: 1,
         },
