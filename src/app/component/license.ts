@@ -1,55 +1,58 @@
 // utils/license.ts
 
-const SECRET_SALT = 3737; 
-const PLATFORM_MAP: { [key: string]: number } = { "MT4": 1, "MT5": 2 };
+const SECRET_SALT = 3737;
+const PLATFORM_MAP: { [key: string]: number } = {
+  MT4: 1,
+  MT5: 2,
+};
 
 export function generateLicenseKey(
-  traderId: number | string, 
-  platform: string,         
-  symbol: string,            
-  timeframe: string,        
-  dateExpire: string     
+  traderId: number | string,
+  platform: string,
+  symbol: string,
+  timeframe: string,
+  modelName: string
 ): string {
-  
-  // แปลงค่า input
+
   const port = Number(traderId);
-  const expire = Number(dateExpire);
-  
-  // เช็คว่าการแปลงตัวเลขสำเร็จไหม
-  // จุดนี้สำคัญ: ถ้าลำดับผิด ค่า expire จะเป็น NaN เพราะมันเอาตัวอักษรมาแปลง
-  if (isNaN(port) || isNaN(expire)) {
-      console.error("License Error: Port or Date is invalid", { port, expire });
-      return "";
+
+  if (isNaN(port)) {
+    console.error("License Error: Port is invalid", { port });
+    return "";
   }
 
-  const platId = PLATFORM_MAP[platform] || 2; // Default เป็น 2 (MT5) กันเหนียว
+  const platId = PLATFORM_MAP[platform] || 2;
 
-  // แปลงตัวอักษรเป็น ASCII Sum
-  const getSum = (str: string) => str.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  
+  // helper แปลง string → score
+  const getSum = (str: string) =>
+    str.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
+
   const symbolScore = getSum(symbol || "ALL");
   const tfScore = getSum(timeframe || "H1");
+  const modelScore = getSum(modelName || "DEFAULT"); // ⭐ เพิ่ม
 
-  /**
-   * สูตรคำนวณ (ใช้ BigInt ทุกขั้นตอนเพื่อความแม่นยำสูงสุด):
-   * เราแปลงเป็น BigInt ก่อน XOR เพื่อป้องกันปัญหาตัวเลขเกิน 32-bit
-   */
   const bigPort = BigInt(Math.floor(port));
-  const bigExpire = BigInt(Math.floor(expire));
-  
-  // คำนวณ
-  const baseValue = (bigPort ^ bigExpire) + BigInt((symbolScore * platId) + tfScore + SECRET_SALT);
-  
-  // คูณตัวเลขมั่วๆ เพื่อกระจายค่า
+
+  // 🔥 ใช้ modelScore แทน expire
+  const baseValue =
+    bigPort +
+    BigInt(
+      (symbolScore * platId) +
+      tfScore +
+      modelScore +
+      SECRET_SALT
+    );
+
   const finalCalc = baseValue * BigInt(777);
 
-  // แปลงเป็น Hex (ฐาน 16)
-  let fullKey = finalCalc.toString(16).toUpperCase();
-  
-  // Checksum
-  const checksum = (finalCalc % BigInt(255)).toString(16).toUpperCase().padStart(2, '0');
+  const fullKey = finalCalc.toString(16).toUpperCase();
 
-  // จัดรูปแบบ AAAA-BBBB-CCCC
+  const checksum = (finalCalc % BigInt(255))
+    .toString(16)
+    .toUpperCase()
+    .padStart(2, "0");
+
   const result = `${fullKey}${checksum}`;
-  return result.match(/.{1,4}/g)?.join('-') || result;
+
+  return result.match(/.{1,4}/g)?.join("-") || result;
 }

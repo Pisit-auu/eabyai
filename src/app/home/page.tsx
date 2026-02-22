@@ -9,7 +9,7 @@ import Navbar from "@/app/component/header"
 import axios from 'axios';
 import Link from "next/link";
 import { MiniChart } from "@/app/component/MiniChart";
-import { Modal,Table, Avatar, Card, Badge, Tag, Button, Empty, Spin } from 'antd';
+import { Modal,Table, Avatar, Card, Badge, Tag, Button, Empty, Spin,Input } from 'antd';
 
 import dayjs from 'dayjs';
 import { 
@@ -31,7 +31,6 @@ export default function Dashborad() {
     key: 'time',
     render: (text:any) => (
       <span className="text-slate-500 text-sm">
-        {/* แปลง Unix Timestamp (วินาที) เป็น Date Format */}
         {new Date(text * 1000).toLocaleString('th-TH', {
             day: '2-digit', month: '2-digit', year: '2-digit', 
             hour: '2-digit', minute: '2-digit'
@@ -74,6 +73,8 @@ export default function Dashborad() {
   }
 ];
   // เพิ่ม State ใน Dashboard component
+  const [searchEA, setSearchEA] = useState("");
+  
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [selectedStats, setSelectedStats] = useState<any>(null);
   const [isDetailLoading, setIsDetailLoading] = useState(false);
@@ -124,8 +125,11 @@ export default function Dashborad() {
   const [isSidebarOpen, setSidebarOpen] = useState(true)
   const [traderAccountAll, setTraderAccountAll] = useState<TradeAccount[]>([])
   const [licenseall, setlicenseall] = useState<LicenseKeyType[]>([])
-  
+  const filteredLicense = licenseall.filter((license) =>
+    license.nameEA?.toLowerCase().includes(searchEA.toLowerCase())
+  );
   const [isLoading, setIsLoading] = useState(true);
+
   
 
   const router = useRouter()
@@ -140,11 +144,10 @@ export default function Dashborad() {
       router.push('/')
     }
   }, [status, router])
-
+      const [userData, setUserData] = useState<any>(null)
   // ฟังก์ชันดึงข้อมูล (แยกออกมาเพื่อให้เรียกใช้ใหม่ได้เมื่อมีการเพิ่มข้อมูล)
   const fetchData = useCallback(async () => {
     if (!session?.user?.email) return;
-    
     setIsLoading(true);
     try {
       const [getTraderAccount, getlicense] = await Promise.all([
@@ -154,8 +157,9 @@ export default function Dashborad() {
 
       // 1. ดึงข้อมูล JSON ที่ได้จาก API
       const userData = getTraderAccount.data;
-      console.log(userData)
-
+      const response = await axios.get(`/api/user/${session.user.email}`);
+      const user = response.data;
+      setUserData(user[0]);
 
       // 3. เซ็ตค่าลง State
       setTraderAccountAll(userData);
@@ -193,16 +197,19 @@ export default function Dashborad() {
         isSidebarOpen={isSidebarOpen}
         setSidebarOpen={setSidebarOpen}
         handleLogout={handleLogout}
+        isAdmin={session?.user.role ==='admin'}
+        userImage={userData?.image }
       />
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <aside className={`bg-[#1E293B] transition-all duration-300 shadow-xl z-20 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
           <div className={`w-64 flex flex-col py-6 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                                                  <SidebarItem label="User TradeAccount" href="/user" />
-                                                  <SidebarItem label="Dashboard" href="/home" />
-                                                  <SidebarItem label="Expert Advisor" href="/EA" />
-                                                  <SidebarItem label="Billing" href="/Bill" />
+                                                <SidebarItem label="Dashboard" href="/home" />
+                                                <SidebarItem label="User Profile" href="/user" />
+                                                <SidebarItem label="TradeAccount" href="/trade-account" />
+                                                <SidebarItem label="Expert Advisor" href="/EA" />
+                                                <SidebarItem label="Billing" href="/Bill" />
           </div>
         </aside>
 
@@ -247,7 +254,16 @@ export default function Dashborad() {
                 />
               </div>
             </div>
- 
+        <div className="mb-4">
+          <Input
+            allowClear
+            placeholder="Search EA by name..."
+            prefix={<SearchOutlined />}
+            value={searchEA}
+            onChange={(e) => setSearchEA(e.target.value)}
+            className="max-w-md rounded-xl"
+          />
+        </div>
 
             <div>
               <h3 className="text-lg font-bold text-slate-700 mb-4 px-1">Your Expert Advisor</h3>
@@ -262,7 +278,7 @@ export default function Dashborad() {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                   
-                {licenseall.map((license) => (
+                {filteredLicense.map((license) => (
                   <Card
                     key={license.id}
                     hoverable
@@ -275,7 +291,7 @@ export default function Dashborad() {
                         color={license.expire ? 'error' : 'success'} 
                         className="m-0 px-3 py-0.5 rounded-full uppercase text-xs font-bold"
                       >
-                        {license.expire ? 'Expired : โปรดต่ออายุ' : 'Active'}
+                        {license.expire ? 'Expired : โปรดต่ออายุ' : 'ยังไม่หมดอายุ'}
                       </Tag>
                       <span className="text-xs text-slate-400">
                         {new Date(license.createdAt).toLocaleDateString()}
@@ -285,15 +301,18 @@ export default function Dashborad() {
 
                     <Card.Meta
                       avatar={
-                        <Avatar
-                          size={48}
-                          style={{
-                            backgroundColor: license.active ? '#52c41a' : '#ff4d4f',
-                            border: '2px solid white',
-                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                          }}
-                          icon={<UserOutlined />}
-                        />
+                         <Avatar
+                            size={48}
+                            style={{
+                              backgroundColor:
+                              license.tradeAccount?.connect === "true"
+                                ? '#52c41a'
+                                : '#ff4d4f',
+                              border: '2px solid white',
+                              boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                            }}
+                            icon={<UserOutlined />}
+                          />
                       }
                       title={
                         <div className="flex items-center justify-between">

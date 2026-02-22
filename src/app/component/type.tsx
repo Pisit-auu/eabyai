@@ -10,11 +10,13 @@ type UserType = {
   email: string;
   emailVerified: string;
   image: string | null;
+  role : string;
 };
 type BillType = {
   id: number;
   isPaid: boolean;
   email:string
+  expire:boolean
   profit: number;
   commission: number;
 
@@ -27,7 +29,7 @@ type BillType = {
 };
 type LicenseKeyType = {
   id: number;
-  
+  email: string;
   licensekey: string;
   expire: boolean;
   status: boolean;
@@ -73,7 +75,6 @@ type LinkdownloadType = {
 type ModelType = {
   id: number;
   nameEA: string;
-  
   // Field ปกติ
   nameSymbol: string;
   timeframeName: string;
@@ -83,7 +84,7 @@ type ModelType = {
   downloadCount: number;
   
   // Enum (active) - แปลงเป็น String หรือระบุค่าเจาะจง
-  active: 'true' | 'false' | string; 
+  active: 'true' | 'false';
 
   // DateTime - เมื่อส่งผ่าน API จะกลายเป็น String (ISO)
   createdAt: string; 
@@ -93,5 +94,6 @@ type ModelType = {
   symbol?: SymbolType;
   timeframe?: TimeframeType;
   platform?: PlatformType;
+  licenses?: LicenseKeyType[];
 };
 

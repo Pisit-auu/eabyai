@@ -1,7 +1,82 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma"
 import axios from "axios";
-
+/**
+ * @swagger
+ * /api/check-license:
+ *   post:
+ *     summary: ตรวจสอบความถูกต้องของ License (สำหรับ MT5 / EA)
+ *     description: |
+ *       API นี้ใช้สำหรับให้ EA หรือ MT5 ยิงเข้ามาเพื่อตรวจสอบว่า
+ *       License สามารถใช้งานได้หรือไม่ โดยตรวจสอบ:
+ *       - มี license ในระบบหรือไม่
+ *       - active / banned
+ *       - expire date
+ *       - account id
+ *       - symbol
+ *       - timeframe
+ *       - platform
+ *       และจะทำการตรวจสอบ MT5 account เพิ่มเติมผ่าน API ภายนอก
+ *     tags:
+ *       - Check License
+ *
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - licenseKey
+ *               - accountId
+ *               - symbol
+ *               - timeframe
+ *               - platform
+ *               - server
+ *             properties:
+ *               licenseKey:
+ *                 type: string
+ *                 example: ABCD-1234-EFGH
+ *               accountId:
+ *                 type: string
+ *                 example: "12345678"
+ *               symbol:
+ *                 type: string
+ *                 example: XAUUSD
+ *               timeframe:
+ *                 type: string
+ *                 example: H1
+ *               platform:
+ *                 type: string
+ *                 example: MT5
+ *               server:
+ *                 type: string
+ *                 example: Exness-MT5Real
+ *
+ *     responses:
+ *       200:
+ *         description: ตรวจสอบ License เสร็จสิ้น
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: PASS
+ *                 message:
+ *                   type: string
+ *                   example: License Valid
+ *                 expireDate:
+ *                   type: string
+ *                   format: date-time
+ *
+ *       400:
+ *         description: Request ไม่ถูกต้อง
+ *
+ *       500:
+ *         description: Internal Server Error
+ */
 export async function POST(req: Request) {
   try {
     // 1. รับค่าที่ MT5 ยิงมา

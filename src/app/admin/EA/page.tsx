@@ -3,7 +3,7 @@ import SidebarItem from "@/app/component/sidebar"
 import { signIn, useSession, signOut } from "next-auth/react"
 import { useState, useEffect, useCallback } from "react"
 import { useRouter,usePathname } from "next/navigation"
-import Navbar from "@/app/component/headeradmin"
+import Navbar from "@/app/component/header"
 import axios from 'axios';
 import { UploadButton } from "@uploadthing/react";
 import { OurFileRouter } from "@/app/api/uploadthing/core";
@@ -11,10 +11,10 @@ import { OurFileRouter } from "@/app/api/uploadthing/core";
 import { 
   PlusOutlined, EditOutlined, DeleteOutlined, 
   ReloadOutlined, CloudUploadOutlined, FileTextOutlined, 
-  SaveOutlined 
+  SearchOutlined 
 } from '@ant-design/icons'
 import { 
-  Table, Button, Modal, Form, Input, Select, 
+  Table, Button, Modal, Empty, Input, Select, 
   InputNumber, Switch, Tag, Popconfirm, message, Space, Spin 
 } from 'antd'
 export default function Billpage() {
@@ -36,6 +36,15 @@ export default function Billpage() {
         </div>
       )
     },
+     {
+      title: 'Create with EA',
+      key: 'create',
+      render: (_: any, record: ModelType) => (
+        <div className="flex flex-wrap gap-1">
+            {record.downloadCount}
+        </div>
+      )
+    },
     {
       title: 'Commission ($)',
       dataIndex: 'commission',
@@ -47,11 +56,25 @@ export default function Billpage() {
       title: 'Status',
       dataIndex: 'active',
       key: 'active',
-      render: (active: boolean) => (
-        <Tag color={active ? 'success' : 'error'}>
-            {active ? 'Active' : 'Inactive'}
-        </Tag>
-      )
+      render: (_: any, record: ModelType) => {
+        const isActive = String(record.active) === "true";
+
+        return (
+          <Space>
+            <Tag color={isActive ? "success" : "error"}>
+              {isActive ? "Active" : "Inactive"}
+            </Tag>
+
+            <Switch
+              size="small"
+              checked={isActive}
+              onChange={(checked) =>
+                handleToggleStatus(record, checked)
+              }
+            />
+          </Space>
+        );
+      }
     },
     {
       title: 'Action',
@@ -60,12 +83,21 @@ export default function Billpage() {
         <Space>
             <Button 
                 icon={<EditOutlined />} 
-                onClick={() => handleEdit(record)} 
+                onClick={() => {
+                  setEditingRecord(record);
+                  setEditSymbol(record.nameSymbol);
+                  setEditTimeframe(record.timeframeName);
+                  setEditPlatform(record.PlatformName);
+                  setEditNameEA(record.nameEA);
+                  setEditCommission(record.commission);
+                  setEditActive(String(record.active) === "true");
+                  setIsEditModalOpen(true);
+                }}
                 size="small"
             />
             <Popconfirm 
                 title={`ลบ ${record.nameEA} ?`}
-                onConfirm={() => handleDelete(record.nameEA)}
+                onConfirm={() => handleDelete(record)}
                 okButtonProps={{ danger: true }}
             >
                 <Button icon={<DeleteOutlined />} danger size="small" />
@@ -74,19 +106,63 @@ export default function Billpage() {
       )
     }
   ]
- 
+  const handleToggleStatus = async (record: ModelType, checked: boolean) => {
+  try {
+    await axios.put(`/api/model/${record.nameEA}`, {
+      active: checked.toString(),
+    });
+
+    message.success("อัปเดตสถานะสำเร็จ");
+    fetchAllData();
+  } catch (error) {
+    message.error("อัปเดตสถานะไม่สำเร็จ");
+  }
+};
+ const [editingRecord, setEditingRecord] = useState<ModelType | null>(null);
   const [isSidebarOpen, setSidebarOpen] = useState(true) // ควบคุม Sidebar
   const [linkEA , setLinkEA ] = useState<LinkdownloadType[]>([])
   const [Model, setModel] = useState<ModelType[]>([])
   const router = useRouter()
   const { data: session, status } = useSession()
   const [isLoading, setIsLoading] = useState(false)
-
-  
-  const handleEdit = (record: ModelType) => {
-    console.log(record)
-
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [editNameEA, setEditNameEA] = useState("");
+  const [editCommission, setEditCommission] = useState(0);
+  const [editActive, setEditActive] = useState(false);
+  const [editSymbol, setEditSymbol] = useState<string | null>(null);
+  const [editTimeframe, setEditTimeframe] = useState<string | null>(null);
+  const [editPlatform, setEditPlatform] = useState<string | null>(null);
+  const [MaxCreate,setMaxcreate ] = useState(0)
+  const [nameMaxCreate, setnameMaxcreate ] = useState("")
+const handleEdit = async () => {
+  if (!editingRecord) return;
+  if (editActive){
+    alert("Model Active อยู่ ไม่สามารถแก้ไขได้")
+    return
   }
+    if( editingRecord.licenses?.length){
+            alert(" ไม่สามารถลบได้เนื่องจากมีผู้ใช้ model นี้อยู่")
+            return
+    }
+  try {
+  
+    
+    await axios.put(`/api/model/${editingRecord.nameEA}`, {
+        nameEA: editNameEA,
+        commission: editCommission,
+        symbol: editSymbol,
+        timeframe: editTimeframe,
+        platform: editPlatform,
+      });
+
+    message.success("แก้ไขสำเร็จ");
+    setIsEditModalOpen(false);
+    setEditingRecord(null);
+    fetchAllData();
+  } catch (error) {
+    message.error("เกิดข้อผิดพลาด");
+  }
+};
   const handleDeletelinkEA = async (id: String) => {
     try {
         await axios.delete(`/api/linkmodel/${id}`)
@@ -96,46 +172,87 @@ export default function Billpage() {
         message.error("เกิดข้อผิดพลาดในการลบ")
     }
   }
-  const handleDelete = async (id: String) => {
+  const handleDelete = async (record: ModelType) => {
     try {
-        await axios.delete(`/api/model/${id}`)
-        message.success(`ลบ ${id} สำเร็จ` )
+        
+         if( record?.licenses?.length !== 0){
+            alert(" ไม่สามารถลบได้เนื่องจากมีผู้ใช้ model นี้อยู่")
+            return
+         }
+        await axios.delete(`/api/model/${record.nameEA}`)
+        message.success(`ลบ ${record.nameEA} สำเร็จ` )
         fetchAllData();
     } catch (error) {
         message.error("เกิดข้อผิดพลาดในการลบ")
     }
   }
+  const [userData, setUserData] = useState<any>(null)
+ const fetchAllData = useCallback(async () => {
+    // 1. Guard Clause: ดักเช็คอีเมลตั้งแต่บรรทัดแรก ถ้าไม่มีให้หยุดเลย ไม่ต้องไปเสียเวลาโหลด API อื่นๆ
+    if (!session?.user?.email) return;
 
-  const fetchAllData = useCallback(async () => {
-  setIsLoading(true);
-  try {
-      const [resModel, resSymbol, resTimeframe, resPlatform,reslinkmodel] = await Promise.all([
+    setIsLoading(true);
+    try {
+      // 2. จับ API ทั้ง 7 เส้น (รวมของ User ด้วย) มารันพร้อมกัน ประหยัดเวลาโหลดหน้าเว็บได้เยอะมาก
+      const [
+        resModel, 
+        resSymbol, 
+        resTimeframe, 
+        resPlatform, 
+        reslinkmodel, 
+        reslicense, 
+        resUser // <- เพิ่ม Response ของ User ตรงนี้
+      ] = await Promise.all([
         axios.get('/api/model'),
         axios.get('/api/symbol'),
         axios.get('/api/timeframe'),
         axios.get('/api/platform'),
         axios.get('/api/linkmodel'),
+        axios.get("/api/license"),
+        axios.get(`/api/user/${session.user.email}`) // <- เอามายิงพร้อมกันเลย
       ]);
-      console.log(reslinkmodel.data)
-      setModel(resModel.data);
+
+      // console.log(reslicense.data);
+      const models: ModelType[] = resModel.data;
+
+      // 3. ป้องกัน Error จาก reduce: ถ้า models เป็น Array ว่าง (.reduce จะพังทันที)
+      if (models && models.length > 0) {
+        const maxCreate = models.reduce((max, item) => {
+          return (item.downloadCount || 0) > (max.downloadCount || 0) ? item : max;
+        });
+        setnameMaxcreate(maxCreate.nameEA);
+        setMaxcreate(maxCreate.downloadCount);
+      } else {
+        setnameMaxcreate("-"); // ถ้าไม่มีข้อมูลโมเดลเลย ให้แสดงค่าเริ่มต้น
+        setMaxcreate(0);
+      }
+
+      // 4. เซ็ต State ทั้งหมด
+      setModel(models);
       setSymbolAll(resSymbol.data);
       setTimeframeAll(resTimeframe.data);
       setPlatformAll(resPlatform.data);
-      setLinkEA(reslinkmodel.data)
+      setLinkEA(reslinkmodel.data);
+      setSelectedStats(reslicense.data);
+      
+      // 5. เซ็ตข้อมูล User ที่ดึงมาพร้อมกัน
+      setUserData(resUser.data[0]);
+
     } catch (error) {
-      console.error(error);
+      console.error("Fetch All Data Error:", error);
       message.error("ไม่สามารถดึงข้อมูลได้");
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  // 6. ⚠️ สำคัญที่สุด: ใส่ dependency ให้ useCallback เพื่อไม่ให้มันจำค่า session ว่างเปล่าในตอนแรก
+  }, [session?.user?.email]);
 
-  // เรียกใช้ครั้งเดียวตอน Mount
+  // เรียกใช้เมื่อ status เป็น authenticated และ fetchAllData มีการอัปเดต
   useEffect(() => {
     if (status === 'authenticated') {
       fetchAllData();
     }
-  }, [fetchAllData, status]);
+  }, [status, fetchAllData]);
 
   // --- 2. การตรวจสอบสถานะ Login (รวมไว้ด้วยกัน) ---
   useEffect(() => {
@@ -281,9 +398,85 @@ export default function Billpage() {
       console.log(`selected ${value}`);
       setselectTimeframe(value)
     };
-  
-  
+    const [islicenseOpen, setIslicenseOpen] = useState(false);
+      const [selectedStats, setSelectedStats] =  useState<LicenseKeyType[]>([]);
 
+    const clickopenlicense = async () => {
+      setIslicenseOpen(true)
+  }
+  
+ const licenseColumns = [
+  {
+    title: "ID",
+    dataIndex: "id",
+    key: "id",
+    width: 60
+  },
+  {
+    title: "License Key",
+    dataIndex: "licensekey",
+    key: "licensekey",
+    render: (key: string) => (
+      <span className="font-mono text-blue-600">{key}</span>
+    ),
+  },
+  {
+    title: "Email ผู้สร้าง",
+    dataIndex: "email",
+    key: "email",
+  },
+ {
+    title: "ID platform",
+    dataIndex: "platformAccountId",
+    key: "platformAccountId",
+    render: (platformAccountId: string) => (
+      <span>{platformAccountId}</span>
+    ),
+  },
+  // ⭐ วันที่สร้าง
+  {
+    title: "Created",
+    dataIndex: "createdAt",
+    key: "createdAt",
+    render: (date: string) => (
+      <span className="text-slate-600">
+        {date
+          ? new Date(date).toLocaleString("th-TH", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+          : "-"}
+      </span>
+    ),
+  },
+  {
+    title: "Expire Date",
+    dataIndex: "expireDate",
+    key: "expireDate",
+    render: (date: string | null) => (
+      <span className="text-orange-600 font-medium">
+        {date
+          ? new Date(date).toLocaleDateString("th-TH")
+          : "-"}
+      </span>
+    ),
+  },
+
+  {
+    title: "Status",
+    dataIndex: "expire",
+    key: "expire",
+    render: (expire: boolean) => (
+      <Tag color={expire ? "error" : "success"}>
+        {expire ? "Expired" : "Active"}
+      </Tag>
+    ),
+  },
+ 
+];
    return (
       <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans text-[#1E293B]">
         {/* Navbar ขนาดใหญ่ (h-20) */}
@@ -291,6 +484,8 @@ export default function Billpage() {
           isSidebarOpen={isSidebarOpen}
           setSidebarOpen={setSidebarOpen}
           handleLogout={handleLogout}
+          isAdmin={session?.user.role ==='admin'}
+          userImage={userData?.image}
         />
 
         <div className="flex flex-1 overflow-hidden">
@@ -304,12 +499,12 @@ export default function Billpage() {
                       </aside>
   
          {/* Content Area */}
-        <main className="flex-1 p-4 md:p-8 overflow-y-auto bg-slate-50 flex flex-col">
-          <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 min-h-[600px] p-6 md:p-8 flex-1">
+         <main className="flex-1 overflow-y-auto bg-slate-50 p-4 md:p-8">
+        
             
-            <div className="max-w-6xl mx-auto">
-              {/* Header */}
-              <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b border-slate-100 pb-6">
+            {/* Header Section */}
+            <div className="bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-slate-200 mb-4">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4  border-slate-100 ">
                     <div>
                         <h1 className="text-2xl font-bold text-slate-800">Model EA Management</h1>
                         <p className="text-slate-500 text-sm mt-1">จัดการข้อมูล EA, ตั้งค่าราคา และสถานะ</p>
@@ -327,6 +522,43 @@ export default function Billpage() {
                       
                   </div>
               </div>
+            </div>
+              <div className="flex gap-4 mb-4">
+                          {/* ... (โค้ดกล่อง Total Trades, Win Rate, Profit ของคุณเหมือนเดิม) ... */}
+                          <div className="flex-1 p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
+                            <p className=" text-blue-500 text-[11px] font-bold uppercase tracking-wider mb-1">ถูกใช้สร้าง license มากสุด</p>
+                            <p className="text-xl font-black text-black-400 leading-none">
+                             { nameMaxCreate } จำนวน {MaxCreate}
+                            </p>
+                          </div>
+                <div className="flex-1 p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
+                  {/* เพิ่ม div ครอบเป็น flex เพื่อแยกซ้าย-ขวา */}
+                  <div className="flex justify-between items-center">
+                    
+                    {/* ฝั่งซ้าย: กล่องข้อความและตัวเลข */}
+                    <div>
+                      <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider mb-1">
+                        จำนวน license ทั้งหมด
+                      </p>
+                      <p className="text-2xl font-black text-slate-800 leading-none">
+                        {selectedStats.length}
+                      </p>
+                    </div>
+
+                    {/* ฝั่งขวา: ไอคอน */}
+                    <SearchOutlined 
+                      key="LookeMore" 
+                      className="text-slate-400 hover:!text-green-700 transition-colors text-2xl cursor-pointer" 
+                      onClick={clickopenlicense}
+                    />
+                    
+                  </div>
+                </div>
+                          
+                        </div>
+                        
+          <div className="bg-white rounded-[1rem] shadow-sm border border-slate-200 min-h-[600px] p-6 md:p-8 flex-1">
+            <div className="">
 
           {addnewModelOpen && (
                   <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
@@ -594,16 +826,111 @@ export default function Billpage() {
                           </div>
                         </div>
                       )}
-              {/* Table Section */}
-              <Table 
-                columns={columns} 
-                dataSource={Model} 
-                rowKey="id"
-                loading={isLoading}
-                pagination={{ pageSize: 10 }}
-                scroll={{ x: 800 }}
-              />
+                              {/* Table Section */}
+                              <Table 
+                                columns={columns} 
+                                dataSource={Model} 
+                                rowKey="id"
+                                loading={isLoading}
+                                pagination={{ pageSize: 10 }}
+                                scroll={{ x: 800 }}
+                              />
+                                <Modal
+                                title={`แก้ไขข้อมูล `}
+                                open={isEditModalOpen}
+                                onOk={handleEdit}
+                                onCancel={() => setIsEditModalOpen(false)}
+                                okText="บันทึก"
+                                cancelText="ยกเลิก"
+                                centered
+                              >
+                              <div className="space-y-4">
 
+                                    <div>
+                                      <label className="block text-sm font-medium mb-1">EA Name</label>
+                                      <Input
+                                        value={editNameEA}
+                                        onChange={(e) => setEditNameEA(e.target.value)}
+                                      />
+                                    </div>
+
+                                    <div>
+                                      <label className="block text-sm font-medium mb-1">Commission</label>
+                                      <InputNumber
+                                        className="w-full"
+                                        value={editCommission}
+                                        onChange={(val) => setEditCommission(val || 0)}
+                                      />
+                                    </div>
+
+                                
+                                    <div className="flex flex-col gap-2">
+                                          <label className="text-sm font-semibold text-slate-700">Symbol</label>
+                                          <Select
+                                      value={editSymbol}
+                                      onChange={setEditSymbol}
+                                      options={SymbolAll.map(item => ({
+                                        value: item.nameSymbol,
+                                        label: item.nameSymbol,
+                                      }))}
+                                                  />
+                                        </div>
+
+                                        {/* Timeframe */}
+                                        <div className="flex flex-col gap-2">
+                                          <label className="text-sm font-semibold text-slate-700">Timeframe</label>
+                                          <Select
+                                          value={editTimeframe}
+                                          onChange={setEditTimeframe}
+                                          options={TimeframeAll.map(item => ({
+                                            value: item.nametimeframe,
+                                            label: item.nametimeframe,
+                                          }))}
+                />
+                                        </div>
+
+                                        {/* Platform */}
+                                        <div className="flex flex-col gap-2">
+                                          <label className="text-sm font-semibold text-slate-700">Platform</label>
+                                          <Select
+                                            value={editPlatform}
+                                            onChange={setEditPlatform}
+                                            options={PlatformAll.map(item => ({
+                                              value: item.nameplatform,
+                                              label: item.nameplatform,
+                                            }))}
+                />
+                                        </div>
+                </div>
+                              </Modal>
+                                <Modal
+                                  title={
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-1.5 h-5 bg-blue-600 rounded-full" />
+                                      <span className="text-lg font-bold text-slate-800">License</span>
+                                    </div>
+                                  }
+                                  open={islicenseOpen}
+                                  onCancel={() => setIslicenseOpen(false)}
+                                  footer={null}
+                                  width={1280} 
+                                    >
+                                      { selectedStats ? (
+                                        <div className="space-y-4">
+                                          
+                                          {/* --- ส่วนตาราง Trade History --- */}
+                                          <Table 
+                                            columns={licenseColumns } 
+                                            dataSource={selectedStats}
+                                            rowKey="time" // ใช้ time เป็น unique key (หรือ index ถ้า time ซ้ำ)
+                                            pagination={{ pageSize: 10 }} 
+                                            size="small" // ขนาดตารางกะทัดรัด
+                                            scroll={{ y: 300 }} // ถ้าเยอะให้ scroll แนวตั้งได้
+                                          />
+                                          
+                                        </div>
+                                      ) : <Empty description="No Data" />}
+                                 </Modal>
             </div>
           </div>
         </main>

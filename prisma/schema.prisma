@@ -16,10 +16,15 @@ model User {
   email         String   @unique
   emailVerified DateTime?
   image         String?
+  role          role? @default(user)
   accounts      Account[]
   sessions      Session[]
   tradeAccounts TradeAccount[]
  
+}
+enum role {
+  admin
+  user
 }
 
 model TradeAccount{
@@ -50,10 +55,7 @@ model Model {
   PlatformName String
   filePath     String   
   commission   Float
-
   active       Active   @default(false)
-
-
   downloadCount Int     @default(0) 
   createdAt    DateTime @default(now())
   licenses      LicenseKey[]

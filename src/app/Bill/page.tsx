@@ -139,7 +139,6 @@ const purchecsebill = async (amount: number,billId:number,commission:number) => 
       if(bill.license.tradeAccount.Server===null){
         return
       }
-
       const res = await axios.post("/api/account/details", {
         accountId: parseInt(bill.license.tradeAccount.platformAccountId),
         investorPassword: bill.license.tradeAccount.InvestorPassword , // ต้องมั่นใจว่ามีฟิลด์นี้
@@ -172,6 +171,7 @@ const purchecsebill = async (amount: number,billId:number,commission:number) => 
       router.push('/')
     }
   }, [status, router])
+ const [userData, setUserData] = useState<any>(null)
 
 const fetchData = useCallback(async () => {
     if (!session?.user?.email) return;
@@ -185,7 +185,9 @@ const fetchData = useCallback(async () => {
       setTraderAccountAll(getTraderAccount.data);
 
       setbillall(getbill.data.filter((b: any) => b.expire));
-   
+      const response = await axios.get(`/api/user/${session.user.email}`);
+      const user = response.data;
+      setUserData(user[0]);
 
       
     } catch (error) {
@@ -214,16 +216,19 @@ const fetchData = useCallback(async () => {
         isSidebarOpen={isSidebarOpen}
         setSidebarOpen={setSidebarOpen}
         handleLogout={handleLogout}
+        isAdmin={session?.user.role ==='admin'}
+        userImage={userData?.image }
       />
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <aside className={`bg-[#1E293B] transition-all duration-300 shadow-xl z-20 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
           <div className={`w-64 flex flex-col py-6 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                                                  <SidebarItem label="User TradeAccount" href="/user" />
-                                                  <SidebarItem label="Dashboard" href="/home" />
-                                                  <SidebarItem label="Expert Advisor" href="/EA" />
-                                                  <SidebarItem label="Billing" href="/Bill" />
+                     <SidebarItem label="Dashboard" href="/home" />
+                     <SidebarItem label="User Profile" href="/user" />
+                     <SidebarItem label="TradeAccount" href="/trade-account" />
+                     <SidebarItem label="Expert Advisor" href="/EA" />
+                     <SidebarItem label="Billing" href="/Bill" />
           </div>
         </aside>
 
@@ -281,7 +286,7 @@ const fetchData = useCallback(async () => {
               {isLoading ? (
                   <div className="flex justify-center py-20"><Spin size="large" /></div>
                 ) : filteredbillall.length === 0 ? ( // ✅ เปลี่ยนตรงนี้
-                  <div className="bg-white rounded-2xl p-12 text-center border border-dashed border-slate-300">
+                 <div className="bg-white rounded-2xl p-12 text-center border border-dashed border-slate-300">
                     <Empty description="ไม่มีบิลในสถานะที่คุณเลือก" />
                   </div>
                 ) : (
@@ -403,38 +408,7 @@ const fetchData = useCallback(async () => {
                     ) : selectedStats ? (
                       <div className="space-y-4">
                         {/* --- ส่วนกล่องสถิติด้านบน 3 กล่อง --- */}
-                        <div className="flex gap-4">
-                          {/* ... (โค้ดกล่อง Total Trades, Win Rate, Profit ของคุณเหมือนเดิม) ... */}
-                          <div className="flex-1 p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
-                            <p className="text-blue-500 text-[11px] font-bold uppercase tracking-wider mb-1">Total Trades</p>
-                            <p className="text-2xl font-black text-blue-700 leading-none">
-                              {selectedStats.trades_count}
-                            </p>
-                          </div>
-                          <div className="flex-1 p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
-                            <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider mb-1">Win Rate</p>
-                            <p className="text-2xl font-black text-slate-800 leading-none">
-                              {selectedStats.winrate}%
-                            </p>
-                          </div>
-                          <div className={`flex-1 p-4 border rounded-2xl shadow-sm ${
-                              Number(selectedStats.filtered_profit) >= 0 
-                                ? 'bg-green-100 border-green-200' 
-                                : 'bg-red-50 border-red-200' 
-                            }`}
-                          >
-                            <p className={`text-[11px] font-bold uppercase tracking-wider mb-1 ${
-                              Number(selectedStats.filtered_profit) >= 0 ? 'text-green-600' : 'text-red-500'
-                            }`}>
-                              Profit
-                            </p>
-                            <p className={`text-2xl font-black leading-none ${
-                              Number(selectedStats.filtered_profit) >= 0 ? 'text-green-700' : 'text-red-600'
-                            }`}>
-                              {Number(selectedStats.filtered_profit) >= 0 ? '+' : ''}{selectedStats.filtered_profit}
-                            </p>
-                          </div>
-                        </div>
+                       
 
                         {/* --- ส่วนตาราง Trade History --- */}
                         <div className="border border-slate-100 rounded-xl overflow-hidden shadow-sm">

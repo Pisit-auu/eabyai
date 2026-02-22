@@ -2,7 +2,42 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { addDays } from "date-fns";
 
-
+/**
+ * @swagger
+ * /api/license/{id}:
+ *   get:
+ *     summary: ดึงข้อมูล License ตาม email หรือ licensekey
+ *     description: |
+ *       ค้นหา license จาก:
+ *       - email
+ *       - licensekey
+ *       พร้อม include tradeAccount, model และ bills
+ *     tags:
+ *       - License
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: email หรือ licensekey
+ *
+ *     responses:
+ *       200:
+ *         description: ดึงข้อมูลสำเร็จ
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *
+ *       404:
+ *         description: ไม่พบ License นี้
+ *
+ *       500:
+ *         description: Server Error
+ */
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -34,7 +69,74 @@ export async function GET(
   }
 }
 
-
+/**
+ * @swagger
+ * /api/license/{id}:
+ *   put:
+ *     summary: อัปเดตข้อมูล License
+ *     description: |
+ *       อัปเดตข้อมูล license ตาม licensekey
+ *       สามารถอัปเดตได้ เช่น:
+ *       - expire
+ *       - status
+ *       - active
+ *       - email
+ *       - expireDate
+ *       - tradeAccount (platformAccountId)
+ *       - model (nameEA)
+ *     tags:
+ *       - License
+ *
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: licensekey
+ *
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               expire:
+ *                 type: boolean
+ *                 example: false
+ *               status:
+ *                 type: string
+ *                 example: ACTIVE
+ *               active:
+ *                 type: boolean
+ *                 example: true
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: user@email.com
+ *               expireDate:
+ *                 type: string
+ *                 format: date-time
+ *                 example: "2026-03-01T00:00:00.000Z"
+ *               platformAccountId:
+ *                 type: string
+ *                 example: "12345678"
+ *               nameEA:
+ *                 type: string
+ *                 example: EA Gold Pro
+ *
+ *     responses:
+ *       200:
+ *         description: อัปเดตสำเร็จ
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *
+ *       500:
+ *         description: อัปเดตล้มเหลว
+ */
 export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
@@ -86,7 +188,37 @@ export async function PUT(
 }
 
 
-
+/**
+ * @swagger
+ * /api/license/{id}:
+ *   delete:
+ *     summary: ลบ License ตาม licensekey
+ *     tags:
+ *       - License
+ *
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: licensekey
+ *
+ *     responses:
+ *       200:
+ *         description: ลบ License สำเร็จ
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: ลบ License สำเร็จ
+ *
+ *       500:
+ *         description: ไม่สามารถลบได้
+ */
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }

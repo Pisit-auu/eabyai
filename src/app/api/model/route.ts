@@ -1,5 +1,31 @@
 import prisma from "@/lib/prisma"; 
-
+/**
+ * @swagger
+ * /api/model:
+ *   get:
+ *     summary: ดึงรายการ Model ทั้งหมด
+ *     description: |
+ *       ดึงข้อมูล model ทั้งหมด พร้อม include:
+ *       - symbol
+ *       - timeframe
+ *       - platform
+ *       - licenses
+ *     tags:
+ *       - Model
+ *
+ *     responses:
+ *       200:
+ *         description: ดึงข้อมูลสำเร็จ
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *
+ *       500:
+ *         description: Error fetching models
+ */
 export async function GET() {
   try {
     const models = await prisma.model.findMany({
@@ -7,6 +33,7 @@ export async function GET() {
     symbol: true,
     timeframe: true,
     platform: true,
+    licenses: true
     },
       orderBy: {
         createdAt: "desc",
@@ -19,18 +46,75 @@ export async function GET() {
     return new Response("Error fetching models", { status: 500 })
   }
 }
-
+/**
+ * @swagger
+ * /api/model:
+ *   post:
+ *     summary: สร้าง Model (EA) ใหม่
+ *     description: |
+ *       สร้าง model ใหม่และเชื่อมกับ:
+ *       - symbol
+ *       - timeframe
+ *       - platform
+ *     tags:
+ *       - Model
+ *
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - nameEA
+ *               - filePath
+ *               - commission
+ *               - symbol
+ *               - timeframe
+ *               - platform
+ *             properties:
+ *               nameEA:
+ *                 type: string
+ *                 example: EA Gold Pro
+ *               filePath:
+ *                 type: string
+ *                 example: /models/ea_gold_pro.ex5
+ *               commission:
+ *                 type: number
+ *                 example: 10
+ *               symbol:
+ *                 type: string
+ *                 example: XAUUSD
+ *               timeframe:
+ *                 type: string
+ *                 example: H1
+ *               platform:
+ *                 type: string
+ *                 example: MT5
+ *
+ *     responses:
+ *       200:
+ *         description: สร้าง Model สำเร็จ
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *
+ *       400:
+ *         description: Missing required field
+ *
+ *       500:
+ *         description: Error creating model
+ */
 export async function POST(request: Request) {
   try {
     const body = await request.json()
 
-    // 1. Check if the required 'platform' field exists before using it
+
     if (!body.platform) {
       return new Response("Missing required field: platform", { status: 400 })
     }
 
-    // You can also add checks for other required fields here
-    // if (!body.symbol || !body.timeframe) return new Response("...", { status: 400 })
 
     const newModel = await prisma.model.create({
         data: {
@@ -47,7 +131,6 @@ export async function POST(request: Request) {
           },
 
           platform: {
-            // Now this is safe because we know body.platform is a string
             connect: { nameplatform: body.platform.toUpperCase() },
           },
         },

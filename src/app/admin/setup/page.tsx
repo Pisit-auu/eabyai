@@ -3,7 +3,7 @@ import SidebarItem from "@/app/component/sidebar"
 import { useSession, signOut } from "next-auth/react"
 import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
-import Navbar from "@/app/component/headeradmin"
+import Navbar from "@/app/component/header"
 import axios from 'axios';
 import { Table, message, Tag, Radio, Card, Button, Modal, Input, Popconfirm } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
@@ -26,27 +26,40 @@ export default function SetupPage() {
 
   const [inputValue, setInputValue] = useState("")
   const [isAdding, setIsAdding] = useState(false)
-
+  const [userData, setUserData] = useState<any>(null)
   const fetchData = useCallback(async () => {
+    // 1. ดักจับก่อนเลยว่าถ้ายังไม่มี email ให้หยุดการทำงานทันที ป้องกัน Error
+    if (!session?.user?.email) return;
+
     setIsLoading(true)
     try {
-      const [resSym, resTf, resPlat] = await Promise.all([
+      // 2. ดึงข้อมูล 4 เส้นพร้อมกันไปเลย ประหยัดเวลา
+      const [resSym, resTf, resPlat, resUser] = await Promise.all([
         axios.get('/api/symbol'),
         axios.get('/api/timeframe'),
-        axios.get('/api/platform')
+        axios.get('/api/platform'),
+        axios.get(`/api/user/${session.user.email}`) // ใช้ email จาก session ได้ชัวร์ๆ
       ])
+      
       setSymbols(resSym.data)
       setTimeframes(resTf.data)
       setPlatforms(resPlat.data)
+      setUserData(resUser.data[0]) // ระวังตรงนี้ ถ้า API ส่งมาเป็น Object ให้ตัด [0] ออกนะครับ
+      
     } catch (error) {
+      console.error("Fetch Data Error:", error)
       message.error("ไม่สามารถโหลดข้อมูลได้")
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  // 3. ⚠️ สำคัญมาก: ต้องใส่ตัวแปรที่ใช้งานลงไปใน Array นี้ เพื่อให้ฟังก์ชันอัปเดตค่าเสมอ
+  }, [session?.user?.email]) 
 
   useEffect(() => {
-    if (status === 'authenticated') fetchData()
+    // โค้ดเดิมถูกต้องแล้วครับ
+    if (status === 'authenticated') {
+      fetchData()
+    }
   }, [status, fetchData])
 
   // --- ฟังก์ชันลบข้อมูล ---
@@ -183,6 +196,8 @@ export default function SetupPage() {
       isSidebarOpen={isSidebarOpen} 
       setSidebarOpen={setSidebarOpen} 
       handleLogout={() => signOut({ callbackUrl: '/' })} 
+      isAdmin={session?.user.role ==='admin'}
+      userImage={userData?.image}
     />
 
     <div className="flex flex-1 overflow-hidden h-full">
@@ -199,12 +214,12 @@ export default function SetupPage() {
       <main className="flex-1 overflow-y-auto bg-slate-50 p-4 md:p-8">
         
         {/* ขยาย max-w-4xl เป็น max-w-full เพื่อให้เต็มพื้นที่หน้าจอ */}
-        <div className="max-w-full mx-auto space-y-6">
+        <div className="max-w-full mx-auto space-y-4">
           
           {/* 1. Header Section */}
           <div className="bg-white p-6 md:p-10 rounded-[2rem] shadow-sm border border-slate-200 text-center">
             <h2 className="text-2xl md:text-3xl font-bold text-slate-800">ระบบจัดการข้อมูลพื้นฐาน</h2>
-            <div className="mt-6">
+            <div className="mt-4">
               <Radio.Group 
                 value={activeTab} 
                 onChange={(e) => setActiveTab(e.target.value)} 

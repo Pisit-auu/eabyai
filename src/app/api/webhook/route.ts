@@ -2,7 +2,66 @@ import Stripe from "stripe";
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma"; 
 import { addDays } from "date-fns";
-
+/**
+ * @swagger
+ * /api/webhook:
+ *   post:
+ *     summary: Stripe Webhook Endpoint
+ *     description: |
+ *       Endpoint สำหรับรับ Webhook จาก Stripe
+ *       ใช้ตรวจสอบ event การชำระเงิน เช่น:
+ *       - checkout.session.completed
+ *
+ *       เมื่อชำระเงินสำเร็จ ระบบจะ:
+ *       1. อัปเดต bill ให้ isPaid = true
+ *       2. สร้าง bill ใหม่
+ *       3. ต่ออายุ license (+7 วัน)
+ *
+ *       ⚠️ Endpoint นี้เรียกโดย Stripe เท่านั้น
+ *     tags:
+ *       - Payment
+ *
+ *     parameters:
+ *       - in: header
+ *         name: stripe-signature
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Stripe webhook signature
+ *
+ *     requestBody:
+ *       required: true
+ *       description: Raw Stripe event payload
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *
+ *     responses:
+ *       200:
+ *         description: Webhook received successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 received:
+ *                   type: boolean
+ *                   example: true
+ *
+ *       400:
+ *         description: Webhook Error หรือ Missing metadata
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *
+ *       500:
+ *         description: Internal Server Error
+ */
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(req: Request) {
