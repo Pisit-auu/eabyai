@@ -95,7 +95,9 @@ useEffect(() => {
           accountId: parseInt(record.license.tradeAccount.platformAccountId),
           investorPassword: record.license.tradeAccount.InvestorPassword , // ต้องมั่นใจว่ามีฟิลด์นี้
           server: record.license.tradeAccount.Server,
-          symbol: record.license.model.nameSymbol
+          symbol: record.license.model.nameSymbol,
+          license: record.license.licensekey,
+          expireDate : record.license.expireDate
         });
         console.log(res.data)
 
@@ -294,8 +296,9 @@ useEffect(() => {
         <aside className={`bg-[#1E293B] transition-all duration-300 shadow-xl z-20 flex-shrink-0 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
           <div className={`w-64 flex flex-col py-6 transition-opacity duration-300 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 overflow-hidden'}`}>
             <SidebarItem label="Setup" href="/admin/setup" />
-            <SidebarItem label="Expert Advisor" href="/admin/EA" />
-            <SidebarItem label="Billing" href="/admin/Bill" />
+                      <SidebarItem label="Expert Advisor" href="/admin/EA" />
+                      <SidebarItem label="Billing" href="/admin/Bill" />
+                      <SidebarItem label="user" href="/admin/user" />
           </div>
         </aside>
 

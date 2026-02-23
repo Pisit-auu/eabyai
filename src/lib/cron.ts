@@ -30,6 +30,7 @@ if (!globalThis.cronStarted) {
           expire: true,
         },
       });
+      
     await prisma.bill.updateMany({
       where: {
         exirelicendate: {

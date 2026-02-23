@@ -68,6 +68,7 @@ export async function GET(
  *       สามารถอัปเดต:
  *       - name
  *       - image
+ *       - role
  *     tags:
  *       - User
  *
@@ -93,6 +94,9 @@ export async function GET(
  *               image:
  *                 type: string
  *                 example: https://example.com/profile.jpg
+ *               role:
+ *                 type: string
+ *                 example: admin
  *
  *     responses:
  *       200:
@@ -118,7 +122,7 @@ export async function PUT(
 
     // 2. รับข้อมูลที่ส่งมาจากฝั่ง Client (เช่น name, image)
     const body = await req.json();
-    const { name, image } = body;
+    const { name, image ,role} = body;
 
     // 3. ตรวจสอบว่ามี id หรือไม่
     if (!id) {
@@ -136,6 +140,7 @@ export async function PUT(
       data: {
         name: name,
         image: image,
+        role : role,
       },
     });
 
@@ -149,4 +154,39 @@ export async function PUT(
       { status: 500 }
     );
   }
+}
+
+
+/**
+ * @swagger
+ * /api/user/{id}:
+ *   delete:
+ *     summary: Delete user by email
+ *     description: ลบ user ออกจากระบบโดยใช้ email เป็น id
+ *     tags:
+ *       - User
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: User email
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
+export async function DELETE(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id } = await context.params;
+
+  await prisma.user.delete({
+    where: { email: id },
+  });
 }

@@ -207,6 +207,7 @@ export default function SetupPage() {
           <SidebarItem label="Setup" href="/admin/setup" />
           <SidebarItem label="Expert Advisor" href="/admin/EA" />
           <SidebarItem label="Billing" href="/admin/Bill" />
+          <SidebarItem label="user" href="/admin/user" />
         </div>
       </aside>
 
@@ -241,7 +242,7 @@ export default function SetupPage() {
               {/* ฟอร์มเพิ่มข้อมูล */}
               <div className="border-b border-slate-100 pb-8 p-2">
                 <h3 className="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-blue-600 rounded-full"></span>
+               
                   จัดการข้อมูล {activeTab}
                 </h3>
                 <div className="flex flex-col sm:flex-row gap-3">

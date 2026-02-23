@@ -32,6 +32,11 @@ import axios from "axios";
  *                 type: string
  *                 description: ชื่อสกุลเงิน
  *                 example: "XAUUSD"
+ *               licensekey:
+ *                 type: string
+ *                 description: licensekey
+ *                 example: "ABC-DEF-GHE"
+ * 
  *     responses:
  *       200:
  *         description: ดึงข้อมูลสำเร็จ
@@ -42,7 +47,6 @@ import axios from "axios";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    // console.log("Sending to Python:", body); 
 
     const res = await axios.post("http://127.0.0.1:8000/get-account-details", body);
     

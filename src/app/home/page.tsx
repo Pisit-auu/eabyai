@@ -79,6 +79,7 @@ export default function Dashborad() {
   const [selectedStats, setSelectedStats] = useState<any>(null);
   const [isDetailLoading, setIsDetailLoading] = useState(false);
   const [SymbolOpen ,SetSymbolOpen ] = useState("")
+  const [timeframegraph, settimeframegraph ] = useState("")
   // ฟังก์ชันดึงข้อมูลเมื่อกดปุ่ม Search
   const handleViewDetails = async (platform: any) => {
     setIsDetailLoading(true);
@@ -87,14 +88,16 @@ export default function Dashborad() {
     try {
       // ดึงข้อมูล ID/Pass/Server จาก TraderAccount ที่มีอยู่ใน State (traderAccountAll)
       const accData = traderAccountAll.find(a => a.platformAccountId === platform.platformAccountId);
+      settimeframegraph(platform.model.timeframeName)
       console.log(traderAccountAll)
       if (!accData) return alert("Account data not found");
-
       const res = await axios.post("/api/account/details", {
         accountId: parseInt(accData.platformAccountId),
         investorPassword: accData.InvestorPassword , // ต้องมั่นใจว่ามีฟิลด์นี้
         server: accData.Server,
-        symbol: platform.model.nameSymbol
+        symbol: platform.model.nameSymbol,
+        license: platform.licensekey,
+        expireDate : platform.expireDate
       });
       console.log(res.data)
       setSelectedStats(res.data);
@@ -125,9 +128,19 @@ export default function Dashborad() {
   const [isSidebarOpen, setSidebarOpen] = useState(true)
   const [traderAccountAll, setTraderAccountAll] = useState<TradeAccount[]>([])
   const [licenseall, setlicenseall] = useState<LicenseKeyType[]>([])
-  const filteredLicense = licenseall.filter((license) =>
-    license.nameEA?.toLowerCase().includes(searchEA.toLowerCase())
-  );
+  const filteredLicense = licenseall.filter((license) => {
+  const keyword = searchEA.trim().toLowerCase();
+
+  if (!keyword) return true;
+
+  return [
+    license.nameEA,
+    license.licensekey,
+    license.platformAccountId
+  ]
+    .filter(Boolean)
+    .some(v => String(v).toLowerCase().includes(keyword));
+});
   const [isLoading, setIsLoading] = useState(true);
 
   
@@ -256,13 +269,13 @@ export default function Dashborad() {
             </div>
         <div className="mb-4">
           <Input
-            allowClear
-            placeholder="Search EA by name..."
-            prefix={<SearchOutlined />}
-            value={searchEA}
-            onChange={(e) => setSearchEA(e.target.value)}
-            className="max-w-md rounded-xl"
-          />
+              allowClear
+              placeholder="Search EA or Platform Account ID... or Licensekey"
+              prefix={<SearchOutlined />}
+              value={searchEA}
+              onChange={(e) => setSearchEA(e.target.value)}
+              className="max-w-md rounded-xl"
+            />
         </div>
 
             <div>
@@ -341,7 +354,9 @@ export default function Dashborad() {
                                 <MiniChart 
                                   symbol={license.model?.nameSymbol} // เช่น "XAUUSD"
                                   color={license.active ? '#10b981' : '#f43f5e'} 
-                                  count={100} />
+                                  count={100} 
+                                  timeframe={license.model?.timeframeName}/>
+                                  
                             </div>
                             {/* --------------------------- */}
                           {/* ✅ แสดงวันหมดอายุ (ถ้ามี) */}
@@ -448,6 +463,7 @@ export default function Dashborad() {
                               trades={selectedStats.trade_markers}
                               height={320} 
                               count={1000}
+                              timeframe={timeframegraph}
                             />
                           </div>
                         </div>

@@ -83,14 +83,10 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { platformAccountId, InvestorPassword, server } = body; // รับ server มาจาก body
 
-    // 1. Validation
     if (!platformAccountId || !InvestorPassword || !server ) {
       return NextResponse.json({ error: "Missing credentials" }, { status: 400 });
     }
 
-    // 2. Call Python FastAPI (Assuming it runs on port 8000)
-    // IMPORTANT: Use the full URL and match the keys Python expects
-    
 
     const res = await fetch("http://127.0.0.1:8000/check-account", {
       method: "POST",

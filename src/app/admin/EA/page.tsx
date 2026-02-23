@@ -492,9 +492,10 @@ const handleEdit = async () => {
                       {/* Sidebar */}
                       <aside className={`bg-[#1E293B] transition-all duration-300 shadow-xl z-20 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
                         <div className={`w-64 flex flex-col py-6 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                                                <SidebarItem label="Setup" href="/admin/setup" />
-                                               <SidebarItem label="Expert Advisor" href="/admin/EA" />
-                                               <SidebarItem label="Billing" href="/admin/Bill" />
+                                      <SidebarItem label="Setup" href="/admin/setup" />
+                                                <SidebarItem label="Expert Advisor" href="/admin/EA" />
+                                                <SidebarItem label="Billing" href="/admin/Bill" />
+                                                <SidebarItem label="user" href="/admin/user" />
                         </div>
                       </aside>
   
@@ -920,6 +921,7 @@ const handleEdit = async () => {
                                           
                                           {/* --- ส่วนตาราง Trade History --- */}
                                           <Table 
+                                            key={"key"}
                                             columns={licenseColumns } 
                                             dataSource={selectedStats}
                                             rowKey="time" // ใช้ time เป็น unique key (หรือ index ถ้า time ซ้ำ)

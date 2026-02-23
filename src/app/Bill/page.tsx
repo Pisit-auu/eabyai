@@ -141,9 +141,11 @@ const purchecsebill = async (amount: number,billId:number,commission:number) => 
       }
       const res = await axios.post("/api/account/details", {
         accountId: parseInt(bill.license.tradeAccount.platformAccountId),
-        investorPassword: bill.license.tradeAccount.InvestorPassword , // ต้องมั่นใจว่ามีฟิลด์นี้
+        investorPassword: bill.license.tradeAccount.InvestorPassword , 
         server: bill.license.tradeAccount.Server,
-        symbol: bill.license.model.nameSymbol
+        symbol: bill.license.model.nameSymbol,
+        license:bill.license.licensekey,
+        expireDate : bill.license.expireDate
       });
       console.log(res.data)
       setSelectedStats(res.data);

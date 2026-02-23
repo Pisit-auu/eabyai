@@ -34,9 +34,19 @@ export default function EA() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchEA, setSearchEA] = useState("");
-  const filteredLicense = licenseall.filter((license) =>
-  license.nameEA?.toLowerCase().includes(searchEA.toLowerCase())
-);
+  const filteredLicense = licenseall.filter((license) => {
+  const keyword = searchEA.trim().toLowerCase();
+
+  if (!keyword) return true;
+
+  return [
+    license.nameEA,
+    license.licensekey,
+    license.platformAccountId
+  ]
+    .filter(Boolean)
+    .some(v => String(v).toLowerCase().includes(keyword));
+});
   // --- ADD FORM STATES ---
   const [SymbolSelect, setSymbolSelect] = useState<string | null>(null)
   const [tradderAccountSelect, settradderAccountSelect] = useState<string | null>(null)
@@ -446,13 +456,13 @@ export default function EA() {
             </div>
                       <div className="mb-4">
                   <Input
-                    allowClear
-                    placeholder="Search EA by name..."
-                    prefix={<SearchOutlined />}
-                    value={searchEA}
-                    onChange={(e) => setSearchEA(e.target.value)}
-                    className="max-w-md rounded-xl"
-                  />
+                  allowClear
+                  placeholder="Search EA or Platform Account ID..."
+                  prefix={<SearchOutlined />}
+                  value={searchEA}
+                  onChange={(e) => setSearchEA(e.target.value)}
+                  className="max-w-md rounded-xl"
+                />
                 </div>
             {/* Accounts Grid List */}
             <div>

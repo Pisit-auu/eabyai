@@ -5,15 +5,13 @@ import { NextResponse } from 'next/server';
  * @swagger
  * /api/user:
  *   get:
- *     summary: ดึงข้อมูลผู้ใช้ทั้งหมด
- *     description: |
- *       ดึงรายการ user ทั้งหมดจากระบบ
+ *     summary: Get all users
+ *     description: ดึงข้อมูล users ทั้งหมดพร้อม tradeAccounts และ platform
  *     tags:
  *       - User
- *
  *     responses:
  *       200:
- *         description: ดึงข้อมูลผู้ใช้สำเร็จ
+ *         description: Success
  *         content:
  *           application/json:
  *             schema:
@@ -23,16 +21,44 @@ import { NextResponse } from 'next/server';
  *                   type: array
  *                   items:
  *                     type: object
- *
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       name:
+ *                         type: string
+ *                       email:
+ *                         type: string
+ *                       tradeAccounts:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             id:
+ *                               type: integer
+ *                             accountNumber:
+ *                               type: string
+ *                             platform:
+ *                               type: object
+ *                               properties:
+ *                                 id:
+ *                                   type: integer
+ *                                 name:
+ *                                   type: string
  *       404:
  *         description: No buyer data found
- *
  *       500:
  *         description: Failed to fetch top buyer
  */
 export async function GET() {
   try {
     const userall = await prisma.user.findMany({
+      include: {
+          tradeAccounts: {
+            include: {
+              platform: true,
+            },
+          },
+        },
     });
 
     if (!userall) {
