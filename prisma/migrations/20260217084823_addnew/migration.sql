@@ -1,8 +1,0 @@
-/*
-  Warnings:
-
-  - Added the required column `InvestorPassword` to the `TradeAccount` table without a default value. This is not possible if the table is not empty.
-
-*/
--- AlterTable
-ALTER TABLE "TradeAccount" ADD COLUMN     "InvestorPassword" TEXT NOT NULL;

@@ -108,8 +108,7 @@ export default function Bill() {
 ];
 
 const purchecsebill = async (amount: number,billId:number,commission:number) => {
-  console.log("do")
-  console.log(billselect.license.model.commission)
+ // console.log(billselect.license.model.commission)
   const response = await fetch('/api/checkout', {
     method: 'POST',
     body: JSON.stringify({ 
@@ -129,7 +128,7 @@ const purchecsebill = async (amount: number,billId:number,commission:number) => 
   }
 };
   const handleBill = async (bill: any) => {
-    console.log(bill)
+   // console.log(bill)
     setbillselect(bill)
    setBillOpen(true)
    setIsDetailLoading(true);
@@ -147,7 +146,7 @@ const purchecsebill = async (amount: number,billId:number,commission:number) => 
         license:bill.license.licensekey,
         expireDate : bill.license.expireDate
       });
-      console.log(res.data)
+   //   console.log(res.data)
       setSelectedStats(res.data);
     } catch (error) {
       console.error(error);
@@ -299,7 +298,7 @@ const fetchData = useCallback(async () => {
                       const billId = bill?.id ? String(bill.id).padStart(5, '0') : 'N/A';
                       const amount = bill?.profit || 0;
                       const commission = bill?.commission
-                        console.log(commission)
+                       // console.log(commission)
                       return (
                         <Card
                           key={bill.license.id}
@@ -426,8 +425,8 @@ const fetchData = useCallback(async () => {
                         </div>
 
                         {/* ✨ --- ส่วนสรุปยอด (Summary) ด้านล่างตาราง --- ✨ */}
-                        <div className="flex justify-end pt-4 pb-2">
-                          <div className="w-full sm:w-1/2 lg:w-1/3 bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                        <div className="pt-4 pb-2">
+                          <div className="w-full bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
                             
                             {/* Profit */}
                             <div className="flex justify-between items-center text-sm">

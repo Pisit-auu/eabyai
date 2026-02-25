@@ -82,7 +82,7 @@ export const authOptions: AuthOptions = {
         try {
           const resend = new Resend(process.env.RESEND_API_KEY!)
           await resend.emails.send({
-            from: 'EA by Ai <onboarding@resend.dev>', // หรือ process.env.EMAIL_FROM
+            from: 'EA by Ai <onboarding@resend.dev>', 
             to: email,
             subject: `รหัสเข้าสู่ระบบ EA: ${token}`,
             text: `รหัส OTP สำหรับเข้าสู่ระบบของคุณคือ: ${token}`,

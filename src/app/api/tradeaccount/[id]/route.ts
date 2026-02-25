@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma"
-import { NextResponse } from "next/server";
+import { NextRequest,NextResponse } from "next/server";
 /**
  * @swagger
  * /api/tradeaccount/{id}:
@@ -36,7 +36,7 @@ import { NextResponse } from "next/server";
  *         description: Error fetching data
  */
 export async function GET(
-  request: Request,
+  request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
 
@@ -66,7 +66,7 @@ export async function GET(
     return Response.json(tradeaccounts);
   } catch (error) {
     console.error(error);
-    return new Response("Error fetching data", { status: 500 });
+    return new NextResponse("Error fetching data", { status: 500 });
   }
 }
 
@@ -135,7 +135,7 @@ export async function GET(
  *         description: Update failed
  */
 export async function PUT(
-  request: Request,
+ request: NextRequest,
   context: { params: Promise<{ id: string }> } 
 ) {
   const { id } = await context.params;
@@ -187,7 +187,7 @@ export async function PUT(
  *         description: Delete failed
  */
 export async function DELETE(
-  request: Request,
+  request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   const { id } = await context.params
@@ -197,10 +197,10 @@ export async function DELETE(
       where: { platformAccountId: id },
     })
 
-    return new Response("Deleted successfully", { status: 200 })
+    return new NextResponse("Deleted successfully", { status: 200 })
   } catch (error) {
     console.error(error)
-    return new Response("Delete failed", { status: 500 })
+    return new NextResponse("Delete failed", { status: 500 })
   }
 }
 

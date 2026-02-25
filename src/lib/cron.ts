@@ -5,8 +5,8 @@ import { addDays } from "date-fns";
 if (!globalThis.cronStarted) {
   globalThis.cronStarted = true;
 
-  cron.schedule("* * * * *", async () => {
-    // กัน job ซ้อนกัน
+  cron.schedule("20 * * * *", async () => {
+
     console.log("time")
     if (globalThis.cronRunning) return;
 

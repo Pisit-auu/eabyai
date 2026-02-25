@@ -99,7 +99,7 @@ useEffect(() => {
           license: record.license.licensekey,
           expireDate : record.license.expireDate
         });
-        console.log(res.data)
+       // console.log(res.data)
 
         setSelectedStats(res.data);
       } catch (error) {
@@ -445,8 +445,8 @@ useEffect(() => {
                         </div>
 
                         {/* ✨ --- ส่วนสรุปยอด (Summary) ด้านล่างตาราง --- ✨ */}
-                          <div className="flex justify-end  pb-2">
-                          <div className="w-full sm:w-1/2 lg:w-1/3 bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                        <div className="pt-4 pb-2">
+                          <div className="w-full bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
                              <div className="flex justify-between items-center text-sm">
                               <span className="text-slate-500 font-medium">Email</span>
                               <span className={`font-bold`}>
@@ -488,8 +488,8 @@ useEffect(() => {
                         </div>
 
 
-                        <div className="flex justify-end  pb-2">
-                          <div className="w-full sm:w-1/2 lg:w-1/3 bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                        <div className="pt-4 pb-2">
+                          <div className="w-full bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
                             
                             {/* Profit */}
                             <div className="flex justify-between items-center text-sm">

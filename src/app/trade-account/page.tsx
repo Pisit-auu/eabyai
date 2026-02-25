@@ -41,8 +41,8 @@ export default function UserPage() {
 
       setisEditAccountData(account)
       
-      console.log("Setting ID:", account);
-      console.log("Setting ID:", account.id);
+     // console.log("Setting ID:", account);
+     // console.log("Setting ID:", account.id);
       setaccountid(account.platformAccountId)
       setplatformedit(account.PlatformName)
       setInvestoredit(account.InvestorPassword)
@@ -177,7 +177,7 @@ export default function UserPage() {
 
     const handledelete = async (id: String) => {
       const getdata = await axios.get(`/api/tradeaccount/${id}`)
-      console.log(getdata.data[0].connect)
+    //  console.log(getdata.data[0].connect)
       if(getdata.data[0].connect === "true"){
         alert('ไม่สามารถลบได้เนื่องจากยังเชื่อมกับ EA อยู่')
         fetchData();
@@ -190,7 +190,7 @@ export default function UserPage() {
           } catch (error) {
               message.error("เกิดข้อผิดพลาดในการลบ")
           }
-            console.log("Setting ID:", id);
+          //  console.log("Setting ID:", id);
           };
     const handleUpdate = async () => {
         if (!accountid || !platformedit) {

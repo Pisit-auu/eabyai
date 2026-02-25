@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest,NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 /**
  * @swagger
@@ -36,7 +36,7 @@ import prisma from "@/lib/prisma";
  *         description: Server Error
  */
 export async function GET(
-  req: Request,
+  req: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   const { id } = await context.params;
@@ -113,7 +113,7 @@ export async function GET(
  *         description: เกิดข้อผิดพลาดในการอัปเดตข้อมูล
  */
 export async function PUT(
-  req: Request,
+  req: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -181,7 +181,7 @@ export async function PUT(
  *         description: Internal server error
  */
 export async function DELETE(
-  req: Request,
+  req: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   const { id } = await context.params;

@@ -1,4 +1,6 @@
 import prisma from "@/lib/prisma"
+import { NextRequest, NextResponse } from "next/server"
+
 /**
  * @swagger
  * /api/model/{id}:
@@ -50,13 +52,13 @@ export async function GET(request: Request,
     })
 
     if (!model) {
-      return new Response("Model not found", { status: 404 })
+      return new NextResponse("Model not found", { status: 404 })
     }
 
     return Response.json(model)
   } catch (error) {
     console.error(error)
-    return new Response("Error fetching model", { status: 500 })
+    return new NextResponse("Error fetching model", { status: 500 })
   }
 }
 
@@ -131,7 +133,7 @@ export async function GET(request: Request,
  *         description: Update failed
  */
 export async function PUT(
-  request: Request,
+  request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   const { id } = await context.params;
@@ -170,10 +172,10 @@ export async function PUT(
       },
     });
 
-    return Response.json(updated);
+    return NextResponse.json(updated);
   } catch (error) {
     console.error(error);
-    return new Response("Update failed", { status: 500 });
+    return new NextResponse("Update failed", { status: 500 });
   }
 }
 /**
@@ -199,7 +201,7 @@ export async function PUT(
  *         description: Delete failed
  */
 export async function DELETE(
-  request: Request,
+  request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   const { id } = await context.params
@@ -209,9 +211,9 @@ export async function DELETE(
       where: { nameEA: id },
     })
 
-    return new Response("Deleted successfully", { status: 200 })
+    return new NextResponse("Deleted successfully", { status: 200 })
   } catch (error) {
     console.error(error)
-    return new Response("Delete failed", { status: 500 })
+    return new NextResponse("Delete failed", { status: 500 })
   }
 }

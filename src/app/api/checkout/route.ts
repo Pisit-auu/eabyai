@@ -88,15 +88,14 @@ export async function POST(req: Request) {
         },
       ],
       mode: 'payment',
-      // 👉 2. ฝาก billId ไปกับ Stripe ตรงนี้สำคัญมาก!
       metadata: {
-        billId: billId,
-        license: license,
-        email,
-        commission 
-      },
-      success_url: `${req.headers.get('origin')}/Bill`,
-      cancel_url: `${req.headers.get('origin')}/Bill`,
+      billId: String(billId),
+      license: String(license),
+      email: String(email),
+      commission: String(commission)
+    },
+    success_url: "https://ea-by-ai.com/Bill",
+    cancel_url: "https://ea-by-ai.com/Bill",
     });
 
     return NextResponse.json({ url: session.url });

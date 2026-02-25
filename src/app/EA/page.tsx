@@ -204,7 +204,7 @@ export default function EA() {
 
   // --- ON CHANGE (EDIT MODAL) ---
   const clickViewtradeAccount  = (platform: any) => {
-    console.log(platform)
+  //  console.log(platform)
     setIsViewOpen(true);
     setIsDetailLoading(false);
     setisEditTradeAccountData(platform);
