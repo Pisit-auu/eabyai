@@ -58,91 +58,73 @@ export async function GET(
     return NextResponse.json({ error: "Server Error", details: String(error) }, { status: 500 });
   }
 }
-
 /**
  * @swagger
  * /api/bill/{id}:
  *   put:
- *     summary: อัปเดต profit ของ bill ล่าสุดที่ยังไม่หมดอายุ
+ *     summary: อัปเดตสถานะการชำระเงินของ Bill
  *     description: |
- *       ค้นหา bill ล่าสุดจาก licensekey ที่ยังไม่หมดอายุ
- *       แล้วเพิ่มค่า profit ด้วย increment
+ *       ใช้สำหรับอัปเดตค่า isPaid ของ Bill ตาม id
+ *
  *     tags:
  *       - Bill
+ *
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
- *           type: string
- *         description: licensekey
+ *           type: integer
+ *         description: ID ของ Bill
+ *
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - isPaid
  *             properties:
- *               profit:
- *                 type: number
- *                 example: 100
+ *               isPaid:
+ *                 type: boolean
+ *                 example: true
+ *
  *     responses:
  *       200:
- *         description: อัปเดตสำเร็จ
+ *         description: อัปเดต Bill สำเร็จ
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *       400:
- *         description: Missing profit
- *       404:
- *         description: ไม่พบบิล หรือหมดอายุแล้ว
+ *
  *       500:
- *         description: Update failed
+ *         description: อัปเดตไม่สำเร็จ
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Update failed
  */
 export async function PUT(
-  req: NextRequest,
+  req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id: licensekey } = await context.params;
     const body = await req.json();
-    const { profit } = body;
 
-    if (profit === undefined) {
-      return NextResponse.json(
-        { error: "Missing profit" },
-        { status: 400 }
-      );
-    }
-
-    const bill = await prisma.bill.findFirst({
-      where: {
-        licenseId: licensekey,
-        exirelicendate: {
-          gt: new Date(), 
-        },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
-    if (!bill) {
-      return NextResponse.json(
-        { error: "ไม่พบบิล หรือหมดอายุแล้ว" },
-        { status: 404 }
-      );
-    }
+    // ⭐ ต้อง await params
+    const { id } = await context.params;
 
     const updatedBill = await prisma.bill.update({
       where: {
-        id: bill.id,
+        id: Number.parseInt(id, 10),
       },
       data: {
-        profit: {
-          increment: Number(profit),
-        },
+        isPaid: body.isPaid,
       },
     });
 
@@ -150,8 +132,9 @@ export async function PUT(
 
   } catch (error) {
     console.error(error);
+
     return NextResponse.json(
-      { error: "Update failed" },
+      { message: "Update failed" },
       { status: 500 }
     );
   }

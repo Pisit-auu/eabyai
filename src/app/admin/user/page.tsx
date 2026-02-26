@@ -22,7 +22,7 @@ import {
 
 export default function AdminUserManagementPage() {
   // --- STATE ---
-  const [isSidebarOpen, setSidebarOpen] = useState(true)
+  const [isSidebarOpen, setSidebarOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [allUsers, setAllUsers] = useState<any[]>([]) 
 

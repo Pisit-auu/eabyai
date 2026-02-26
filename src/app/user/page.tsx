@@ -19,7 +19,7 @@ import {
 
 export default function UserProfilePage() {
   // --- STATE ---
-  const [isSidebarOpen, setSidebarOpen] = useState(true)
+  const [isSidebarOpen, setSidebarOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isUploading, setIsUploading] = useState<boolean>(false)
@@ -139,11 +139,12 @@ export default function UserProfilePage() {
         {/* Sidebar */}
         <aside className={`bg-[#1E293B] transition-all duration-300 shadow-xl z-20 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
           <div className={`w-64 flex flex-col py-6 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-            <SidebarItem label="Dashboard" href="/home" />
-            <SidebarItem label="User Profile" href="/user" />
-            <SidebarItem label="TradeAccount" href="/trade-account" />
-            <SidebarItem label="Expert Advisor" href="/EA" />
-            <SidebarItem label="Billing" href="/Bill" />
+                 <SidebarItem label="Document " href="/document" />
+                                   <SidebarItem label="Dashboard" href="/dashboard" />
+                                   <SidebarItem label="User Profile" href="/user" />
+                                   <SidebarItem label="Trade Account" href="/trade-account" />
+                                   <SidebarItem label="Expert Advisor" href="/EA" />
+                                   <SidebarItem label="Billing" href="/Bill" />
           </div>
         </aside>
 
@@ -155,7 +156,7 @@ export default function UserProfilePage() {
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
               <h1 className="text-2xl font-bold text-slate-800">My Profile</h1>
               <p className="text-slate-500 text-sm mt-1">
-                จัดการข้อมูลส่วนตัวและการตั้งค่าบัญชีของคุณ
+                จัดการข้อมูลส่วนตัวของคุณ
               </p>
             </div>
 

@@ -9,7 +9,7 @@ import { Table, message, Tag, Card, Button, Modal, Empty, Popconfirm , Spin} fro
 import { EditOutlined,SearchOutlined , DollarOutlined } from '@ant-design/icons';
 
 export default function BillingDashboardPage() {
-  const [isSidebarOpen, setSidebarOpen] = useState(true)
+  const [isSidebarOpen, setSidebarOpen] = useState(false)
   const router = useRouter()
   const { data: session, status } = useSession()
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
@@ -135,7 +135,9 @@ useEffect(() => {
       const unpaidnotExpiredCount = bills.filter(b => !b.isPaid && !b.expire).length;
       
       const totalProfit = bills.reduce(
-        (sum, b) => sum + (b.profit > 0 ? b.profit : 0), 0
+        (sum, b) =>
+          sum + (b.profit >= 3.3 ? b.profit * (b.commission / 100) : 0),
+        0
       );
 
       // 4. เซ็ต State ทั้งหมดพร้อมกัน
@@ -163,17 +165,6 @@ useEffect(() => {
     }
   }, [status, fetchData]);
 
-    // --- ฟังก์ชันลบข้อมูล ---
-    const handleDelete = async (record: any) => {
-      try {
-        // await axios.delete(`/api/bill/${record.id}`)
-        message.success(`ลบบิล ID: ${record.id} สำเร็จ`)
-        fetchData() // รีเฟรชข้อมูลหลังลบ
-      } catch (error) {
-        message.error("ไม่สามารถลบข้อมูลได้")
-      }
-      setIsEditModalOpen(true)
-    }
 
 
 
@@ -261,20 +252,7 @@ useEffect(() => {
             size="small"
             className="border-blue-500 text-blue-500 hover:text-blue-600"
           />
-          <Popconfirm
-            title="ยืนยันการลบ"
-            description={`คุณต้องการลบบิล ID: ${record.id} ใช่หรือไม่?`}
-            onConfirm={() => handleDelete(record)}
-            okText="ใช่"
-            cancelText="ไม่"
-            okButtonProps={{ danger: true }}
-          >
-            {/* <Button 
-              danger 
-              icon={<DeleteOutlined />} 
-              size="small"
-            /> */}
-          </Popconfirm>
+
         </div>
       ),
     }
@@ -347,7 +325,7 @@ useEffect(() => {
                             <p className={`text-[11px] font-bold uppercase tracking-wider mb-1 ${
                               Number(selectedStats?.filtered_profit) >= 0 ? 'text-blue-600' : 'text-red-500'
                             }`}>
-                              ที่ต้องได้รับทั้งหมด
+                              รายได้ที่ได้รับทั้งหมด นับแค่ตั้งแต่ 3.3 USD ขึ้นไป 
                             </p>
                             <p className={`text-2xl font-black leading-none ${
                               Number(totalProfit) >= 0 ? 'text-blue-700' : 'text-red-600'

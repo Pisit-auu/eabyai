@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation"
 import SidebarItem from "@/app/component/sidebar"
 import Navbar from "@/app/component/header"
 import axios from 'axios';
+import { addDays } from "date-fns";
+
 import { Modal,Select, Table, Card, Tag, Button, Empty, Spin } from 'antd';
 import { 
   DollarOutlined  ,
@@ -32,7 +34,7 @@ export default function Bill() {
 
 
   const [filterStatus, setFilterStatus] = useState('UNPAID');
-  const [isSidebarOpen, setSidebarOpen] = useState(true)
+  const [isSidebarOpen, setSidebarOpen] = useState(false)
   const [billall, setbillall] = useState<BillType[]>([])
   
   const [isLoading, setIsLoading] = useState(true);
@@ -125,6 +127,30 @@ const purchecsebill = async (amount: number,billId:number,commission:number) => 
   const data = await response.json();
   if (data.url) {
     window.location.href = data.url; 
+  }
+};
+const purchecsefreebill = async (bill:BillType) => {
+   try {
+    const createdAt = new Date();
+
+    await axios.put(`/api/bill/${bill.id}`, {
+      isPaid: true,
+    });
+
+    await axios.post("/api/bill", {
+      email: bill.email,
+      commission: Number(bill.commission),
+      licensekey: bill.licenseId,
+    });
+
+    await axios.put(`/api/license/uplicense/${bill.license?.licensekey}`, {
+      expire: false,
+      expireDate: addDays(createdAt, 7),
+    });
+    fetchData();
+
+  } catch (error) {
+    console.error("PURCHASE ERROR:", error);
   }
 };
   const handleBill = async (bill: any) => {
@@ -225,11 +251,12 @@ const fetchData = useCallback(async () => {
         {/* Sidebar */}
         <aside className={`bg-[#1E293B] transition-all duration-300 shadow-xl z-20 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
           <div className={`w-64 flex flex-col py-6 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                     <SidebarItem label="Dashboard" href="/home" />
-                     <SidebarItem label="User Profile" href="/user" />
-                     <SidebarItem label="TradeAccount" href="/trade-account" />
-                     <SidebarItem label="Expert Advisor" href="/EA" />
-                     <SidebarItem label="Billing" href="/Bill" />
+                           <SidebarItem label="Document " href="/document" />
+                          <SidebarItem label="Dashboard" href="/dashboard" />
+                          <SidebarItem label="User Profile" href="/user" />
+                          <SidebarItem label="Trade Account" href="/trade-account" />
+                          <SidebarItem label="Expert Advisor" href="/EA" />
+                          <SidebarItem label="Billing" href="/Bill" />
           </div>
         </aside>
 
@@ -307,10 +334,26 @@ const fetchData = useCallback(async () => {
                         isPaid ? 'border-transparent' : 'border-orange-200 bg-orange-50/30'
                       }`}
                       actions={
-                        
-                        // ถ้ายังไม่จ่ายเงิน ให้ปุ่มเด่นๆ หน่อย
-                        !isPaid 
-                          ? [
+                        !isPaid && bill?.profit < 3.3 ? [
+                              <button
+                                key="pay" 
+                                className="text-orange-600 font-bold hover:text-orange-700 w-full py-1 flex items-center justify-center gap-2"
+                                onClick={() => purchecsefreebill(bill)}
+                                style={{
+                                color: "#38ac3e",       // orange-600
+                                  fontWeight: "bold",
+                                  width: "100%",
+                                  padding: "4px 0",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  gap: "8px"
+                                }}
+                                                          >
+                            <DollarOutlined className="text-lg" /> เนื่องจากได้กำไรไม่ถึง  3.3 คลิกปุ่มนี้เพื่อต่อ license
+                          </button>
+                            ]
+                          : !isPaid ? [
                               <button
                                 key="pay" 
                                 className="text-orange-600 font-bold hover:text-orange-700 w-full py-1 flex items-center justify-center gap-2"

@@ -280,7 +280,7 @@ export default function EA() {
   ];
 
   // --- RENDER ---
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="h-screen bg-[#F1F5F9] flex flex-col font-sans text-slate-800 overflow-hidden">
@@ -295,11 +295,12 @@ export default function EA() {
       <div className="flex flex-1 overflow-hidden">
         <aside className={`bg-[#1E293B] transition-all duration-300 shadow-xl z-20 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
           <div className={`w-64 flex flex-col py-6 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                      <SidebarItem label="Dashboard" href="/home" />
-                      <SidebarItem label="User Profile" href="/user" />
-                      <SidebarItem label="TradeAccount" href="/trade-account" />
-                      <SidebarItem label="Expert Advisor" href="/EA" />
-                      <SidebarItem label="Billing" href="/Bill" />
+                         <SidebarItem label="Document " href="/document" />
+                                           <SidebarItem label="Dashboard" href="/dashboard" />
+                                           <SidebarItem label="User Profile" href="/user" />
+                                           <SidebarItem label="Trade Account" href="/trade-account" />
+                                           <SidebarItem label="Expert Advisor" href="/EA" />
+                                           <SidebarItem label="Billing" href="/Bill" />
           </div>
         </aside>
 
@@ -617,7 +618,7 @@ export default function EA() {
                         description={
                           <div className="mt-2 space-y-1">
                             <div className="flex items-center gap-2 text-slate-600 font-bold">
-                              <span className="text-blue-600 break-all text-xs">Key: {license.licensekey}</span>
+                              <span className="text-blue-600 break-all text-xs">license Key: {license.licensekey}</span>
                             </div>
                             <div className="flex items-center gap-2 text-slate-500 text-xs">
                               <DesktopOutlined />

@@ -9,7 +9,7 @@ import { Table, message, Tag, Radio, Card, Button, Modal, Input, Popconfirm } fr
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 export default function SetupPage() {
-  const [isSidebarOpen, setSidebarOpen] = useState(true)
+  const [isSidebarOpen, setSidebarOpen] = useState(false)
   const router = useRouter()
   const { data: session, status } = useSession()
 

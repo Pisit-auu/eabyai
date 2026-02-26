@@ -144,6 +144,7 @@ export async function POST(req: Request) {
          message: `Invalid Platform. This key is for ${license.model.PlatformName} only.`
        });
     }
+    
     const user = await prisma.tradeAccount.findUnique({
       where: { platformAccountId: license.platformAccountId },
     });
@@ -159,58 +160,59 @@ export async function POST(req: Request) {
         expireDate: license.expireDate 
       });
     }
-    try {
-        console.log("📤 Sending to CheckMT5:", {
-        id: license.platformAccountId,
-        pass: license.tradeAccount?.InvestorPassword,
-        server: server
-        });
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/checkmt5`, {
-        method: "POST",
-        body: JSON.stringify({
-          platformAccountId: license.platformAccountId, 
-          InvestorPassword: license.tradeAccount.InvestorPassword,
-          server: server,
-        }),
-      });
+
+        try {
+            console.log("📤 Sending to CheckMT5:", {
+            id: license.platformAccountId,
+            pass: license.tradeAccount?.InvestorPassword,
+            server: server
+            });
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/checkmt5`, {
+            method: "POST",
+            body: JSON.stringify({
+              platformAccountId: license.platformAccountId, 
+              InvestorPassword: license.tradeAccount.InvestorPassword,
+              server: server,
+            }),
+          });
       
-      if (!response.ok) {
-    return NextResponse.json({
-      status: "FAIL",
-      message: "MT5 API error"
-    });
-  }
-      const result = await response.json();
-      if (result.status !== "success") {
+          if (!response.ok) {
+            return NextResponse.json({
+              status: "FAIL",
+              message: "MT5 API error"
+            });
+          }
+          const result = await response.json();
+          if (result.status !== "success") {
+              return NextResponse.json({
+                status: "FAIL",
+                message: "MT5 login failed"
+              });
+            }
+          
+    
+            console.log(`สำเร็จ! ยินดีต้อนรับคุณ ${result.name} ยอดคงเหลือ: ${result.balance} ${result}`);
+              await axios.put(
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/tradeaccount/${license.platformAccountId}`,
+                    {
+                        Server: server,
+                        connect: "true",
+                        fullname: result.name,
+                        Leverage: result.leverage
+                    }
+              )
+                console.log("✅ License Verified for:", accountId);
+      
+
+
+        } catch (error) {
+          console.error("Error:", error);
+
           return NextResponse.json({
             status: "FAIL",
-            message: "MT5 login failed"
+            message: "CheckMT5 unreachable"
           });
         }
-      
- 
-        console.log(`สำเร็จ! ยินดีต้อนรับคุณ ${result.name} ยอดคงเหลือ: ${result.balance} ${result}`);
-           await axios.put(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/tradeaccount/${license.platformAccountId}`,
-                {
-                    Server: server,
-                    connect: "true",
-                    fullname: result.name,
-                    Leverage: result.leverage
-                }
-          )
-            console.log("✅ License Verified for:", accountId);
-  
-
-
-    } catch (error) {
-      console.error("Error:", error);
-
-      return NextResponse.json({
-        status: "FAIL",
-        message: "CheckMT5 unreachable"
-      });
-    }
 
 
     

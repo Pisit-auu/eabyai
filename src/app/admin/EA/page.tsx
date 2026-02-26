@@ -119,7 +119,7 @@ export default function Billpage() {
   }
 };
  const [editingRecord, setEditingRecord] = useState<ModelType | null>(null);
-  const [isSidebarOpen, setSidebarOpen] = useState(true) // ควบคุม Sidebar
+  const [isSidebarOpen, setSidebarOpen] = useState(false) // ควบคุม Sidebar
   const [linkEA , setLinkEA ] = useState<LinkdownloadType[]>([])
   const [Model, setModel] = useState<ModelType[]>([])
   const router = useRouter()
