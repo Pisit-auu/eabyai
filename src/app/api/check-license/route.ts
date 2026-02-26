@@ -165,7 +165,7 @@ export async function POST(req: Request) {
         pass: license.tradeAccount?.InvestorPassword,
         server: server
         });
-      const response = await fetch("http://localhost/api/checkmt5", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/checkmt5`, {
         method: "POST",
         body: JSON.stringify({
           platformAccountId: license.platformAccountId, 
@@ -191,7 +191,7 @@ export async function POST(req: Request) {
  
         console.log(`สำเร็จ! ยินดีต้อนรับคุณ ${result.name} ยอดคงเหลือ: ${result.balance} ${result}`);
            await axios.put(
-                `http://localhost/api/tradeaccount/${license.platformAccountId}`,
+                `${process.env.NEXT_PUBLIC_API_URL}/api/tradeaccount/${license.platformAccountId}`,
                 {
                     Server: server,
                     connect: "true",
