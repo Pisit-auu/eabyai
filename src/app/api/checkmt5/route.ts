@@ -81,12 +81,17 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { platformAccountId, InvestorPassword, server } = body; // รับ server มาจาก body
+    const { platformAccountId, InvestorPassword, server } = body;
 
-    if (!platformAccountId || !InvestorPassword || !server ) {
-      return NextResponse.json({ error: "Missing credentials" }, { status: 400 });
+    if (!platformAccountId || !InvestorPassword || !server) {
+      return NextResponse.json(
+        { error: "Missing credentials" },
+        { status: 400 }
+      );
     }
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000); // 10 วิ
 
     const res = await fetch("http://127.0.0.1:8000/check-account", {
       method: "POST",
@@ -96,20 +101,23 @@ export async function POST(request: Request) {
         investorPassword: InvestorPassword,
         server: server,
       }),
+      signal: controller.signal,
     });
 
+    clearTimeout(timeout);
+
     const data = await res.json();
-    
+
     if (!res.ok) {
-        return NextResponse.json(data, { status: res.status });
+      return NextResponse.json(data, { status: res.status });
     }
 
     return NextResponse.json(data);
 
   } catch (error: any) {
     return NextResponse.json(
-      { error: "Python Server Unreachable", details: error.message },
-      { status: 500 }
+      { error: "Python Server Timeout or Unreachable" },
+      { status: 504 }
     );
   }
 }

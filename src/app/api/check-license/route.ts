@@ -144,7 +144,21 @@ export async function POST(req: Request) {
          message: `Invalid Platform. This key is for ${license.model.PlatformName} only.`
        });
     }
+    const user = await prisma.tradeAccount.findUnique({
+      where: { platformAccountId: license.platformAccountId },
+    });
+    
 
+    if (
+      user?.connect === "true" &&
+      user.Server === server
+      ){
+      return NextResponse.json({ 
+        status: "PASS", 
+        message: "License Valid",
+        expireDate: license.expireDate 
+      });
+    }
     try {
         console.log("📤 Sending to CheckMT5:", {
         id: license.platformAccountId,
@@ -160,10 +174,21 @@ export async function POST(req: Request) {
         }),
       });
       
+      if (!response.ok) {
+    return NextResponse.json({
+      status: "FAIL",
+      message: "MT5 API error"
+    });
+  }
       const result = await response.json();
-    //   console.log("Result:", result);
+      if (result.status !== "success") {
+          return NextResponse.json({
+            status: "FAIL",
+            message: "MT5 login failed"
+          });
+        }
       
-      if (result.status === "success") {
+ 
         console.log(`สำเร็จ! ยินดีต้อนรับคุณ ${result.name} ยอดคงเหลือ: ${result.balance} ${result}`);
            await axios.put(
                 `http://localhost/api/tradeaccount/${license.platformAccountId}`,
@@ -173,15 +198,19 @@ export async function POST(req: Request) {
                     fullname: result.name,
                     Leverage: result.leverage
                 }
-)
+          )
             console.log("✅ License Verified for:", accountId);
-      } else {
-        console.log("ล้มเหลว: " + result.message);
-        
-      }
+  
+
+
     } catch (error) {
       console.error("Error:", error);
-    } 
+
+      return NextResponse.json({
+        status: "FAIL",
+        message: "CheckMT5 unreachable"
+      });
+    }
 
 
     
