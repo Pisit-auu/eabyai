@@ -254,7 +254,7 @@ export default function SignInPage() {
 
                             {[
                               ["Timeframe","H1 (1 ชั่วโมง)"],
-                              ["Platform","MT4 / MT5"],
+                              ["Platform","MT5"],
                               ["Backtest Winrate","100%"],
                               ["Forward Test","100%"],
                               ["Max Drawdown","< 5.0%"],
@@ -297,7 +297,7 @@ export default function SignInPage() {
 
                             {[
                               ["Timeframe","H1 (1 ชั่วโมง)"],
-                              ["Platform","MT4 / MT5"],
+                              ["Platform","MT5"],
                               ["Backtest Winrate","100%"],
                               ["Forward Test","100%"],
                               ["Max Drawdown","< 3.5%"],
