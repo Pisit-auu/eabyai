@@ -223,7 +223,7 @@ const handleEdit = async () => {
         setnameMaxcreate(maxCreate.nameEA);
         setMaxcreate(maxCreate.downloadCount);
       } else {
-        setnameMaxcreate("-"); // ถ้าไม่มีข้อมูลโมเดลเลย ให้แสดงค่าเริ่มต้น
+        setnameMaxcreate("ยังไม่มี"); // ถ้าไม่มีข้อมูลโมเดลเลย ให้แสดงค่าเริ่มต้น
         setMaxcreate(0);
       }
 
@@ -324,6 +324,7 @@ const handleEdit = async () => {
       setselectTimeframe(null)
       setselectPlatform(null)
       setCommission(0.1)
+      setAddnewModelOpen(false)
       fetchAllData();
   
     }

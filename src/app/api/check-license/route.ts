@@ -10,8 +10,8 @@ import axios from "axios";
  *       API นี้ใช้สำหรับให้ EA หรือ MT5 ยิงเข้ามาเพื่อตรวจสอบว่า
  *       License สามารถใช้งานได้หรือไม่ โดยตรวจสอบ:
  *       - มี license ในระบบหรือไม่
- *       - active / banned
- *       - expire date
+ *       - active / not actie
+ *       - expire ?
  *       - account id
  *       - symbol
  *       - timeframe
@@ -102,12 +102,12 @@ export async function POST(req: Request) {
 
     // --- ⛔ ด่านที่ 2: License โดนสั่งปิด (Banned) หรือไม่? ---
     if (!license.active) {
-      return NextResponse.json({ status: "FAIL", message: "License is Inactive/Banned" });
+      return NextResponse.json({ status: "FAIL", message: "License is not active" });
     }
 
     // --- ⛔ ด่านที่ 3: หมดอายุหรือยัง? ---
     // เช็คว่ามีวันหมดอายุไหม และ วันปัจจุบันเลยกำหนดหรือยัง
-    if (license.expireDate && new Date() > new Date(license.expireDate)) {
+    if (license.expireDate && license.expire ) {
       return NextResponse.json({ status: "FAIL", message: "License Expired" });
     }
 
@@ -150,8 +150,7 @@ export async function POST(req: Request) {
     });
     
 
-    if (
-      user?.connect === "true" &&
+    if ( user?.connect === "true" &&
       user.Server === server
       ){
       return NextResponse.json({ 
@@ -199,6 +198,12 @@ export async function POST(req: Request) {
                         connect: "true",
                         fullname: result.name,
                         Leverage: result.leverage
+                    }
+              )
+               await axios.put(
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/license/uplicense/${license.licensekey}`,
+                    {
+                        status: true,
                     }
               )
                 console.log("✅ License Verified for:", accountId);

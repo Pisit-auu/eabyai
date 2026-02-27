@@ -62,7 +62,7 @@ export default function UserPage() {
                     key="delete"
                     title="ลบบัญชีเทรด"
                     description="คุณแน่ใจหรือไม่ว่าต้องการลบบัญชีนี้?"
-                    onConfirm={() => handledelete(account.platformAccountId)}
+                    onConfirm={() => handledelete(account)}
                     okText="ลบ"
                     cancelText="ยกเลิก"
                   >
@@ -175,17 +175,26 @@ export default function UserPage() {
     }
   };
 
-    const handledelete = async (id: String) => {
-      const getdata = await axios.get(`/api/tradeaccount/${id}`)
-    //  console.log(getdata.data[0].connect)
-      if(getdata.data[0].connect === "true"){
-        alert('ไม่สามารถลบได้เนื่องจากยังเชื่อมกับ EA อยู่')
+    const handledelete = async (account: TradeAccount) => {
+      
+      const getdata = await axios.get<LicenseKeyType[]>(`/api/license/${account.email}`)
+      const stilllicense = getdata.data.find(
+        u => u.platformAccountId === account.platformAccountId
+        );      
+     
+      if(account.connect === "true"){
+        alert('ไม่สามารถลบได้เนื่องจากเคยเชื่อมกับ EA ไปแล้ว')
+        fetchData();
+        return
+      }
+      if( stilllicense  ){
+        alert('ไม่สามารถลบได้เนื่องจากยังเชื่อมกับ โปรดลบ License ที่ผูกกับ Account นี้ ที่หน้า Expert Advisor')
         fetchData();
         return
       }
             try {
-              await axios.delete(`/api/tradeaccount/${id}`)
-              message.success(`ลบ ${id} สำเร็จ` )
+              await axios.delete(`/api/tradeaccount/${account.platformAccountId}`)
+              message.success(`ลบ ${account.platformAccountId} สำเร็จ` )
               fetchData();
           } catch (error) {
               message.error("เกิดข้อผิดพลาดในการลบ")

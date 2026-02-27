@@ -614,7 +614,9 @@ export default function SignInPage() {
     <div className="pt-4 pb-2 text-center">
       <div className="w-full bg-green-50 p-4 rounded-xl border border-green-100">
         <p className="text-green-700 font-bold text-sm"> ติดตั้งเสร็จสิ้น! ระบบ EA พร้อมทำงาน</p>
-        
+        <p className="text-slate-400 text-sm max-w-md mx-auto">
+                  * EA จะหยุดทำงานก็ต่อเมื่อผู้ใช้ปิดโปรแกรม MT5 หรือ License key หมดอายุ
+              </p>
       </div>
     </div>
 

@@ -115,8 +115,8 @@ export default function EA() {
 
   // --- HANDLERS ---
   const handledelete = async (license: LicenseKeyType) => {
-     if(license?.tradeAccount?.connect === "true"){
-          alert("License ตัวนี้ได้เชื่อมกับ TradeAccount แล้ว ไม่สามารถ update ได้")
+     if(license?.status){
+          alert("License ตัวนี้ได้ถูกใส่ หรือ เคยใส่ไปใน EA แล้ว ไม่สามารถลบ ได้")
           return
       }
         const licenseExpire = license.expireDate;
@@ -124,11 +124,10 @@ export default function EA() {
         if (!bill.exirelicendate || !licenseExpire) return false;
 
         return (
-          new Date(bill.exirelicendate).getTime() ===
-          new Date(licenseExpire).getTime()
+          new Date(bill.exirelicendate).getTime() === new Date(licenseExpire).getTime()
         );
       });
-    // หมดอายุ มีบิลที่ยังไม่ได้ชำระ  ไม่ให้ลบ
+      
         if(license.expire && !matchedBill?.isPaid){
           alert("ไม่สามารถลบได้ กรุณาชำระเงิน")
           return
@@ -601,7 +600,7 @@ export default function EA() {
                             size={48}
                             style={{
                               backgroundColor:
-                              license.tradeAccount?.connect === "true"
+                              license?.status 
                                 ? '#52c41a'
                                 : '#ff4d4f',
                               border: '2px solid white',

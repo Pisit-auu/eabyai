@@ -243,8 +243,12 @@ const DocumentationPage = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
                 </svg>
               </div>
+              
               <Link  href={'/dashboard'}  >
                      <h3 className="text-2xl font-bold mb-2">ติดตั้งเสร็จสิ้น EA พร้อมทำงาน</h3>
+                     <p className="text-slate-400 text-sm max-w-md mx-auto">
+                   * EA จะหยุดทำงานก็ต่อเมื่อผู้ใช้ปิดโปรแกรม MT5 หรือ License key หมดอายุ
+              </p>
                 </Link>
               
             </section>

@@ -85,6 +85,13 @@ export default function Dashborad() {
     setIsDetailLoading(true);
     setIsDetailsOpen(true);
     SetSymbolOpen(platform.model.nameSymbol)
+    console.log(platform.status)
+    if(!platform.status){
+      alert("ไม่สามารถดูได้เนื่องจาก License นี้ยังไม่ถูกใช้งาน")
+          setIsDetailLoading(false);
+          setIsDetailsOpen(false);
+      return
+    }
     try {
       // ดึงข้อมูล ID/Pass/Server จาก TraderAccount ที่มีอยู่ใน State (traderAccountAll)
       const accData = traderAccountAll.find(a => a.platformAccountId === platform.platformAccountId);
@@ -168,7 +175,6 @@ export default function Dashborad() {
         axios.get(`/api/license/${session.user.email}`)
       ]);
 
-      // 1. ดึงข้อมูล JSON ที่ได้จาก API
       const userData = getTraderAccount.data;
       const response = await axios.get(`/api/user/${session.user.email}`);
       const user = response.data;
@@ -319,7 +325,7 @@ export default function Dashborad() {
                             size={48}
                             style={{
                               backgroundColor:
-                              license.tradeAccount?.connect === "true"
+                              license?.status  
                                 ? '#52c41a'
                                 : '#ff4d4f',
                               border: '2px solid white',

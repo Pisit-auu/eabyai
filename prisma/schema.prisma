@@ -81,7 +81,7 @@ model LicenseKey {
   expireDate        DateTime?
   tradeAccount      TradeAccount @relation(fields: [platformAccountId], references: [platformAccountId])
   platformAccountId String
-  status            Boolean  @default(true)
+  status            Boolean  @default(false)
   deletedAt         DateTime?    
   cancelReason      String?    
   bills       Bill[] 
