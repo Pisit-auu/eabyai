@@ -56,20 +56,20 @@ export default function Dashborad() {
     dataIndex: 'volume',
     key: 'volume',
     align: 'right' as const, 
-    render: (vol: any) => <span className="font-mono">{vol.toFixed(2)}</span>,
+    render: (vol: any) => <span className="font-mono">{Number(vol ?? 0).toFixed(2)}</span>,
   },
   {
     title: 'Price',
     dataIndex: 'price',
     key: 'price',
     align: 'right'as const,
-    render: (price:any) => <span className="font-mono text-slate-700">{price.toFixed(5)}</span>,
+    render: (price:any) => <span className="font-mono text-slate-700">{Number(price ?? 0).toFixed(5)}</span>,
   },{
     title: 'Profit',
     dataIndex: 'profit',
     key: 'profit',
     align: 'right'as const,
-    render: (profit:any) => <span className="font-mono text-slate-700">{profit.toFixed(5)}</span>,
+    render: (profit:any) => <span className="font-mono text-slate-700">{Number(profit ?? 0).toFixed(5)}</span>,
   }
 ];
   // เพิ่ม State ใน Dashboard component
@@ -387,22 +387,24 @@ export default function Dashborad() {
                     width={650} // ขยายความกว้างอีกนิดเพื่อให้แถว 3 อันดูไม่อึดอัด
                     centered
                   >
-                    {isDetailLoading ? (
-                      <div className="py-20 text-center"><Spin size="large" /></div>
-                    ) : selectedStats ? (
+                    {isDetailLoading || !selectedStats ? (
+                      <div className="py-20 text-center">
+                        <Spin size="large" />
+                      </div>
+                    ) : (
                       <div className="space-y-4">
                         {/* แถวที่ 1: 3 คอลัมน์ (Highlight ตัวเลขให้เด่น) */}
                         <div className="flex gap-4">
                           <div className="flex-1 p-4 bg-gradient-to-b from-blue-50/50 to-white border border-blue-100 rounded-2xl shadow-sm">
                             <p className="text-blue-500 text-[11px] font-bold uppercase tracking-wider mb-1">Balance</p>
                             <p className="text-2xl font-black text-blue-700 leading-none">
-                              ${selectedStats.balance.toLocaleString()}
+                              ${Number(selectedStats?.balance ?? 0).toLocaleString()}
                             </p>
                           </div>
                           <div className="flex-1 p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
                             <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider mb-1">Equity</p>
                             <p className="text-2xl font-black text-slate-800 leading-none">
-                              ${selectedStats.equity.toLocaleString()}
+                              ${Number(selectedStats?.equity ?? 0).toLocaleString()}
                             </p>
                           </div>
 
@@ -469,7 +471,7 @@ export default function Dashborad() {
                           </div>
                         </div>
                       </div>
-                    ) : <Empty />}
+                    ) }
                   </Modal>
                   <Modal
                     title={
