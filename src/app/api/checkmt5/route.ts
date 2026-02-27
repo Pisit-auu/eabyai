@@ -91,7 +91,7 @@ export async function POST(request: Request) {
     }
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000); // 10 วิ
+    const timeout = setTimeout(() => controller.abort(), 60000); 
 
     const res = await fetch("http://127.0.0.1:8000/check-account", {
       method: "POST",

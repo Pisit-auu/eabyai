@@ -25,6 +25,7 @@
     "next-auth": "^4.24.13",
     "next-swagger-doc": "^0.4.1",
     "node-cron": "^4.2.1",
+    "nodemailer": "^7.0.13",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "resend": "^6.9.1",
@@ -44,5 +45,8 @@
     "prisma": "^7.3.0",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "effect": "3.18.4"
   }
 }

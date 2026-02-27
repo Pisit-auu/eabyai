@@ -151,7 +151,7 @@ export async function POST(req: Request) {
     
 
     if ( user?.connect === "true" &&
-      user.Server === server
+      user.Server === server && license.status
       ){
       return NextResponse.json({ 
         status: "PASS", 
@@ -182,6 +182,8 @@ export async function POST(req: Request) {
             });
           }
           const result = await response.json();
+          console.log("Full Result from Python:", result);
+          
           if (result.status !== "success") {
               return NextResponse.json({
                 status: "FAIL",
