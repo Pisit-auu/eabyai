@@ -111,23 +111,37 @@ export const authOptions: AuthOptions = {
     error: '/', 
   },
   callbacks: {
-    async jwt({ token, user }) {
-      // ทำงานเมื่อ User sign in ครั้งแรก หรือเมื่อ JWT ถูก update
-      if (user) {
-        token.id = user.id
-        token.role = user.role || "user"
-      }
-      return token
-    },
-    async session({ session, token }) {
-      // ส่งข้อมูลจาก Token ไปยัง Session (เพื่อให้ client เรียกใช้ได้)
-      if (session.user) {
-        session.user.id = token.id as string
-        session.user.role = token.role as string
-      }
-      return session
-    },
+  async signIn({ user }) {
+    if (!user.email) return false
+
+    // ใช้ user เดิมเสมอถ้า email ซ้ำ
+    const existingUser = await prisma.user.findUnique({
+      where: { email: user.email },
+    })
+
+    if (existingUser) {
+      user.id = existingUser.id
+    }
+
+    return true
   },
+
+  async jwt({ token, user }) {
+    if (user) {
+      token.id = user.id
+      token.role = user.role || "user"
+    }
+    return token
+  },
+
+  async session({ session, token }) {
+    if (session.user) {
+      session.user.id = token.id as string
+      session.user.role = token.role as string
+    }
+    return session
+  },
+}
 }
 
 const handler = NextAuth(authOptions)
