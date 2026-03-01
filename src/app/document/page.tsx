@@ -65,6 +65,9 @@ const DocumentationPage = () => {
         {/* SCROLLABLE CONTENT */}
         <main className="flex-1 overflow-y-auto pb-20 custom-scrollbar">
           <div className="max-w-4xl mx-auto px-6 py-10 space-y-8">
+           <div className="bg-amber-50 border-l-4 border-amber-400 p-3 text-xs text-amber-800">
+            <strong>หมายเหตุ: </strong>ผู้ใช้ควรมีงบประมาณ 100 USD
+          </div>
             
             {/* --- ส่วนคำอธิบาย Model --- */}
             <section className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-2xl border border-blue-100 shadow-sm">
@@ -82,7 +85,7 @@ const DocumentationPage = () => {
               <div className="w-1.5 h-5 bg-blue-500 rounded-full group-hover:scale-110 transition" />
                 <p className="text-slate-500 text-sm italic">click เพื่อดูขั้นตอนการใช้งานแบบวิดีโอ บน Youtube ของเรา</p>
             </Link>
-          
+
 
             {/* --- Step 1 --- */}
             <div className="space-y-6">
