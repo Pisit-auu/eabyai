@@ -111,21 +111,6 @@ export const authOptions: AuthOptions = {
     error: '/', 
   },
   callbacks: {
-  async signIn({ user }) {
-    if (!user.email) return false
-
-    // ใช้ user เดิมเสมอถ้า email ซ้ำ
-    const existingUser = await prisma.user.findUnique({
-      where: { email: user.email },
-    })
-
-    if (existingUser) {
-      user.id = existingUser.id
-    }
-
-    return true
-  },
-
   async jwt({ token, user }) {
     if (user) {
       token.id = user.id
