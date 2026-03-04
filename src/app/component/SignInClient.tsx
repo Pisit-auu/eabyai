@@ -2,833 +2,449 @@
 
 import { signIn, useSession } from "next-auth/react"
 import { useState, useEffect } from "react"
-import { useRouter, useSearchParams } from "next/navigation" // <--- 1. เพิ่ม useSearchParams
+import { useRouter, useSearchParams } from "next/navigation"
 import React from 'react'
-import { Modal, Button, Empty, Spin } from 'antd';
+import { Modal, Spin } from 'antd';
 
 export default function SignInPage() {
   const [email, setEmail] = useState("")
   const [otp, setOtp] = useState("")
   const [loading, setLoading] = useState(false)
-  const [isVerifying, setIsVerifying] = useState(false) 
+  const [isVerifying, setIsVerifying] = useState(false)
+  const [loginOpen, setLoginOpen] = useState(false)
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const openPreview = (src: string) => {
+     setPreviewImage(src);
+    };
+  
   const router = useRouter()
   const { data: session, status } = useSession()
   const searchParams = useSearchParams()
+
   useEffect(() => {
-    // 1. ดึงทั้ง error และ email จาก URL (ถ้ามี)
     const errorParam = searchParams.get("error")
-    console.log(errorParam)
     if (errorParam) {
       let errorMessage = "เกิดข้อผิดพลาดในการเข้าสู่ระบบ"
-      
-      if (errorParam === "Verification") {
-        errorMessage = "รหัสยืนยันไม่ถูกต้อง หรือลิงก์หมดอายุแล้ว"
-      } else if (errorParam === "OAuthAccountNotLinked") {
-        errorMessage = "อีเมลนี้ถูกลงทะเบียนด้วยวิธีอื่นแล้ว (เช่น Google)"
-      } else if (errorParam === "Callback") {
-        errorMessage = "เกิดข้อผิดพลาดในการยืนยันตัวตน"
-      }
-      
+      if (errorParam === "Verification") errorMessage = "รหัสยืนยันไม่ถูกต้อง หรือลิงก์หมดอายุแล้ว"
+      else if (errorParam === "OAuthAccountNotLinked") errorMessage = "อีเมลนี้ถูกลงทะเบียนด้วยวิธีอื่นแล้ว"
       alert(errorMessage)
     }
-    // 4. เอา email ออกจาก dependency array เพื่อป้องกัน loop
-  }, [searchParams, router])
-  // ------------------------------------------------
+  }, [searchParams])
 
   useEffect(() => {
-    if (status === 'authenticated') {
-      router.push('/')
-    }
+    if (status === 'authenticated') router.push('/')
   }, [status, router])
 
-  // ฟังก์ชันส่ง OTP (หน้าแรก)
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-
-    const result = await signIn("email", { 
-      email, 
-      redirect: false,
-      
-    })
-
+    const result = await signIn("email", { email, redirect: false })
     setLoading(false)
-    if (result?.error) {
-      alert("เกิดข้อผิดพลาด: " + result.error)
-    } else {
-      setIsVerifying(true) 
+    if (result?.error) alert("เกิดข้อผิดพลาด: " + result.error)
+    else {
+      setLoginOpen(false)
+      setIsVerifying(true)
     }
   }
 
-  // ฟังก์ชันยืนยัน OTP (ใน Popup)
   const handleVerify = (e: React.FormEvent) => {
     e.preventDefault()
-    if (otp.length !== 6) {
-      alert("กรอกรหัสให้ครบ 6 หลัก")
-      return
-    }
-
+    if (otp.length !== 6) return alert("กรอกรหัสให้ครบ 6 หลัก")
     const destination = '/document'
-    const verifyUrl = `/api/auth/callback/email?email=${encodeURIComponent(email)}&token=${otp}&callbackUrl=${encodeURIComponent(destination)}`
-    
-    window.location.href = verifyUrl
+    window.location.href = `/api/auth/callback/email?email=${encodeURIComponent(email)}&token=${otp}&callbackUrl=${encodeURIComponent(destination)}`
   }
-  const handleGoogleLogin = () => {
-    signIn('google', { callbackUrl: '/user' })
-  }
-
-  const [modeldetailopen, setmodeldetailopen] = useState(false)
-  const [ Documentopen , setDocumentopen] = useState(false)
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const openPreview = (src: string) => {
-  setPreviewImage(src);
-};
-
-
-
-
-  if (status === "loading") return null // หรือใส่ Spinner เล็กๆ
+  
+  if (status === "loading") return null
 
   return (
-    <main className="min-h-screen bg-white flex flex-col font-sans text-[#1E293B] relative">
-      {/* Navbar */}
-      <nav className="bg-[#1E293B] py-5 px-8 shadow-lg z-10">
-        <div className="max-w-7xl mx-auto">
-          <span className="text-3xl font-black text-white tracking-tighter">EA</span>
+    <main className="min-h-screen bg-white flex flex-col font-sans text-[#1E293B]">
+      
+      {/* 1. NAVBAR - Dark Theme */}
+      <nav className="sticky top-0 bg-[#1E293B] py-5 px-8 shadow-xl z-50 mb-24">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <span className="text-3xl font-black text-white tracking-tight">
+            EA<span className="text-blue-400">.AI</span>
+          </span>
+          <button
+            onClick={() => setLoginOpen(true)}
+            className="px-6 py-2 rounded-xl  text-white font-bold transition-all "
+          >
+            Log In
+          </button>
         </div>
       </nav>
 
-      {/* Hero Content */}
-      <div className="flex-1 flex items-center justify-center p-6 md:p-12 relative">
-        <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          
-          {/* Left: Sign In Form */}
-          <div className="max-w-md w-full mx-auto lg:mx-0">
-            
-            <header className="mb-10">
-              <h1 className="text-4xl font-extrabold mb-3 tracking-tight">
-                Expert Adviser <span className="text-blue-600 italic">by Ai</span>
-              </h1>
-                
-            </header>
-            
-            <form onSubmit={handleLogin} className="space-y-4">
-              <input 
-                type="email" 
-                placeholder="ระบุ email ของคุณ เพื่อ Login ด้วย otp" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required 
-                className="w-full px-5 py-4 rounded-xl border-2 border-slate-200 focus:border-blue-600 outline-none text-lg transition-all"
-              />
-              <button 
-                type="submit" 
-                disabled={loading}
-                className="w-full py-4 rounded-xl font-bold text-lg bg-[#1E293B] text-white hover:bg-slate-800 shadow-lg active:scale-95 transition-all disabled:bg-slate-300"
-              >
-                {loading ? "กำลังส่ง..." : "รับรหัส OTP"}
-              </button>
-            </form>
-
-            <div className="flex items-center gap-4 py-8">
-                <div className="h-[1px] bg-slate-200 flex-1"></div>
-                <span className="text-xs font-bold text-slate-400 uppercase">or</span>
-                <div className="h-[1px] bg-slate-200 flex-1"></div>
-            </div>
-
-            <button 
-                onClick={handleGoogleLogin} 
-                className="w-full flex items-center justify-center gap-3 py-4 px-6 rounded-xl border-2 border-slate-200 bg-white text-slate-700 font-bold hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all active:scale-95 shadow-sm"
-              >
-                <svg width="20" height="20" viewBox="0 0 48 48">
-                  <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                  <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                  <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.97-6.19z"/>
-                  <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                </svg>
-                Continue with Google
-              </button>
+      {/* 2. HERO SECTION - Light Theme (White) */}
+      <section className="relative overflow-hidden bg-white py-20 md:py-32 mb-24">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="z-10 text-center lg:text-left">
+            <h1 className="text-6xl md:text-7xl font-black mb-6 tracking-tight leading-[1.1]">
+              AI Trading<br />
+              <span className="text-blue-600">Expert Advisor</span>
+            </h1>
+            <p className="text-slate-500 text-xl mb-10 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+              ยกระดับพอร์ตของคุณด้วยระบบ <span className="text-[#1E293B] font-bold">AI วิเคราะห์กราฟอัจฉริยะ</span> ที่ทำงานแทนคุณตลอด 24 ชั่วโมง
+            </p>
+            <button
+              onClick={() => setLoginOpen(true)}
+              className="py-4 px-12 rounded-2xl font-black text-xl bg-[#1E293B] text-white hover:bg-slate-800 hover:-translate-y-1 transition-all shadow-2xl shadow-slate-300"
+            >
+             Get Start
+            </button>
           </div>
-
-          {/* Right: Preview Image */}
-          <div className="w-full flex flex-col gap-6 pb-6 lg:pb-0">
-            
-            {/* Video Container */}
-            <div className="rounded-[2.5rem] overflow-hidden shadow-2xl 
-                aspect-video relative border border-slate-200">
-                                <div className="absolute inset-0 bg-slate-900/10 z-10 pointer-events-none"></div>
-
+          <div className="relative group">
+            <div className="absolute -inset-4 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-[3rem] blur-2xl opacity-10 group-hover:opacity-20 transition-opacity"></div>
+            <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-[#1E293B]/5 aspect-video">
               <iframe 
-                className="w-full h-full z-0 border-0" 
-                src="https://www.youtube.com/embed/xeLtkYELNwI?autoplay=1&mute=1&loop=1&playlist=xeLtkYELNwI&controls=1" 
-                title="YouTube video player" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                className="w-full h-full" 
+                src="https://www.youtube.com/embed/xeLtkYELNwI?autoplay=1&mute=1&loop=1&playlist=xeLtkYELNwI" 
                 allowFullScreen
               ></iframe>
             </div>
-
-            {/* Action Buttons (เรียงแนวตั้งในมือถือ แนวนอนในจอใหญ่) */}
-            <div className="flex flex-col sm:flex-row gap-4 w-full">
-              
-              {/* Button: Document */}
-              <button 
-              onClick={() => setDocumentopen(true)}
-              className="flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl border-2 border-slate-200 bg-white text-slate-700 font-bold hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all active:scale-95 shadow-sm">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                </svg>
-                Document
-              </button>
-              
-            <button 
-              onClick={() => setmodeldetailopen(true)}
-            className="flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl border-2 border-slate-200 bg-white text-slate-700 font-bold hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all active:scale-95 shadow-sm">
-          
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            {/* รูปทรงหัวหุ่นยนต์ */}
-            <rect x="4" y="8" width="16" height="12" rx="2" ry="2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            {/* รายละเอียดหู, ตา, ปาก, เสาอากาศ */}
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2 14h2M20 14h2M9 13v2M15 13v2M12 8V4M10 2h4M9 17h6"></path>
-          </svg>
-          Model Detail
-        </button>
-            </div>
-        
-
           </div>
-           {/* ===================== MODAL: MODEL DETAIL ===================== */}
-          <Modal
-            className="!rounded-2xl"
-            rootClassName="custom-modal" 
-            title={
-              <div className="flex items-center gap-3">
-                <div className="w-1.5 h-6 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full" />
-                <span className="text-xl font-black text-slate-800 tracking-tight">
-                  รายละเอียด Model ของเรา
-                </span>
-              </div>
-            }
-            open={modeldetailopen}
-            onCancel={() => setmodeldetailopen(false)}
-            footer={null}
-            width={820}
-            centered
-          >
-            <div className="space-y-6 pt-2 bg-gradient-to-b from-white to-slate-50/50 rounded-2xl">
-              <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 px-4 py-3 rounded-xl border border-blue-100 flex items-start gap-4 shadow-sm">
-                <p className="text-slate-600 text-sm leading-7">
-                  ระบบ <span className="font-bold text-blue-600">AI Expert Advisor</span> ของเรา ถูกพัฒนาเพื่อค้นหาจุดเข้าเทรดที่แม่นยำ โดยผ่านการทดสอบจริงและเปิดให้ใช้งานแล้ว 2 โมเดลหลัก
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* CARD 1 */}
-                <div className="group relative rounded-3xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(251,191,36,0.15)] hover:-translate-y-1 transition-all duration-500 border border-amber-50 p-6 flex flex-col">
-  
-                    {/* top glow */}
-                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-500 rounded-t-3xl" />
-
-                    {/* Header */}
-                    <div className="mb-4">
-                      <span className="inline-block px-3 py-1 bg-amber-50 text-amber-600 text-[10px] font-bold tracking-wider rounded-full border border-amber-200/50">
-                        GOLD MODEL
-                      </span>
-                      <h3 className="text-4xl font-black text-slate-800 mt-3 tracking-tight">
-                        XAUUSD
-                      </h3>
-                    </div>
-
-                    {/* Image Preview Button */}
-                    <button
-                      type="button"
-                      onClick={() => openPreview("/XAUUSDcurveback.png")}
-                      className="mb-5 overflow-hidden rounded-xl border border-slate-100 shadow-sm relative block w-full outline-none focus:ring-2 focus:ring-amber-400 group/img"
-                    >
-                      <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/10 transition-colors z-10 flex items-center justify-center">
-                          <span className="opacity-0 group-hover/img:opacity-100 text-white bg-black/50 px-3 py-1 rounded-full text-xs transition-opacity">
-                            คลิกเพื่อดูภาพขยาย
-                          </span>
-                      </div>
-                      <img
-                        src="/XAUUSDcurveback.png"
-                        alt="XAUUSD Equity Curve"
-                        className="w-full h-48 object-cover group-hover/img:scale-105 transition-transform duration-700 ease-in-out relative z-0"
-                      />
-                    </button>
-
-                    {/* Basic Info */}
-                    <div className="space-y-3 text-sm mb-5">
-                      {[
-                        ["Timeframe", "H1 (1 ชั่วโมง)"],
-                        ["Platform", "MT5"],
-                      ].map(([k, v]) => (
-                        <div key={k} className="flex justify-between items-center border-b border-slate-50 pb-2">
-                          <span className="text-slate-500 font-medium">{k}</span>
-                          <span className="font-bold text-slate-800">{v}</span>
-                        </div>
-                      ))}
-                    </div>
-                        <div className="mt-auto bg-slate-50 rounded-2xl p-4 border border-slate-100/60 mb-2">
-                      <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-200/60">
-                        <h4 className="font-bold text-slate-800 text-sm">Forward Test Results</h4>
-                        <span className="text-[10px] text-slate-400 font-medium">16/02/26 - 27/02/26</span>
-                      </div>
-                      
-                      <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
-                         <div className="flex justify-between">
-                          <span className="text-slate-500">Win Rate :</span>
-                          <span className="font-bold text-indigo-500">94.28%</span>
-                        </div> 
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Order :</span>
-                          <span className="font-semibold text-slate-700">35 order</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">win :</span>
-                          <span className="font-bold text-emerald-500">33 </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">loss :</span>
-                          <span className="font-bold text-emerald-500">2 </span>
-                        </div>
-                       
-                      </div>
-                    </div>
-                    {/* Backtest Stats Box */}
-                    <div className="mt-auto bg-slate-50 rounded-2xl p-4 border border-slate-100/60">
-                      <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-200/60">
-                        <h4 className="font-bold text-slate-800 text-sm">Backtest Results</h4>
-                        <span className="text-[10px] text-slate-400 font-medium">17/01/25 - 30/01/26</span>
-                      </div>
-                      
-                      <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Deposit:</span>
-                          <span className="font-semibold text-slate-700">$100</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Net Profit:</span>
-                          <span className="font-bold text-emerald-500">+502.34</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Profit Factor:</span>
-                          <span className="font-bold text-indigo-500">2.95</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Win Rate:</span>
-                          <span className="font-bold text-amber-500">94.48%</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Max DD:</span>
-                          <span className="font-semibold text-rose-500">47.97%</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Total Trades:</span>
-                          <span className="font-semibold text-slate-700">471</span>
-                        </div>
-                      </div>
-                    </div>
-                </div>
-
-                {/* CARD 2 */}
-                {/* ===== CARD EURUSD ===== */}
-                <div className="group relative rounded-3xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(59,130,246,0.15)] hover:-translate-y-1 transition-all duration-500 border border-blue-50 p-6 flex flex-col">
-                  
-                  {/* top glow */}
-                  <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-500 rounded-t-3xl" />
-
-                  {/* Header */}
-                  <div className="mb-4">
-                    <span className="inline-block px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-bold tracking-wider rounded-full border border-blue-200/50">
-                      FOREX MODEL
-                    </span>
-                    <h3 className="text-4xl font-black text-slate-800 mt-3 tracking-tight">
-                      EURUSD
-                    </h3>
-                  </div>
-
-                  {/* Image Preview Button */}
-                  <button
-                    type="button"
-                    onClick={() => openPreview("/EURUSDcurveback.png")}
-                    className="mb-5 overflow-hidden rounded-xl border border-slate-100 shadow-sm relative block w-full outline-none focus:ring-2 focus:ring-blue-400 group/img"
-                  >
-                    <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/10 transition-colors z-10 flex items-center justify-center">
-                        <span className="opacity-0 group-hover/img:opacity-100 text-white bg-black/50 px-3 py-1 rounded-full text-xs transition-opacity">
-                          คลิกเพื่อดูภาพขยาย
-                        </span>
-                    </div>
-                    <img
-                      src="/EURUSDcurveback.png"
-                      alt="EURUSD Equity Curve"
-                      className="w-full h-48 object-cover group-hover/img:scale-105 transition-transform duration-700 ease-in-out relative z-0"
-                    />
-                  </button>
-
-                  {/* Basic Info */}
-                  <div className="space-y-3 text-sm mb-5">
-                    {[
-                      ["Timeframe", "H1 (1 ชั่วโมง)"],
-                      ["Platform", "MT5"],
-                    ].map(([k, v]) => (
-                      <div key={k} className="flex justify-between items-center border-b border-slate-50 pb-2">
-                        <span className="text-slate-500 font-medium">{k}</span>
-                        <span className="font-bold text-slate-800">{v}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div  className="mt-auto bg-slate-50 rounded-2xl p-4 border border-slate-100/60 mb-2">
-                      <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-200/60">
-                        <h4 className="font-bold text-slate-800 text-sm">Forward Test Results</h4>
-                        <span className="text-[10px] text-slate-400 font-medium">02/02/26 - 13/02/26</span>
-                      </div>
-                      
-                      <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
-                         <div className="flex justify-between">
-                          <span className="text-slate-500">Win Rate :</span>
-                          <span className="font-bold text-indigo-500">92.85%</span>
-                        </div> 
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Order :</span>
-                          <span className="font-semibold text-slate-700">14 order</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">win :</span>
-                          <span className="font-bold text-emerald-500">13 </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">loss :</span>
-                          <span className="font-bold text-emerald-500">1 </span>
-                        </div>
-                       
-                      </div>
-                    </div>
-                  {/* Backtest Stats Box */}
-                  <div className="mt-auto bg-slate-50 rounded-2xl p-4 border border-slate-100/60">
-                    <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-200/60">
-                      <h4 className="font-bold text-slate-800 text-sm">Backtest Results</h4>
-                      <span className="text-[10px] text-slate-400 font-medium">15/01/25 - 16/02/26</span>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Deposit:</span>
-                        <span className="font-semibold text-slate-700">$100</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Net Profit:</span>
-                        <span className="font-bold text-emerald-500">+200.53</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Profit Factor:</span>
-                        <span className="font-bold text-indigo-500">2.71</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Win Rate:</span>
-                        <span className="font-bold text-blue-500">86.59%</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Max DD:</span>
-                        <span className="font-semibold text-rose-500">27.41%</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Total Trades:</span>
-                        <span className="font-semibold text-slate-700">246</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                </div>
-              </div>
-
-              {/* Footer Model */}
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex gap-3 items-start mt-4">
-                  <div className="mt-0.5 text-slate-400">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                  </div>
-                  <div>
-                      <h4 className="font-bold text-sm text-slate-800 mb-0.5">ระบบป้องกันความเสี่ยงขั้นสูง (Risk Management)</h4>
-                      <p className="text-xs text-slate-500 leading-relaxed">
-                          ทั้ง 2 โมเดลถูกออกแบบให้จัดการ Order อย่างเป็นระบบ ลดการเข้าออเดอร์ผิดเงื่อนไข และควบคุมความเสี่ยงอัตโนมัติ
-                      </p>
-                  </div>
-              </div>
-              <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-200 shadow-sm flex gap-3 items-start">
-                <div className="mt-0.5 text-emerald-500">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V6m0 12v2" />
-                  </svg>
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm text-emerald-900 mb-0.5">การคิดค่าบริการ Commision</h4>
-                  <p className="text-xs text-emerald-700 leading-relaxed">
-                    ทั้ง 2 โมเดล จะคิดค่าบริการหลังผู้ใช้ใช้งานทุกๆ 7 วัน โดยจะคิดจาก ค่า %commission ของ model ตัวนั้นๆ จากกำไรที่ EA ของเราทำให้กับผู้ใช้ ซึ่งต้องมากกว่าเท่ากับ 3.3USDขึ้นไป หาก EA ของเราทำกำไรไม่ถึง หรือไม่ได้กำไร เราจะไม่คิดค่า commission
-                  </p>
-                </div>
-              </div>
-            </div>
-            {previewImage && (
-      <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-
-        {/* backdrop */}
-        <button
-          className="absolute inset-0"
-          onClick={() => setPreviewImage(null)}
-          aria-label="Close image preview"
-        />
-
-        {/* image */}
-        <img
-          src={previewImage}
-          alt="Preview"
-          className="relative max-w-[90%] max-h-[90%] rounded-lg z-10"
-        />
-      </div>
-    )}
-          </Modal>
-<Modal
-  title={
-    <div className="flex items-center gap-2">
-      <div className="w-1.5 h-5 bg-blue-600 rounded-full" />
-      <span className="text-lg font-bold text-slate-800">คู่มือการใช้งานระบบ AI EA</span>
-    </div>
-  }
-  open={Documentopen}
-  onCancel={() => setDocumentopen(false)}
-  footer={null}
-  width={700}
->
-  <div className="space-y-6 max-h-[75vh] overflow-y-auto pr-2 custom-scrollbar">
-    
-    {/* --- ส่วนคำอธิบาย Model --- */}
-    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-100">
-      <h3 className="text-blue-800 font-bold flex items-center gap-2 mb-2">
-        <span className="p-1 bg-blue-600 rounded text-white text-xs">รายละเอียดโมเดล</span>
-     
-      </h3>
-      <p className="text-sm text-slate-600 leading-relaxed">
-        EA ของเราใช้การประมวลผลสองชั้น: <br />
-        1. <span className="font-semibold text-blue-700">1DCNN + LSTM:</span> วิเคราะห์แนวโน้มเพื่อตัดสินใจจังหวะ <span className="underline">Trade หรือ Wait</span> <br />
-        2. <span className="font-semibold text-blue-700">LLM (Llama-3.2-3b-bnb):</span> เมื่อมีสัญญาณเทรด จะวิเคราะห์ทิศทางเพื่อทำนาย <span className="underline text-green-600 font-bold">BUY</span> หรือ <span className="underline text-red-600 font-bold">SELL</span>
-      </p>
-    </div>
-
-    {/* --- ส่วนขั้นตอนการใช้งาน --- */}
-    <div className="space-y-8">
-      ขั้นตอนการใช้งาน  สามารถดูได้ตามนี้หรือใน Youtube ของเรา
-       <div className="bg-amber-50 border-l-4 border-amber-400 p-3 text-xs text-amber-800">
-            <strong>หมายเหตุ: </strong>ผู้ใช้ควรมีงบประมาณ 100 USD
-          </div>
-      {/* Step 1 */}
-      <section>
-        
-        <div className="flex items-center gap-3 mb-3">
-          <span className="flex-shrink-0 w-7 h-7 bg-slate-800 text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
-          <h4 className="font-bold text-slate-800">เมื่อ Login เข้า website แล้วให้ลงทะเบียน Trader Account</h4>
         </div>
-        <div className="ml-10 space-y-3">
-          <p className="text-sm text-slate-600">กรอกข้อมูลบัญชีเทรดจริง (ID, Investor Password) เพื่อยืนยันสิทธิ์การใช้งานบน Platform MT5</p>
-        <button
-          onClick={() => openPreview("/doc1.png")}
-          className="w-full h-full"
-          >
-          <img
-            src="/doc1.png"
-            alt="Step 1"
-            className="w-full h-full object-contain"
-          />
-        </button>
+      </section>
 
+      {/* 3. MODEL DETAILS SECTION - Dark Theme (#1E293B) */}
+<section className="bg-[#1E293B] py-24 text-white rounded-t-[0.5rem] -mt-10 relative z-10">
+  <div className="max-w-7xl mx-auto px-6">
+    {/* Header */}
+    <div className="flex flex-col items-center mb-16 text-center">
+      <span className="text-blue-400 font-bold tracking-[0.3em] uppercase mb-4 text-sm">
+        Our Performance
+      </span>
+      <h2 className="text-4xl md:text-5xl font-black tracking-tight text-white">
+        รายละเอียด Model ของเรา
+      </h2>
+      <div className="w-24 h-1.5 bg-blue-500 rounded-full mt-6 shadow-[0_0_15px_rgba(59,130,246,0.5)]"></div>
+    </div>
+ 
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
       
+      {/* CARD 1: XAUUSD */}
+      <div className="group relative bg-white rounded-[0.5rem]  border border-slate-200 p-8 flex flex-col transition-all duration-500 hover:-translate-y-2 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-amber-400 to-orange-500 rounded-t-[2.5rem]" />
+        
+        <div className="mb-8 flex justify-between items-start">
+          <div>
+            <span className="inline-block px-3 py-1 bg-amber-50 text-amber-600 text-xs font-black tracking-wider rounded-full border border-amber-200">
+              GOLD MODEL
+            </span>
+            <h3 className="text-5xl font-black text-slate-900 mt-4 tracking-tighter">XAUUSD</h3>
+            <p className="text-slate-500 text-sm mt-1 font-medium">Timeframe: H1 (1 Hour)</p>
+          </div>
+          <div className="text-right">
+            <span className="text-slate-400 text-xs font-bold uppercase block">Platform</span>
+            <span className="text-xl font-bold text-slate-800">MT5</span>
+          </div>
+        </div>
+
         <button
-          onClick={() => openPreview("/doc2.png")}
-          className="w-full h-full"
-          >
-          <img
-            src="/doc2.png"
-            alt="Step 2"
-            className="w-full h-full object-contain"
-          />
+          type="button"
+          onClick={() => openPreview("/XAUUSDcurveback.png")}
+          className="mb-8 overflow-hidden rounded-3xl border border-slate-100 shadow-sm relative block w-full group/img"
+        >
+          <div className="absolute inset-0 bg-slate-900/10 opacity-0 group-hover/img:opacity-100 transition-all z-10 flex items-center justify-center backdrop-blur-[1px]">
+            <span className="text-white bg-slate-900 px-6 py-2 rounded-full font-bold shadow-xl">
+              คลิกเพื่อดูภาพขยาย
+            </span>
+          </div>
+          <img src="/XAUUSDcurveback.png" alt="XAUUSD Equity Curve" className="w-full h-64 object-cover group-hover/img:scale-105 transition-transform duration-700" />
         </button>
-          <div className="bg-amber-50 border-l-4 border-amber-400 p-3 text-xs text-amber-800">
-            <strong>หมายเหตุ:</strong>การแก้ไข/ลบ จะทำได้เฉพาะบัญชีที่ยังไม่ได้นำไปผูกกับ License เท่านั้น (ยังเป็น Icon สีแดง) และจะขึ้น สถานะ Connect 
-            (ขึ้นรูปคนสีเขียว) ก็ต่อเมื่อ นำ EA ไปใส่ใน Chart แล้วข้อมูล Trade Account กับ Investor password ถูกต้องกับในระบบ ซึ่ง 1 Trade Id จะอยู่ได้เพียง 1 Account เท่านั้น
-          </div>
-        </div>
-      </section>
 
-      {/* Step 2 & 3 */}
-      <section>
-        <div className="flex items-center gap-3 mb-3">
-          <span className="flex-shrink-0 w-7 h-7 bg-slate-800 text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
-          <h4 className="font-bold text-slate-800">เลือก Model และสร้าง License</h4>
-        </div>
-        <div className="ml-10 space-y-4">
-          <p className="text-sm text-slate-600">เลือก Account, Timeframe, Symbol และโมเดลที่ต้องการใช้งาน</p>
-             <button
-                onClick={() => openPreview("/doc3.png")}
-                className="w-full h-full"
-                >
-                <img
-                  src="/doc3.png"
-                  alt="Step 3"
-                  className="w-full h-full object-contain"
-                />
-              </button>
-
-              <p className="text-sm text-slate-600 font-medium">เมื่อบันทึกแล้ว ระบบจะออก License Key ให้กับคุณ</p>
-                <button
-                    onClick={() => openPreview("/doc4.png")}
-                    className="w-full h-full"
-                    >
-                    <img
-                      src="/doc4.png"
-                      alt="Step 4"
-                      className="w-full h-full object-contain"
-                    />
-                  </button>
-
-              
-                 <div className="bg-amber-50 border-l-4 border-amber-400 p-3 text-xs text-amber-800">
-            <strong>หมายเหตุ:</strong>การลบ จะทำได้เฉพาะบัญชีที่ยังไม่ได้นำไปผูกกับ License เท่านั้น (ยังเป็น Icon สีแดง) และจะขึ้น สถานะ Connect 
-            (ขึ้นรูปคนสีเขียว) ก็ต่อเมื่อ นำ EA ไปใส่ใน Chart แล้วข้อมูล Licnese , Trade Account กับ Investor password ถูกต้องกับในระบบ  ซึ่ง 1 Trade Id และ 1 model จะอยู่ได้เพียง 1 Account เท่านั้น
-          </div>
-        </div>
-      </section>
-
-      {/* Step 4 & 5 */}
-      <section>
-        <div className="flex items-center gap-3 mb-3">
-          <span className="flex-shrink-0 w-7 h-7 bg-slate-800 text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
-          <h4 className="font-bold text-slate-800">DownLoad EA</h4>
-        </div>
-        <div className="ml-10 space-y-4">
-              <button
-                    onClick={() => openPreview("/doc5.png")}
-                    className="w-full h-full"
-                    >
-                    <img
-                      src="/doc5.png"
-                      alt="Step 5"
-                      className="w-full h-full object-contain"
-                    />
-                  </button>
-
-              
-          <p className="text-sm text-slate-600 font-medium italic underline">ให้คลิกที่ปุ่ม DownLoad EA เพื่อรับลิงก์ไฟล์ EA</p>
-          
-        </div>
-      </section>
-
-      {/* Step 6 - 9 */}
-      <section>
-        <div className="flex items-center gap-3 mb-3">
-          <span className="flex-shrink-0 w-7 h-7 bg-slate-800 text-white rounded-full flex items-center justify-center text-sm font-bold">4</span>
-          <h4 className="font-bold text-slate-800">การติดตั้งบน MetaTrader 5 (MT5)</h4>
-        </div>
-        <div className="ml-10 space-y-4">
-          <ol className="list-decimal text-sm text-slate-600 space-y-4 ml-4">
-             <li>
-               ก่อนเริ่ม  เปิดกราฟคู่เงินและ Timeframe ให้ตรงกับที่เลือกในเว็บ และติ๊ก <span className="font-bold text-blue-600">AlgoTrading</span> เพื่อเปลี่ยนจากสีแดงให้เป็นสีเขียว ดังรูป
-                 <button
-                    onClick={() => openPreview("/doc10.png")}
-                    className="w-full h-full"
-                    >
-                    <img
-                      src="/doc10.png"
-                      alt="Step 10"
-                      className="w-full h-full object-contain"
-                    />
-                  </button>
-                
-            </li>
-   
-            <li>
-               เปิด MT5 แล้วไปที่ <span className="font-bold">File -&gt; Open Data Folder -&gt; MQL5 -&gt; Experts</span> หรือ Ctrl+shift+D
-                 <button
-                    onClick={() => openPreview("/doc6.png")}
-                    className="w-full h-full"
-                    >
-                    <img
-                      src="/doc6.png"
-                      alt="Step 6"
-                      className="w-full h-full object-contain"
-                    />
-                  </button>
-
-                
-            </li>
-            <li>
-          
-            
-              Extract ไฟล์ที่ได้ และนำไปใส่ในโฟลเดอร์ Experts ของ MT5 จากขั้นตอนที่ 4.2
-              <ul className="list-disc ml-5 mt-1">
-                    <button
-                    onClick={() => openPreview("/doc7.png")}
-                    className="w-full h-full"
-                    >
-                    <img
-                      src="/doc7.png"
-                      alt="Step 7"
-                      className="w-full h-full object-contain"
-                    />
-                  </button>
-
-              </ul>
-            </li>
-            <li>
-             
-              กลับไปที่ MT5 แล้ว จะเจอไฟล์ ที่เราลากเข้าไปอยู่ในส่วน Expert Advisor ตรงแถบ Navigator  
-              <ul className="list-disc ml-5 mt-1">
-                 <button
-                    onClick={() => openPreview("/doc8.png")}
-                    className="w-full h-full"
-                    >
-                    <img
-                      src="/doc8.png"
-                      alt="Step 8"
-                      className="w-full h-full object-contain"
-                    />
-                  </button>
-
-              
-                <li>ตรงแถบ Common ติ๊กถูก "Allow Algo Trading"</li>
-                <li>ตรงแถบ Input ให้ใส่ License key ให้ตรงกับในเว็บ</li>
-              </ul>
-             
-            </li>
-              <li>
-                <span className="font-bold">Tools -&gt; Options -&gt; Expert Advisor</span> หรือ Ctrl+O
-              <ul className="list-disc ml-5 mt-1">
-                 <button
-                    onClick={() => openPreview("/doc9.png")}
-                    className="w-full h-full"
-                    >
-                    <img
-                      src="/doc9.png"
-                      alt="Step 9"
-                      className="w-full h-full object-contain"
-                    />
-                  </button>
-
-
-                <li>ตรงแถบ Common ติ๊กถูก "Allow Algo Trading"</li>
-                <li>ตรงแถบ Common Input ให้ใส่ License key ให้ตรงกับในเว็บ</li>
-               
-              </ul>
-               
-            </li>
-            <li>
-              
-              เมื่อทำสำเร็จ ตรง Experts จะแสดง log การทำงานของ EA
-                  <button
-                    onClick={() => openPreview("/doc11.png")}
-                    className="w-full h-full"
-                    >
-                    <img
-                      src="/doc11.png"
-                      alt="Step 11"
-                      className="w-full h-full object-contain"
-                    />
-                  </button>
-
-            </li>
-          </ol>
-        </div>
-      </section>
-
-    </div>
-
-    <div className="pt-4 pb-2 text-center">
-      <div className="w-full bg-green-50 p-4 rounded-xl border border-green-100">
-        <p className="text-green-700 font-bold text-sm"> ติดตั้งเสร็จสิ้น! ระบบ EA พร้อมทำงาน</p>
-        <p className="text-slate-400 text-sm max-w-md mx-auto">
-                  * EA จะหยุดทำงานก็ต่อเมื่อผู้ใช้ปิดโปรแกรม MT5 หรือ License key หมดอายุ
-              </p>
-      </div>
-    </div>
-
-  </div>
-      {previewImage && (
-      <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-
-        {/* backdrop */}
-        <button
-          className="absolute inset-0"
-          onClick={() => setPreviewImage(null)}
-          aria-label="Close image preview"
-        />
-
-        {/* image */}
-        <img
-          src={previewImage}
-          alt="Preview"
-          className="relative max-w-[90%] max-h-[90%] rounded-lg z-10"
-        />
-      </div>
-    )}
-</Modal>
-
-
-
-        </div>
-      </div>
-
-      {/* --- OTP VERIFICATION POPUP (MODAL) --- */}
-      {isVerifying && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          {/* Backdrop */}
-          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setIsVerifying(false)}></div>
-          
-          {/* Modal Card */}
-          <div className="relative bg-white w-full max-w-md rounded-3xl shadow-2xl p-8 animate-in fade-in zoom-in duration-300">
-            <button 
-              onClick={() => setIsVerifying(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+        <div className="space-y-6">
+          {/* Forward Test Stats */}
+          <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+            <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-200">
+              <h4 className="font-black text-amber-600 text-sm uppercase tracking-widest flex items-center gap-2">
+                <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
+                Forward Test Results
+              </h4>
+              <span className="text-[10px] text-slate-400 font-bold">16/02/26 - 27/02/26</span>
+            </div>
+            <div className="grid grid-cols-2 gap-y-4 gap-x-8">
+              <div className="flex justify-between items-end border-b border-slate-200/50 pb-1">
+                <span className="text-slate-500 text-[11px] font-bold uppercase">Win Rate</span>
+                <span className="text-xl font-black text-indigo-600">94.28%</span>
               </div>
-              <h2 className="text-2xl font-bold mb-2">ยืนยันรหัส OTP</h2>
-              <p className="text-slate-500 mb-8 text-sm">
-                เราได้ส่งรหัส 6 หลักไปที่ <br/>
-                <span className="font-bold text-slate-900">{email}</span>
-              </p>
-
-              <form onSubmit={handleVerify} className="space-y-6">
-                <input 
-                  type="text" 
-                  placeholder="0 0 0 0 0 0"
-                  maxLength={6}
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))} // รับแค่ตัวเลข
-                  className="w-full text-center text-3xl font-black tracking-[0.5em] py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-600 bg-slate-50 outline-none transition-all"
-                  autoFocus
-                />
-              
-                <button 
-                  type="submit" 
-                  className="w-full py-4 rounded-xl font-bold text-lg bg-gray-600 text-white hover:bg-gray-700 shadow-lg shadow-blue-200 active:scale-95 transition-all"
-                >
-                  ยืนยันและเข้าสู่ระบบ
-                </button>
-              </form>
-              
-              <button 
-                onClick={() => setIsVerifying(false)}
-                className="mt-6 text-sm font-semibold text-slate-400 hover:text-blue-600 transition-colors"
-              >
-                ย้อนกลับไปแก้ไข Email
-              </button>
+              <div className="flex justify-between items-end border-b border-slate-200/50 pb-1">
+                <span className="text-slate-500 text-[11px] font-bold uppercase">Total Trades</span>
+                <span className="text-xl font-black text-slate-900">35</span>
+              </div>
+              <div className="flex justify-between items-end border-b border-slate-200/50 pb-1">
+                <span className="text-slate-500 text-[11px] font-bold uppercase">Win</span>
+                <span className="text-xl font-black text-emerald-600">33</span>
+              </div>
+              <div className="flex justify-between items-end border-b border-slate-200/50 pb-1">
+                <span className="text-slate-500 text-[11px] font-bold uppercase">Loss</span>
+                <span className="text-xl font-black text-rose-500">2</span>
+              </div>
             </div>
           </div>
-                          
+
+          {/* Backtest Stats */}
+          <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+            <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-200">
+              <h4 className="font-black text-amber-600 text-sm uppercase tracking-widest flex items-center gap-2">
+                <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>Backtest (1 Year)</h4>
+                  <span className="text-[10px] text-slate-400 font-bold">17/01/25 - 30/01/26</span>
+           
+            </div>
+            <div className="grid grid-cols-2 gap-x-8 gap-y-3">
+               <div className="flex justify-between">
+                <span className="text-slate-400 text-[11px]">Deposit:</span>
+                <span className="font-bold text-amber-500">$100</span>
+              </div>
+
+              
+              <div className="flex justify-between">
+                <span className="text-slate-400 text-[11px]">Net Profit:</span>
+                <span className="font-bold text-emerald-400">+$502.34</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-400 text-[11px]">Win Rate:</span>
+                <span className="font-black text-green-500">94.48%</span>
+              </div>
+
+              <div className="flex justify-between">
+                <span className="text-slate-400 text-[11px]">Profit Factor:</span>
+                <span className="font-bold text-blue-400">2.95</span>
+              </div>
+                            <div className="flex justify-between">
+                <span className="text-slate-400 text-[11px]">Max Drawdown:</span>
+                <span className="font-bold text-rose-400">47.97%</span>
+              </div>
+                            <div className="flex justify-between">
+                <span className="text-slate-400 text-[11px]">Total Trades:</span>
+                <span className="font-black text-slate-900">471</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* CARD 2: EURUSD */}
+      <div className="group relative bg-white rounded-[0.5rem] border border-slate-200 p-8 flex flex-col transition-all duration-500 hover:-translate-y-2 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-400 to-indigo-600 rounded-t-[2.5rem]" />
+        
+        <div className="mb-8 flex justify-between items-start">
+          <div>
+            <span className="inline-block px-3 py-1 bg-blue-50 text-blue-600 text-xs font-black tracking-wider rounded-full border border-blue-200">
+              FOREX MODEL
+            </span>
+            <h3 className="text-5xl font-black text-slate-900 mt-4 tracking-tighter">EURUSD</h3>
+            <p className="text-slate-500 text-sm mt-1 font-medium">Timeframe: H1 (1 Hour)</p>
+          </div>
+          <div className="text-right">
+            <span className="text-slate-400 text-xs font-bold uppercase block">Platform</span>
+            <span className="text-xl font-bold text-slate-800">MT5</span>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => openPreview("/EURUSDcurveback.png")}
+          className="mb-8 overflow-hidden rounded-3xl border border-slate-100 shadow-sm relative block w-full group/img"
+        >
+          <div className="absolute inset-0 bg-slate-900/10 opacity-0 group-hover/img:opacity-100 transition-all z-10 flex items-center justify-center backdrop-blur-[1px]">
+            <span className="text-white bg-slate-900 px-6 py-2 rounded-full font-bold shadow-xl">
+              คลิกเพื่อดูภาพขยาย
+            </span>
+          </div>
+          <img src="/EURUSDcurveback.png" alt="EURUSD Equity Curve" className="w-full h-64 object-cover group-hover/img:scale-105 transition-transform duration-700" />
+        </button>
+
+        <div className="space-y-6">
+          {/* Forward Test Stats */}
+          <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+            <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-200">
+              <h4 className="font-black text-blue-600 text-sm uppercase tracking-widest flex items-center gap-2">
+                <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+                Forward Test Results
+              </h4>
+              <span className="text-[10px] text-slate-400 font-bold">02/02/26 - 13/02/26</span>
+            </div>
+            <div className="grid grid-cols-2 gap-y-4 gap-x-8">
+              <div className="flex justify-between items-end border-b border-slate-200/50 pb-1">
+                <span className="text-slate-500 text-[11px] font-bold uppercase">Win Rate</span>
+                <span className="text-xl font-black text-indigo-600">92.85%</span>
+              </div>
+              <div className="flex justify-between items-end border-b border-slate-200/50 pb-1">
+                <span className="text-slate-500 text-[11px] font-bold uppercase">Total Trades</span>
+                <span className="text-xl font-black text-slate-900">14</span>
+              </div>
+              <div className="flex justify-between items-end border-b border-slate-200/50 pb-1">
+                <span className="text-slate-500 text-[11px] font-bold uppercase">Win</span>
+                <span className="text-xl font-black text-emerald-600">13</span>
+              </div>
+              <div className="flex justify-between items-end border-b border-slate-200/50 pb-1">
+                <span className="text-slate-500 text-[11px] font-bold uppercase">Loss</span>
+                <span className="text-xl font-black text-rose-500">1</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Backtest Stats */}
+          <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+            <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-200">
+              <h4 className="font-black text-blue-600 text-sm uppercase tracking-widest flex items-center gap-2">
+                <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>Backtest (1 Year) </h4>
+                 <span className="text-[10px] text-slate-400 font-bold">15/01/25 - 16/02/26</span>
+            </div>
+            <div className="grid grid-cols-2 gap-x-8 gap-y-3">
+                <div className="flex justify-between">
+                <span className="text-slate-400 text-[11px]">Deposit:</span>
+                <span className="font-bold text-violet-500">$100</span>
+              </div>
+               <div className="flex justify-between">
+                <span className="text-slate-400 text-[11px]">Net Profit:</span>
+                <span className="font-bold text-emerald-400">+$200.53</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-400 text-[11px]">Win Rate:</span>
+                <span className="font-black text-green-500">86.59%</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-400 text-[11px]">Profit Factor:</span>
+                <span className="font-bold text-indigo-400">2.71</span>
+              </div>
+
+              <div className="flex justify-between">
+                <span className="text-slate-400 text-[11px]">Max Drawdown:</span>
+                <span className="font-bold text-rose-400">27.41%</span>
+              </div>
+                            <div className="flex justify-between">
+                <span className="text-slate-400 text-[11px]">Total Trades:</span>
+                <span className="font-black text-slate-900">246</span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+      {/* 4. SERVICE INFO SECTION - Light Theme (White) */}
+      <section className="bg-white py-24">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="flex gap-6 p-8 rounded-[2rem] bg-slate-50 border border-slate-100">
+            <div className="shrink-0 w-14 h-14 bg-[#1E293B] text-white rounded-2xl flex items-center justify-center shadow-lg">
+              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            </div>
+            <div>
+              <h4 className="text-xl font-black mb-2 uppercase tracking-tight">Security First</h4>
+              <p className="text-slate-500 leading-relaxed">ระบบป้องกันความเสี่ยงขั้นสูง จัดการ Order อย่างเป็นระบบ ลดความผิดพลาดจากอารมณ์ และควบคุมความเสี่ยงอัตโนมัติตลอด 24 ชม.</p>
+            </div>
+          </div>
+
+          <div className="flex gap-6 p-8 rounded-[2rem] bg-emerald-50 border border-emerald-100">
+            <div className="shrink-0 w-14 h-14 bg-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-lg">
+              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V6m0 12v2" /></svg>
+            </div>
+            <div>
+              <h4 className="text-xl font-black mb-2 text-emerald-900 uppercase tracking-tight">Profit Sharing</h4>
+              <p className="text-emerald-700 leading-relaxed">คิดค่าบริการจากกำไรจริงเท่านั้น หากไม่มีกำไร <span className="font-bold underline">เราไม่คิดค่าบริการใดๆ</span> ให้คุณได้มั่นใจในประสิทธิภาพ</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- MODALS --- */}
+      <Modal
+        open={loginOpen}
+        onCancel={() => setLoginOpen(false)}
+        footer={null}
+        centered
+        width={420}
+        styles={{ body: { padding: '40px', borderRadius: '32px' } }}
+      >
+        <div className="text-center space-y-8">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-[2rem] bg-[#1E293B] text-white shadow-2xl">
+            <span className="text-2xl font-black italic">EA.AI</span>
+          </div>
+          <div>
+            <h2 className="text-3xl font-black text-slate-800">Welcome</h2>
+            <p className="text-slate-400 font-medium text-sm mt-2">Login to your AI Trading Dashboard</p>
+          </div>
+          
+          <form onSubmit={handleLogin} className="space-y-4">
+            <input
+              type="email"
+              placeholder="Email Address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 outline-none transition-all"
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-4 rounded-2xl font-bold bg-[#1E293B] text-white hover:bg-black transition-all flex justify-center items-center gap-2"
+            >
+              {loading ? <Spin size="small" className="brightness-0 invert" /> : "Receive OTP Code"}
+            </button>
+          </form>
+
+          <div className="relative flex items-center py-2">
+            <div className="flex-grow border-t border-slate-100"></div>
+            <span className="mx-4 text-[10px] font-black text-slate-600 uppercase">OR</span>
+            <div className="flex-grow border-t border-slate-100"></div>
+          </div>
+
+          <button
+            onClick={() => signIn('google', { callbackUrl: '/user' })}
+            className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl border-2 border-slate-100 font-bold hover:bg-slate-50 transition-all"
+          >
+            <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" alt="google" />
+            Continue with Google
+          </button>
+        </div>
+      </Modal>
+
+      {/* Image Preview Overlay */}
+  {previewImage && (
+        <div className="fixed inset-0 bg-[#1E293B]/95 flex items-center justify-center z-[100] p-4 animate-in fade-in duration-300" onClick={() => setPreviewImage(null)}>
+          <img src={previewImage} alt="Preview" className="max-w-full max-h-[85vh] rounded-3xl shadow-2xl border border-white/10" />
+          <button className="absolute top-10 right-10 text-white/50 hover:text-white transition-colors">
+            <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
         </div>
       )}
+
+      {/* OTP Modal ปรับให้เข้ากับธีมใหม่ */}
+      {isVerifying && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-[#1E293B]/80 backdrop-blur-md" onClick={() => setIsVerifying(false)}></div>
+          <div className="relative bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-10 animate-in zoom-in duration-300">
+            <div className="text-center">
+              <h2 className="text-3xl font-black mb-2 text-[#1E293B]">Verify OTP</h2>
+              <p className="text-slate-500 mb-8 text-sm">เราส่งรหัส 6 หลักไปที่ <span className="font-bold text-blue-600">{email}</span></p>
+              <form onSubmit={handleVerify} className="space-y-6">
+                <input
+                  type="text"
+                  placeholder="••••••"
+                  maxLength={6}
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+                  className="w-full text-center text-5xl font-black tracking-[0.4em] py-6 rounded-[2rem] border-2 border-slate-100 focus:border-blue-600 bg-slate-50 outline-none transition-all"
+                />
+                <button type="submit" className="w-full py-5 rounded-2xl font-black text-xl bg-blue-600 text-white hover:bg-blue-700 shadow-xl shadow-blue-200 transition-all">
+                  Confirm & Login
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
     </main>
   )
 }
+
+
+
+
+          
