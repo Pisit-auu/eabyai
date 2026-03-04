@@ -29,7 +29,9 @@ export default defineConfig({
     // baseURL: 'http://localhost:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-     baseURL: 'https://ea-by-ai.com'
+      baseURL: 'https://ea-by-ai.com',
+    storageState: 'auth.json',
+    trace: 'on-first-retry',
   },
 
   /* Configure projects for major browsers */
@@ -38,6 +40,8 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
+
+
 
     /* Test against mobile viewports. */
     // {
