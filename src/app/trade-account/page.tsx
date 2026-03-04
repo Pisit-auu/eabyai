@@ -290,7 +290,7 @@ export default function UserPage() {
               
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                 <div className="md:col-span-5 space-y-2">
-                  <label className="text-sm font-semibold text-slate-600 pl-1">Trading ID</label>
+                  <label className="text-sm font-semibold text-slate-600 pl-1">Trading Account ID</label>
                   <input 
                     type="text" 
                     placeholder="Ex. 88990011" 
@@ -393,7 +393,7 @@ export default function UserPage() {
               <div>
                 
                 <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Platform ID</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Tradding Account ID</label>
                 <input
                   type="number"
                   min={0}
@@ -468,8 +468,8 @@ export default function UserPage() {
                       styles={{ body: { padding: '20px' } }}
                     >
                       <div className="flex items-start justify-between mb-2">
-                        <Tag color={account.connect === 'true' ? 'success' : 'error'} className="m-0 px-3 py-0.5 rounded-full uppercase text-xs font-bold">
-                           {account.connect === 'true' ? 'Connected' : 'Disconnected'}
+                        <Tag color={'success'} className="m-0 px-3 py-0.5 rounded-full uppercase text-xs font-bold">
+                           {'Connected'}
                         </Tag>
                         <span className="text-xs text-slate-400">{new Date(account.createdAt).toLocaleDateString()}</span>
                       </div>
@@ -480,7 +480,7 @@ export default function UserPage() {
                             size={48}
                             icon={<UserOutlined />}
                             style={{
-                              backgroundColor: account?.connect === 'true' ? '#52c41a' : '#ff4d4f',
+                              backgroundColor: '#52c41a',
                               border: '2px solid white',
                               boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                             }}

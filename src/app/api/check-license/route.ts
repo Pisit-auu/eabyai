@@ -95,23 +95,23 @@ export async function POST(req: Request) {
       }
     });
 
-    // --- ⛔ ด่านที่ 1: มี License นี้ในระบบไหม? ---
+    // ---  ด่านที่ 1: มี License นี้ในระบบไหม? ---
     if (!license) {
       return NextResponse.json({ status: "FAIL", message: "License key not found" });
     }
 
-    // --- ⛔ ด่านที่ 2: License โดนสั่งปิด (Banned) หรือไม่? ---
+    // ---  ด่านที่ 2: License โดนสั่งปิด (Banned) หรือไม่? ---
     if (!license.active) {
       return NextResponse.json({ status: "FAIL", message: "License is not active" });
     }
 
-    // --- ⛔ ด่านที่ 3: หมดอายุหรือยัง? ---
+    // ---  ด่านที่ 3: หมดอายุหรือยัง? ---
     // เช็คว่ามีวันหมดอายุไหม และ วันปัจจุบันเลยกำหนดหรือยัง
     if (license.expireDate && license.expire ) {
       return NextResponse.json({ status: "FAIL", message: "License Expired" });
     }
 
-    // --- ⛔ ด่านที่ 4: เลขพอร์ตตรงกันไหม? (สำคัญมาก) ---
+    // ---  ด่านที่ 4: เลขพอร์ตตรงกันไหม? (สำคัญมาก) ---
     // แปลงเป็น String ทั้งคู่เพื่อความชัวร์เวลาเทียบ
     if (String(license.platformAccountId) !== String(accountId)) {
       return NextResponse.json({ 
@@ -120,7 +120,7 @@ export async function POST(req: Request) {
       });
     }
 
-    // --- ⛔ ด่านที่ 5: คู่เงินตรงกันไหม? (1 License = 1 คู่เงิน) ---
+    // ---  ด่านที่ 5: คู่เงินตรงกันไหม? (1 License = 1 คู่เงิน) ---
     // ถ้าใน DB เป็น "ALL" ให้ผ่าน, ถ้าไม่ใช่ ต้องตรงกันเป๊ะๆ (เช่น XAUUSD == XAUUSD)
     if (license.model.nameSymbol !== "ALL" && license.model.nameSymbol !== symbol) {
       return NextResponse.json({ 
@@ -129,7 +129,7 @@ export async function POST(req: Request) {
       });
     }
 
-    // --- ⛔ ด่านที่ 6: Timeframe ตรงกันไหม? ---
+    // ---  ด่านที่ 6: Timeframe ตรงกันไหม? ---
     if (license.model.timeframeName !== "ALL" && license.model.timeframeName !== timeframe) {
       return NextResponse.json({ 
         status: "FAIL", 
@@ -137,7 +137,7 @@ export async function POST(req: Request) {
       });
     }
 
-    // --- ⛔ ด่านที่ 7: Platform ตรงกันไหม? ---
+    // ---   ด่านที่ 7: Platform ตรงกันไหม? ---
     if (license.model.PlatformName !== "ALL" && license.model.PlatformName !== platform) {
        return NextResponse.json({
          status: "FAIL",

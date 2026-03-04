@@ -97,7 +97,7 @@ useEffect(() => {
           server: record.license.tradeAccount.Server,
           symbol: record.license.model.nameSymbol,
           license: record.license.licensekey,
-          expireDate : record.license.expireDate
+          nameEA : record.license.nameEA
         });
        // console.log(res.data)
 
