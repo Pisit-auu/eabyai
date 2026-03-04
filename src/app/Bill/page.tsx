@@ -170,7 +170,7 @@ const purchecsefreebill = async (bill:BillType) => {
         server: bill.license.tradeAccount.Server,
         symbol: bill.license.model.nameSymbol,
         license:bill.license.licensekey,
-        expireDate : bill.license.expireDate
+        nameEA : bill.license.nameEA
       });
    //   console.log(res.data)
       setSelectedStats(res.data);

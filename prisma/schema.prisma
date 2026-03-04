@@ -2,7 +2,7 @@
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
-}
+}cd
 
 datasource db {
   provider = "postgresql"

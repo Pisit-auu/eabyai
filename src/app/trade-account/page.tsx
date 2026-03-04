@@ -290,7 +290,7 @@ export default function UserPage() {
               
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                 <div className="md:col-span-5 space-y-2">
-                  <label className="text-sm font-semibold text-slate-600 pl-1">Trading ID</label>
+                  <label className="text-sm font-semibold text-slate-600 pl-1">Trading Account ID</label>
                   <input 
                     type="text" 
                     placeholder="Ex. 88990011" 
@@ -393,7 +393,7 @@ export default function UserPage() {
               <div>
                 
                 <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Platform ID</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Tradding Account ID</label>
                 <input
                   type="number"
                   min={0}
