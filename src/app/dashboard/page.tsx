@@ -96,7 +96,6 @@ export default function Dashborad() {
       // ดึงข้อมูล ID/Pass/Server จาก TraderAccount ที่มีอยู่ใน State (traderAccountAll)
       const accData = traderAccountAll.find(a => a.platformAccountId === platform.platformAccountId);
       settimeframegraph(platform.model.timeframeName)
-     // console.log(traderAccountAll)
       if (!accData) return alert("Account data not found");
       const res = await axios.post("/api/account/details", {
         accountId: parseInt(accData.platformAccountId),
@@ -104,7 +103,7 @@ export default function Dashborad() {
         server: accData.Server,
         symbol: platform.model.nameSymbol,
         license: platform.licensekey,
-        expireDate : platform.expireDate
+        nameEA : platform.nameEA
       });
      // console.log(res.data)
       setSelectedStats(res.data);
