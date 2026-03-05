@@ -18,6 +18,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   tradeAccounts TradeAccount[]
+  setupProgress Int[]          @default([])
  
 }
 enum role {

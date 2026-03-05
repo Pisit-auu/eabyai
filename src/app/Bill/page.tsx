@@ -251,12 +251,12 @@ const fetchData = useCallback(async () => {
         {/* Sidebar */}
         <aside className={`bg-[#1E293B] transition-all duration-300 shadow-xl z-20 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
           <div className={`w-64 flex flex-col py-6 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                           <SidebarItem label="Document " href="/document" />
-                          <SidebarItem label="Dashboard" href="/dashboard" />
-                          <SidebarItem label="User Profile" href="/user" />
-                          <SidebarItem label="Trade Account" href="/trade-account" />
-                          <SidebarItem label="Expert Advisor" href="/EA" />
-                          <SidebarItem label="Billing" href="/Bill" />
+                                <SidebarItem label="User" href="/user" />
+                                                            <SidebarItem label="Dashboard" href="/dashboard" />
+                                                            <SidebarItem label="Trade Account" href="/trade-account" />
+                                                            <SidebarItem label="Expert Advisor" href="/EA" />
+                                                            <SidebarItem label="Billing" href="/Bill" />
+                                                            <SidebarItem label="Document " href="/document" />
           </div>
         </aside>
 

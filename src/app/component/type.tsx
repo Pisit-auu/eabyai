@@ -11,6 +11,7 @@ type UserType = {
   emailVerified: string;
   image: string | null;
   role : string;
+  setupProgress: number[];
 };
 type BillType = {
   id: number;

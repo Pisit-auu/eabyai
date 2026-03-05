@@ -17,17 +17,16 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity:0;
-    transform: translateY(20px);
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
   }
-  to {
-    opacity:1;
-    transform: translateY(0);
+  100% {
+    transform: translateX(-50%);
   }
 }
 
-.animate-fadeIn{
-  animation:fadeIn 0.8s ease;
+.animate-scroll {
+  animation: scroll 25s linear infinite;
 }

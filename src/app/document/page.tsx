@@ -29,12 +29,12 @@ const DocumentationPage = () => {
             <h2 className="text-white font-bold text-xl tracking-tight">EA </h2>
           </div>
           <nav className="flex flex-col">
-                   <SidebarItem label="Document " href="/document" />
-                                     <SidebarItem label="Dashboard" href="/dashboard" />
-                                     <SidebarItem label="User Profile" href="/user" />
-                                     <SidebarItem label="Trade Account" href="/trade-account" />
-                                     <SidebarItem label="Expert Advisor" href="/EA" />
-                                     <SidebarItem label="Billing" href="/Bill" />
+                            <SidebarItem label="User" href="/user" />
+                            <SidebarItem label="Dashboard" href="/dashboard" />
+                            <SidebarItem label="Trade Account" href="/trade-account" />
+                            <SidebarItem label="Expert Advisor" href="/EA" />
+                            <SidebarItem label="Billing" href="/Bill" />
+                            <SidebarItem label="Document " href="/document" />
           </nav>
         </div>
       </aside>
@@ -84,6 +84,7 @@ const DocumentationPage = () => {
             <Link href="https://youtu.be/xeLtkYELNwI?si=ueideVGX3PaVHR6w" className="flex items-center gap-2 group">
               <div className="w-1.5 h-5 bg-blue-500 rounded-full group-hover:scale-110 transition" />
                 <p className="text-slate-500 text-sm italic">click เพื่อดูขั้นตอนการใช้งานแบบวิดีโอ บน Youtube ของเรา</p>
+
             </Link>
 
 
@@ -165,6 +166,11 @@ const DocumentationPage = () => {
                 <div className="flex items-center gap-3 mb-6">
                   <span className="flex-shrink-0 w-8 h-8 bg-slate-800 text-white rounded-full flex items-center justify-center font-bold">4</span>
                   <h3 className="font-bold text-lg text-slate-800">การติดตั้งบน MetaTrader 5 (MT5)</h3>
+                                 <Link href="https://youtu.be/xeLtkYELNwI?si=ueideVGX3PaVHR6w" className="flex items-center gap-2 group">
+              <div className="w-1.5 h-5 bg-blue-500 rounded-full group-hover:scale-110 transition" />
+                <p className="text-slate-500 text-sm italic">วิธีติดตั้ง EA บนเครื่อง</p>
+                
+            </Link>
                 </div>
                 
                 <div className="ml-0 md:ml-11 space-y-10">

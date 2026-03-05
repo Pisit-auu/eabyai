@@ -50,7 +50,7 @@ export default function SignInPage() {
   const handleVerify = (e: React.FormEvent) => {
     e.preventDefault()
     if (otp.length !== 6) return alert("กรอกรหัสให้ครบ 6 หลัก")
-    const destination = '/document'
+    const destination = '/user'
     window.location.href = `/api/auth/callback/email?email=${encodeURIComponent(email)}&token=${otp}&callbackUrl=${encodeURIComponent(destination)}`
   }
   
@@ -75,7 +75,7 @@ export default function SignInPage() {
       </nav>
 
       {/* 2. HERO SECTION - Light Theme (White) */}
-      <section className="relative overflow-hidden bg-white py-20 md:py-32 mb-24">
+      <section className="relative overflow-hidden bg-white py-20 md:py-32 ">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="z-10 text-center lg:text-left">
             <h1 className="text-6xl md:text-7xl font-black mb-6 tracking-tight leading-[1.1]">
@@ -97,16 +97,144 @@ export default function SignInPage() {
             <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-[#1E293B]/5 aspect-video">
               <iframe 
                 className="w-full h-full" 
-                src="https://www.youtube.com/embed/xeLtkYELNwI?autoplay=1&mute=1&loop=1&playlist=xeLtkYELNwI" 
+                src="https://www.youtube.com/embed/y18H8TJYhA4?autoplay=1&mute=1&loop=1&playlist=y18H8TJYhA4" 
                 allowFullScreen
               ></iframe>
             </div>
           </div>
+          
         </div>
+
+
+     <section className="bg-white py-24 overflow-hidden">
+
+  <div className="max-w-7xl mx-auto px-6">
+
+
+    <div className="flex gap-8 animate-scroll w-max">
+
+      {/* CARD */}
+      <div className="group flex gap-6 p-8 rounded-[2rem]
+      bg-gradient-to-br from-slate-50 to-white
+      border border-slate-200
+      min-w-[360px]
+      shadow-sm
+      hover:shadow-xl
+      hover:-translate-y-1
+      transition duration-300">
+
+        <div className="w-14 h-14 rounded-2xl
+        bg-gradient-to-br from-emerald-400 to-teal-500
+        flex items-center justify-center text-white shadow-md">
+          🔐
+        </div>
+
+        <div>
+          <h4 className="text-xl font-black mb-2 text-slate-900">
+            ไม่จำกัด Trade Account
+          </h4>
+
+          <p className="text-slate-500">
+            เชื่อม Trade Account ได้ไม่จำกัด ซึ่งเชื่อมต่อง่าย ใช้แค่เพียง Trade AccountId และ Investor Password
+          </p>
+        </div>
+
+      </div>
+
+      {/* CARD */}
+      <div className="group flex gap-6 p-8 rounded-[2rem]
+      bg-gradient-to-br from-slate-50 to-white
+      border border-slate-200
+      min-w-[360px]
+      shadow-sm
+      hover:shadow-xl
+      hover:-translate-y-1
+      transition duration-300">
+
+        <div className="w-14 h-14 rounded-2xl
+        bg-gradient-to-br from-purple-400 to-pink-500
+        flex items-center justify-center text-white shadow-md">
+          🤖
+        </div>
+
+        <div>
+          <h4 className="text-xl font-black mb-2 text-slate-900">
+            ผู้ใช้สร้าง Model ด้วยตัวเอง
+          </h4>
+
+          <p className="text-slate-500">
+            ผู้ใช้สามารถเลือก Model ตาม Timeframe และ Symbol ที่จะเชื่อมกับ Trade Account ได้ตามต้องการ
+          </p>
+        </div>
+
+      </div>
+
+      {/* CARD */}
+      <div className="group flex gap-6 p-8 rounded-[2rem]
+      bg-gradient-to-br from-slate-50 to-white
+      border border-slate-200
+      min-w-[360px]
+      shadow-sm
+      hover:shadow-xl
+      hover:-translate-y-1
+      transition duration-300">
+
+        <div className="w-14 h-14 rounded-2xl
+        bg-gradient-to-br from-cyan-400 to-blue-500
+        flex items-center justify-center text-white shadow-md">
+          📊
+        </div>
+
+        <div>
+          <h4 className="text-xl font-black mb-2 text-slate-900">
+            มี Dashboard ที่ใช้งานง่าย
+          </h4>
+
+          <p className="text-slate-500">
+           ผู้ใช้สามารถดู Total,Equipty,Graph,Profit และ Trade History ได้ทันที 
+          </p>
+        </div>
+
+      </div>
+
+      {/* CARD */}
+      <div className="group flex gap-6 p-8 rounded-[2rem]
+          bg-gradient-to-br from-slate-50 to-white
+          border border-slate-200
+          min-w-[360px]
+          shadow-sm
+          hover:shadow-xl
+          hover:-translate-y-1
+          transition duration-300">
+
+        <div className="w-14 h-14 rounded-2xl
+        bg-gradient-to-br from-orange-400 to-red-500
+        flex items-center justify-center text-white shadow-md">
+          💰
+        </div>
+
+        <div>
+          <h4 className="text-xl font-black mb-2 text-slate-900">
+            ระบบ Bill
+          </h4>
+
+          <p className="text-slate-500">
+            แสดงกำไร จุดเข้าเทรด และรายประวัติการเทรด ทำให้ผู้ใช้ สามารถตรวจสอบความถูกต้องได้
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
       </section>
+    {/* 2. SERVICE INFO SECTION - Light Theme (White) */}
 
       {/* 3. MODEL DETAILS SECTION - Dark Theme (#1E293B) */}
-<section className="bg-[#1E293B] py-24 text-white rounded-t-[0.5rem] -mt-10 relative z-10">
+<section className="bg-gradient-to-b from-slate-950 via-slate-900 to-black  py-24 text-white rounded-t-[0.5rem] -mt-10 relative z-10">
   <div className="max-w-7xl mx-auto px-6">
     {/* Header */}
     <div className="flex flex-col items-center mb-16 text-center">
@@ -346,7 +474,7 @@ export default function SignInPage() {
             </div>
             <div>
               <h4 className="text-xl font-black mb-2 text-emerald-900 uppercase tracking-tight">Profit Sharing</h4>
-              <p className="text-emerald-700 leading-relaxed">คิดค่าบริการจากกำไรจริงเท่านั้น หากไม่มีกำไร <span className="font-bold underline">เราไม่คิดค่าบริการใดๆ</span> ให้คุณได้มั่นใจในประสิทธิภาพ</p>
+              <p className="text-emerald-700 leading-relaxed">คิดค่าบริการจากเพียง 10% จากกำไรจริงเท่านั้น หากไม่มีกำไร <span className="font-bold underline">เราไม่คิดค่าบริการใดๆ</span> ให้คุณได้มั่นใจในประสิทธิภาพ</p>
             </div>
           </div>
         </div>
@@ -363,11 +491,12 @@ export default function SignInPage() {
       >
         <div className="text-center space-y-8">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-[2rem] bg-[#1E293B] text-white shadow-2xl">
-            <span className="text-2xl font-black italic">EA.AI</span>
+            <span className="text-2xl font-black italic ">EA</span>
+            <span className="text-2xl font-black italic text-blue-400 ">.AI</span>
           </div>
           <div>
             <h2 className="text-3xl font-black text-slate-800">Welcome</h2>
-            <p className="text-slate-400 font-medium text-sm mt-2">Login to your AI Trading Dashboard</p>
+            <p className="text-slate-400 font-medium text-sm mt-2">ไม่ต้องสมัครสมาชิก ใช้เพียงแค่ Email</p>
           </div>
           
           <form onSubmit={handleLogin} className="space-y-4">

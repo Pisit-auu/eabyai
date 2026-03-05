@@ -7,10 +7,10 @@ import { useRouter } from "next/navigation"
 import SidebarItem from "@/app/component/sidebar"
 import Navbar from "@/app/component/header"
 import axios from 'axios';
-import { Select, Avatar, Card, message, Tag, Button, Empty, Spin,Popconfirm  } from 'antd';
+import { Select, Avatar, Card, message, Tag, Button, Empty, Spin,Popconfirm , Modal  } from 'antd';
 import { 
   EditOutlined, 
-  PlusOutlined, 
+  InfoCircleOutlined, 
   ReloadOutlined,
   UserOutlined,
   DesktopOutlined,
@@ -26,6 +26,8 @@ export default function UserPage() {
     const [platformedit, setplatformedit] = useState("")
     const [accountid, setaccountid] = useState("")
     const [investorPasswordedit, setInvestoredit] = useState("")
+      const [investordetailopen, setinvestordetailopen] = useState(false)
+      const [tradaccountdetailopen, settradaccountdetailopen] = useState(false)
     const onClose = () => {
       setisEditAccountOpen(false)
     }
@@ -113,6 +115,7 @@ export default function UserPage() {
       setTraderAccountAll(getTraderAccount.data);
        const response = await axios.get(`/api/user/${session.user.email}`);
       const user = response.data;
+      
       setUserData(user[0]);
 
     } catch (error) {
@@ -133,6 +136,7 @@ export default function UserPage() {
   }
 
   const handleAddTrader = async () => {
+
     if(idTrader === "" || !platformSelect){
       alert("กรุณากรอก ID และเลือก Platform")
       return
@@ -145,12 +149,24 @@ export default function UserPage() {
         alert("รหัสต้องความยาว 8 ตัวอักษร และ รหัสผ่านต้องมีตัวเลข ตัวอักษร และอักขระพิเศษอย่างน้อย 1 ตัว");
         return
       }
+          if( userData.setupProgress.length  === 0){
+         const result = confirm("คุณต้องการข้าม step ที่ 1 หรือไม่");
+             
+        if (result) {
+            await axios.put(`/api/user/${session?.user?.email}`, { 
+            stepId: 1
+        });
 
+        } else {
+          router.push('/user')
+          return
+        }
+      }
     setIsSubmitting(true);
     // console.log(idTrader)
     // console.log(platformSelect)
     // console.log(session?.user?.email)
-    
+
     try {
       await axios.post('/api/tradeaccount', { 
         platformAccountId: idTrader,
@@ -158,7 +174,10 @@ export default function UserPage() {
         PlatformName: platformSelect, 
         user : session?.user?.email
       })
-      
+     await axios.put(`/api/user/${session?.user?.email}`, { 
+          stepId: 2
+      });
+      window.location.reload()
       // Reset Form
       setIdTrader("")
       setInvestorPW("")
@@ -170,6 +189,7 @@ export default function UserPage() {
     } catch (error) {
       console.error(error)
       alert('เกิดข้อผิดพลาด กรุณาลองใหม่')
+      window.location.reload()
     } finally {
       setIsSubmitting(false);
     }
@@ -250,12 +270,12 @@ export default function UserPage() {
               <aside className={`bg-[#1E293B] transition-all duration-300 shadow-xl z-20 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
                 <div className={`w-64 flex flex-col py-6 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                    
-                                  <SidebarItem label="Document " href="/document" />
+                                                    <SidebarItem label="User" href="/user" />
                                                     <SidebarItem label="Dashboard" href="/dashboard" />
-                                                    <SidebarItem label="User Profile" href="/user" />
                                                     <SidebarItem label="Trade Account" href="/trade-account" />
                                                     <SidebarItem label="Expert Advisor" href="/EA" />
                                                     <SidebarItem label="Billing" href="/Bill" />
+                                                    <SidebarItem label="Document " href="/document" />
                 </div>
               </aside>
 
@@ -269,7 +289,7 @@ export default function UserPage() {
               <div>
                 <h1 className="text-2xl font-bold text-slate-800">Account Management</h1>
                 <p className="text-slate-500 text-sm mt-1">
-                  Manage your trading accounts linked to <span className="font-semibold text-blue-600">{session?.user?.email}</span>
+                  เชื่อมต่อ Tradding Account กับบัญชี <span className="font-semibold text-blue-600">{session?.user?.email}</span>
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -284,13 +304,17 @@ export default function UserPage() {
             <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
               <div className="flex items-center gap-2 mb-6">
                 <div className="bg-blue-600 p-2 rounded-lg">
+ 
                 </div>
                 <h2 className="text-lg font-bold text-slate-700">Add New Account</h2>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                 <div className="md:col-span-5 space-y-2">
-                  <label className="text-sm font-semibold text-slate-600 pl-1">Trading Account ID</label>
+                  <label className="text-sm font-semibold text-slate-600 pl-1 pr-1">Trading Account ID</label>
+                   <button onClick={() => settradaccountdetailopen(true)}>
+                    <InfoCircleOutlined style={{ color: "blue" }} />
+                  </button>
                   <input 
                     type="text" 
                     placeholder="Ex. 88990011" 
@@ -324,7 +348,10 @@ export default function UserPage() {
                   />
                 </div>
                        <div className="md:col-span-5 space-y-2">
-                  <label className="text-sm font-semibold text-slate-600 pl-1">Investor Password</label>
+                  <label className="text-sm font-semibold text-slate-600 pl-1 mr-1">Investor Password</label>
+                    <button onClick={() => setinvestordetailopen(true)}>
+                    <InfoCircleOutlined style={{ color: "blue" }} />
+                  </button>
                   <input 
                     type="text" 
                     placeholder="Ex. 123456aB@" 
@@ -531,6 +558,40 @@ export default function UserPage() {
             </div>
 
           </div>
+          <Modal
+              title=" วิดีโอสอนตั้งค่าTrading Account ID"
+              open={tradaccountdetailopen}
+              onCancel={() => settradaccountdetailopen(false)}
+              footer={null}
+              width={900}
+              centered
+              destroyOnHidden
+            >
+              <div className="aspect-video w-full overflow-hidden rounded-xl">
+                <iframe
+                  className="w-full h-full"
+                  src="https://www.youtube.com/embed/RNERTpex5d8?start=0"
+                  allowFullScreen
+                />
+              </div>
+            </Modal>
+          <Modal
+              title=" วิดีโอสอนการตั้งค่า Investor Password"
+              open={investordetailopen}
+              onCancel={() => setinvestordetailopen(false)}
+              footer={null}
+              width={900}
+              centered
+              destroyOnHidden
+            >
+              <div className="aspect-video w-full overflow-hidden rounded-xl">
+                <iframe
+                  className="w-full h-full"
+                  src="https://www.youtube.com/embed/RNERTpex5d8?start=14"
+                  allowFullScreen
+                />
+              </div>
+            </Modal>
         </main>
       </div>
     </div>

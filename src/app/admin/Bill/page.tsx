@@ -300,21 +300,21 @@ useEffect(() => {
              <div className="flex gap-4">
                           {/* ... (โค้ดกล่อง Total Trades, Win Rate, Profit ของคุณเหมือนเดิม) ... */}
                           <div className="flex-1 p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
-                            <p className="text-blue-500 text-[11px] font-bold uppercase tracking-wider mb-1">ชำระแล้ว</p>
-                            <p className="text-2xl font-black text-blue-700 leading-none">
+                            <p className="text-green-500 text-[11px] font-bold uppercase tracking-wider mb-1">ชำระแล้ว</p>
+                            <p className="text-2xl font-black text-green-400 leading-none">
                               {Paid}
                             </p>
                           </div>
 
                           <div className="flex-1 p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
-                            <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider mb-1">ยังไม่ชำระ</p>
-                            <p className="text-2xl font-black text-slate-800 leading-none">
+                            <p className="text-red-400 text-[11px] font-bold uppercase tracking-wider mb-1">ยังไม่ชำระ</p>
+                            <p className="text-2xl font-black text-red-400 leading-none">
                               {unPaid}
                             </p>
                           </div>
                           <div className="flex-1 p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
-                            <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider mb-1">ยังไม่ถึงกำหนดชำระ</p>
-                            <p className="text-2xl font-black text-slate-800 leading-none">
+                            <p className="text-yellow-500  text-[11px] font-bold uppercase tracking-wider mb-1">ยังไม่ถึงกำหนดชำระ</p>
+                            <p className="text-2xl font-black text-yellow-400 leading-none">
                               {unPaidnotExpired}
                             </p>
                           </div>
@@ -323,7 +323,7 @@ useEffect(() => {
                             }`}
                           >
                             <p className={`text-[11px] font-bold uppercase tracking-wider mb-1 ${
-                              Number(selectedStats?.filtered_profit) >= 0 ? 'text-blue-600' : 'text-red-500'
+                              Number(selectedStats?.filtered_profit) >= 0 ? 'text-blue-500' : 'text-blue-500'
                             }`}>
                               รายได้ที่ได้รับทั้งหมด นับแค่ตั้งแต่ 3.3 USD ขึ้นไป 
                             </p>

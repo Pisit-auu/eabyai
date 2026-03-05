@@ -34,7 +34,9 @@ export default function Navbar({
           </svg>
         </button>
         <Link href={'/EA'}> <span className="text-4xl font-black text-white italic tracking-tighter">
-          EA
+           <span className="text-4xl font-black text-white tracking-tight">
+            EA<span className="text-blue-400">.AI</span>
+          </span>
         </span> </Link>
        
       </div>
@@ -50,7 +52,7 @@ export default function Navbar({
             {/* 3. แทนที่ SVG เดิมด้วย Ant Design Avatar */}
             <Avatar 
               size={42} // ขนาดใกล้เคียงเดิม (w-10 h-10 คือ 40px)
-              src={userImage} // ใส่ URL รูปตรงนี้
+              src={userImage|| undefined } // ใส่ URL รูปตรงนี้
               icon={<UserOutlined />} // ถ้าไม่มีรูป ให้โชว์ไอคอนนี้แทน
               className="border-2 border-slate-500 bg-slate-700 cursor-pointer"
             />

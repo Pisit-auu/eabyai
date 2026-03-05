@@ -3,7 +3,7 @@
 import { useSession, signOut } from "next-auth/react"
 import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
-
+import SetupGuideWidget from "@/app/component/tipforuser"
 import SidebarItem from "@/app/component/sidebar"
 import Navbar from "@/app/component/header"
 import axios from 'axios';
@@ -26,7 +26,7 @@ export default function UserProfilePage() {
 
   // User Data State
   const [name, setName] = useState("")
-  const [image, setImage] = useState("") // ใช้ตัวนี้ตัวเดียว ทั้งเก็บข้อมูลและอัปโหลด
+  const [image, setImage] = useState<string | null>(null) // ใช้ตัวนี้ตัวเดียว ทั้งเก็บข้อมูลและอัปโหลด
   const [userData, setUserData] = useState<any>(null)
   const [file, setFile] = useState<File | null>(null)
 
@@ -108,11 +108,12 @@ export default function UserProfilePage() {
       await axios.put(`/api/user/${session.user.email}`, { 
         email: session.user.email,
         name: name,
-        image: image // ส่ง URL รูปภาพไปอัปเดต
+        image: image, // ส่ง URL รูปภาพไปอัปเดต
+        stepId: 1
       });
-      
+      window.location.reload()
       message.success("อัปเดตโปรไฟล์สำเร็จ");
-      fetchUserData(); // ดึงข้อมูลใหม่มาแสดง
+    
       
     } catch (error) {
       console.error("Update Error:", error);
@@ -134,17 +135,17 @@ export default function UserProfilePage() {
         isAdmin={session?.user.role === 'admin'}
         userImage={userData?.image || session?.user?.image}
       />
-
+      
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <aside className={`bg-[#1E293B] transition-all duration-300 shadow-xl z-20 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
           <div className={`w-64 flex flex-col py-6 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                 <SidebarItem label="Document " href="/document" />
+                                   <SidebarItem label="User" href="/user" />
                                    <SidebarItem label="Dashboard" href="/dashboard" />
-                                   <SidebarItem label="User Profile" href="/user" />
                                    <SidebarItem label="Trade Account" href="/trade-account" />
                                    <SidebarItem label="Expert Advisor" href="/EA" />
                                    <SidebarItem label="Billing" href="/Bill" />
+                                   <SidebarItem label="Document " href="/document" />
           </div>
         </aside>
 
@@ -282,6 +283,7 @@ export default function UserProfilePage() {
               </div>
             )}
           </div>
+
         </main>
       </div>
     </div>

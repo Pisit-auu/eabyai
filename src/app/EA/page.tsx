@@ -15,14 +15,15 @@ import {
   UserOutlined,
   DesktopOutlined,
   DeleteOutlined,
-  DownloadOutlined
+  DownloadOutlined,
+  InfoCircleOutlined
 } from '@ant-design/icons';
-import { InfoCircleOutlined } from "@ant-design/icons";
 
 
 export default function EA() {
   const router = useRouter()
   const { data: session, status } = useSession()
+  const [downloaddetailopen, setdownloaddetailopen] = useState(false)
 
   // --- DATA STATES ---
   const [SymbolAll, setSymbolAll] = useState<SymbolType[]>([])
@@ -52,6 +53,7 @@ export default function EA() {
   const [timeframeSelect, settimeframeSelect] = useState<string | null>(null)
   const [ModelSelect, setModelSelect] = useState<string | null>(null)
   const [comissionofModelselect, setcomissionofModelselect] = useState(0)
+      const [eadetailopen, seteadetailopen] = useState(false)
 
   // --- EDIT MODAL STATES ---
   const [isViewOpen, setIsViewOpen] = useState(false)
@@ -238,10 +240,16 @@ export default function EA() {
 
       await axios.post('/api/license', payload);
       message.success("เพิ่มสำเร็จ");
+
+      
       await axios.put(`/api/model/${ModelSelect}` , {
             downloadCount : 1
       }
       );
+      await axios.put(`/api/user/${session?.user?.email}`, { 
+          stepId: 3
+      });
+      window.location.reload()
       setSymbolSelect(null);
       settimeframeSelect(null);
       settradderAccountSelect(null);
@@ -281,7 +289,6 @@ export default function EA() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const [modeldetailopen, setmodeldetailopen] = useState(false)
-  const [ Documentopen , setDocumentopen] = useState(false)
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const openPreview = (src: string) => {
   setPreviewImage(src);
@@ -298,13 +305,12 @@ export default function EA() {
 
       <div className="flex flex-1 overflow-hidden">
         <aside className={`bg-[#1E293B] transition-all duration-300 shadow-xl z-20 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
-          <div className={`w-64 flex flex-col py-6 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                         <SidebarItem label="Document " href="/document" />
-                                           <SidebarItem label="Dashboard" href="/dashboard" />
-                                           <SidebarItem label="User Profile" href="/user" />
-                                           <SidebarItem label="Trade Account" href="/trade-account" />
-                                           <SidebarItem label="Expert Advisor" href="/EA" />
-                                           <SidebarItem label="Billing" href="/Bill" />
+          <div className={`w-64 flex flex-col py-6 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>                                                            <SidebarItem label="User" href="/user" />
+                                                            <SidebarItem label="Dashboard" href="/dashboard" />
+                                                            <SidebarItem label="Trade Account" href="/trade-account" />
+                                                            <SidebarItem label="Expert Advisor" href="/EA" />
+                                                            <SidebarItem label="Billing" href="/Bill" />
+                                                            <SidebarItem label="Document " href="/document" />
           </div>
         </aside>
 
@@ -325,15 +331,25 @@ export default function EA() {
                   Total Your EA: {licenseall.length}
                 </div>
                 
-                {licenseall.length !== 0 && (
-                  <Button
-                    icon={<DownloadOutlined />}
-                    onClick={handleDownloadEA}
-                    className="!bg-green-500 hover:!bg-green-400 !border-none !text-white"
-                  >
-                    Download EA
-                  </Button>
-                )}
+             {licenseall.length !== 0 && (
+              <>
+                <Button
+                  icon={<DownloadOutlined />}
+                  onClick={handleDownloadEA}
+                  className="!bg-green-500 hover:!bg-green-400 !border-none !text-white"
+                >
+                  Download EA
+                </Button>
+
+                <Button
+                  icon={<InfoCircleOutlined />}
+                  onClick={() => setdownloaddetailopen(true)}
+                  className="!bg-blue-500 hover:!bg-blue-400 !border-none !text-white"
+                >
+                  วิธีติดตั้ง EA บนเครื่อง
+                </Button>
+              </>
+            )}
 
                 <Button 
                   shape="circle" 
@@ -352,19 +368,23 @@ export default function EA() {
                     <div className="bg-blue-600 p-2 rounded-lg">
                     </div>
                     <h2 className="text-lg font-bold text-slate-700">Add New your Expert Advisor</h2>
+                           <button onClick={() => seteadetailopen(true)}>
+                    <InfoCircleOutlined style={{ color: "blue" }} />
+                  </button>
               
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
               
                 <div className="md:col-span-5 space-y-2">
-                  <label className="text-sm font-semibold text-slate-600 pl-1">Platform Id</label>
+                  <label className="text-sm font-semibold text-slate-600 pl-1">Trading Account ID</label>
                   <Select
                     className="w-full h-[46px]"
                     size="large"
-                    placeholder="Select Platform Id"
+                    placeholder="Select Trading AccountID"
                     value={tradderAccountSelect}
                     onChange={onChangePlatformId}
+                    notFoundContent={<Empty description="ไม่พบ Trading Account โปรดเพิ่มบัญชีที่หน้า Trade Account" />}
                     options={traderAccountAll.map((item) => ({
                       value: item.platformAccountId,
                       label: (
@@ -417,9 +437,9 @@ export default function EA() {
                 <div className="md:col-span-5 space-y-2">
                  <label className="flex items-center gap-2 text-sm font-semibold text-slate-600 pl-1">
   name EA (model)
-  <button onClick={() => setmodeldetailopen(true)}>
-    <InfoCircleOutlined className="text-blue-500" />
-  </button>
+        <button onClick={() => setmodeldetailopen(true)}>
+          <InfoCircleOutlined style={{ color: "blue" }} />
+        </button>
 </label>
                     { availableModelsForAdd.length > 0 ? (
                         <Select
@@ -938,6 +958,40 @@ export default function EA() {
             </div>
 
           </div>
+           <Modal
+              title=" วิดีโอสอนตั้งค่าTrading Account ID"
+              open={eadetailopen}
+              onCancel={() => seteadetailopen(false)}
+              footer={null}
+              width={900}
+              centered
+              destroyOnHidden
+            >
+              <div className="aspect-video w-full overflow-hidden rounded-xl">
+                <iframe
+                  className="w-full h-full"
+                  src="https://www.youtube.com/embed/RNERTpex5d8?start=55"
+                  allowFullScreen
+                />
+              </div>
+            </Modal>
+                      <Modal
+              title=" วิดีโอสอนตั้งค่าTrading Account ID"
+              open={downloaddetailopen}
+              onCancel={() => setdownloaddetailopen(false)}
+              footer={null}
+              width={900}
+              centered
+              destroyOnHidden
+            >
+              <div className="aspect-video w-full overflow-hidden rounded-xl">
+                <iframe
+                  className="w-full h-full"
+                  src="https://www.youtube.com/embed/s9-dUuK4r3Y?start=0"
+                  allowFullScreen
+                />
+              </div>
+            </Modal>
         </main>
       </div>
     </div>

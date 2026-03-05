@@ -539,7 +539,7 @@ const handleEdit = async () => {
                     
                     {/* ฝั่งซ้าย: กล่องข้อความและตัวเลข */}
                     <div>
-                      <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider mb-1">
+                      <p className="text-blue-400 text-[11px] font-bold uppercase tracking-wider mb-1">
                         จำนวน license ทั้งหมด
                       </p>
                       <p className="text-2xl font-black text-slate-800 leading-none">
