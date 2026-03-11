@@ -6,6 +6,7 @@ test.use({
 
 test('adminadddeletesymbol', async ({ page }) => {
   await page.goto('https://ea-by-ai.com/admin/setup');
+  await page.getByRole('button', { name: '✕' }).first().click();
   await page.getByText('Symbol').click();
   await page.getByRole('textbox', { name: 'ระบุชื่อ SYMBOL' }).click();
   await page.getByRole('textbox', { name: 'ระบุชื่อ SYMBOL' }).fill('ABCDEF');

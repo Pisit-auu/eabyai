@@ -6,6 +6,7 @@ test.use({
 
 test('adminadddeletetimeframe', async ({ page }) => {
   await page.goto('https://ea-by-ai.com/admin/setup');
+  await page.getByRole('button', { name: '✕' }).first().click();
   await page.getByText('Timeframe').click();
   await page.getByRole('textbox', { name: 'ระบุชื่อ TIMEFRAME' }).click();
   await page.getByRole('textbox', { name: 'ระบุชื่อ TIMEFRAME' }).fill('M30');

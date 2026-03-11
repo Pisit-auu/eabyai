@@ -6,6 +6,7 @@ test.use({
 
 test('adminadddeletesetup', async ({ page }) => {
   await page.goto('https://ea-by-ai.com/admin/setup');
+  await page.getByRole('button', { name: '✕' }).first().click();
   await page.getByText('Platform', { exact: true }).click();
   await page.getByRole('textbox', { name: 'ระบุชื่อ PLATFORM' }).click();
   await page.getByRole('textbox', { name: 'ระบุชื่อ PLATFORM' }).fill('MT4');

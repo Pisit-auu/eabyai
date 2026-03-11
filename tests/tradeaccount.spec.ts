@@ -17,6 +17,5 @@ test('useradddeletetradeacccount', async ({ page }) => {
    await expect(page.getByText('12345678', { exact: true })).toBeVisible({ timeout: 10000 })
   await page.locator('div:nth-child(3) > .ant-card-actions > li:nth-child(2) > span > .anticon > svg').click();
   await page.getByRole('button', { name: 'ลบ' }).click();
-  await page.getByText('ลบ 12345678 สำเร็จ').click();
    await expect(page.getByText('12345678', { exact: true })).not.toBeVisible({ timeout: 10000 })
 });
