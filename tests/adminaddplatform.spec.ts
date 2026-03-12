@@ -4,7 +4,7 @@ test.use({
   storageState: 'auth.json'
 });
 
-test('adminadddeletesetup', async ({ page }) => {
+test('adminadddeleteplatform', async ({ page }) => {
   await page.goto('https://ea-by-ai.com/admin/setup');
   await page.getByRole('button', { name: '✕' }).first().click();
   await page.getByText('Platform', { exact: true }).click();

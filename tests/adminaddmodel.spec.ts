@@ -10,9 +10,9 @@ test('adminadddeleteea', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Add New Model' }).click();
   await page.locator('div').filter({ hasText: /^Select a Symbol$/ }).first().click();
-  await page.getByText('EURUSD').nth(5).click();
+  await page.getByText('EURUSD').nth(4).click();
   await page.locator('div').filter({ hasText: /^Select a Timeframe$/ }).first().click();
-  await page.getByText('H1').nth(5).click();
+  await page.getByText('H1').nth(4).click();
   await page.locator('div').filter({ hasText: /^Select a Platform$/ }).first().click();
   await page.getByTitle('MT5').click();
   await page.getByRole('textbox', { name: 'ระบุชื่อ EA' }).click();

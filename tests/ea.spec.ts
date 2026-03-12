@@ -4,7 +4,7 @@ test.use({
   storageState: 'auth.json'
 });
 
-test('test', async ({ page }) => {
+test('add remove ea', async ({ page }) => {
   await page.goto('https://ea-by-ai.com/EA');
   await page.getByRole('button', { name: '✕' }).first().click();
   await page.locator('div').filter({ hasText: /^Select Trading AccountID$/ }).first().click();
