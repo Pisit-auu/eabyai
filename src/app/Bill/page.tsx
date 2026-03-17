@@ -350,7 +350,7 @@ const fetchData = useCallback(async () => {
                                   gap: "8px"
                                 }}
                                                           >
-                            <DollarOutlined className="text-lg" /> เนื่องจากได้กำไรไม่ถึง  3.3 คลิกปุ่มนี้เพื่อต่อ license
+                             เนื่องจากได้กำไรไม่ถึง 3.3 USD คลิกปุ่มนี้เพื่อต่อ license ฟรี
                           </button>
                             ]
                           : !isPaid ? [

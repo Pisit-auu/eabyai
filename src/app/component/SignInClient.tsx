@@ -97,7 +97,7 @@ export default function SignInPage() {
             <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-[#1E293B]/5 aspect-video">
               <iframe 
                 className="w-full h-full" 
-                src="https://www.youtube.com/embed/y18H8TJYhA4?autoplay=1&mute=1&loop=1&playlist=y18H8TJYhA4" 
+                src="https://www.youtube.com/embed/fSNUthpy4-c?autoplay=1&mute=1&loop=1&playlist=fSNUthpy4-c" 
                 allowFullScreen
               ></iframe>
             </div>

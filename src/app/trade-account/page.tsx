@@ -570,7 +570,7 @@ export default function UserPage() {
               <div className="aspect-video w-full overflow-hidden rounded-xl">
                 <iframe
                   className="w-full h-full"
-                  src="https://www.youtube.com/embed/RNERTpex5d8?start=0"
+                  src="https://www.youtube.com/embed/2Rngq_HoFQs?start=0"
                   allowFullScreen
                 />
               </div>
@@ -587,7 +587,7 @@ export default function UserPage() {
               <div className="aspect-video w-full overflow-hidden rounded-xl">
                 <iframe
                   className="w-full h-full"
-                  src="https://www.youtube.com/embed/RNERTpex5d8?start=14"
+                  src="https://www.youtube.com/embed/2Rngq_HoFQs?start=20"
                   allowFullScreen
                 />
               </div>

@@ -122,7 +122,10 @@ export async function POST(req: Request) {
 
     // ---  ด่านที่ 5: คู่เงินตรงกันไหม? (1 License = 1 คู่เงิน) ---
     // ถ้าใน DB เป็น "ALL" ให้ผ่าน, ถ้าไม่ใช่ ต้องตรงกันเป๊ะๆ (เช่น XAUUSD == XAUUSD)
-    if (license.model.nameSymbol !== "ALL" && license.model.nameSymbol !== symbol) {
+ 
+    const cleanSymbol = symbol.split('.')[0];
+
+    if (license.model.nameSymbol !== "ALL" && license.model.nameSymbol !== cleanSymbol) {
       return NextResponse.json({ 
         status: "FAIL", 
         message: `Invalid Symbol. This key is for ${license.model.nameSymbol} only.` 

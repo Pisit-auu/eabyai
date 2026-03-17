@@ -959,7 +959,7 @@ export default function EA() {
 
           </div>
            <Modal
-              title=" วิดีโอสอนตั้งค่าTrading Account ID"
+              title=" วิดีโอสอนเชื่อม Trade Account กับ model เพื่อสร้าง EA"
               open={eadetailopen}
               onCancel={() => seteadetailopen(false)}
               footer={null}
@@ -970,13 +970,13 @@ export default function EA() {
               <div className="aspect-video w-full overflow-hidden rounded-xl">
                 <iframe
                   className="w-full h-full"
-                  src="https://www.youtube.com/embed/RNERTpex5d8?start=55"
+                  src="https://www.youtube.com/embed/2Rngq_HoFQs?start=54"
                   allowFullScreen
                 />
               </div>
             </Modal>
                       <Modal
-              title=" วิดีโอสอนตั้งค่าTrading Account ID"
+              title=" วิดีโอสอนติดตั้ง EA ลงบนเครื่อง"
               open={downloaddetailopen}
               onCancel={() => setdownloaddetailopen(false)}
               footer={null}
@@ -987,7 +987,7 @@ export default function EA() {
               <div className="aspect-video w-full overflow-hidden rounded-xl">
                 <iframe
                   className="w-full h-full"
-                  src="https://www.youtube.com/embed/s9-dUuK4r3Y?start=0"
+                  src="https://www.youtube.com/embed/79Ela1oOr6E?start=0"
                   allowFullScreen
                 />
               </div>
