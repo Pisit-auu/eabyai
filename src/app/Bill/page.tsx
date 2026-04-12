@@ -485,7 +485,7 @@ const fetchData = useCallback(async () => {
                               <span className="text-slate-500 font-medium">Commission</span>
                               <span className="font-bold text-slate-700">
                                 {/* สมมติว่าค่าคอมมิชชั่นอยู่ใน selectedStats.commission */}
-                                {Number(billselect?.license?.model?.commission || 0)}%   
+                                {Number(billselect?.commission || 0)}%   
                               </span>
                             </div>
                              <div className="flex justify-between items-center text-sm">
