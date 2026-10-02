@@ -1,8 +1,44 @@
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import NextAuth, { AuthOptions, DefaultSession } from "next-auth"
 import EmailProvider from "next-auth/providers/email"
+import GoogleProvider from "next-auth/providers/google"
 import prisma from "@/lib/prisma"
 import { Resend } from 'resend'
+/**
+ * @swagger
+ * /api/auth/{nextauth}:
+ *   get:
+ *     summary: NextAuth authentication endpoint (GET)
+ *     description: ใช้สำหรับ auth flow เช่น session, csrf, providers
+ *     tags:
+ *       - Authentication
+ *     parameters:
+ *       - in: path
+ *         name: nextauth
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: NextAuth action (signin, session, csrf, callback)
+ *     responses:
+ *       200:
+ *         description: Success
+ *
+ *   post:
+ *     summary: NextAuth authentication endpoint (POST)
+ *     description: ใช้สำหรับ login, callback และ verify email
+ *     tags:
+ *       - Authentication
+ *     parameters:
+ *       - in: path
+ *         name: nextauth
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: NextAuth action
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 declare module "next-auth" {
   interface Session {
     user: {
@@ -23,7 +59,13 @@ export const authOptions: AuthOptions = {
   session: {
     strategy: "jwt",
   },
+  
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      allowDangerousEmailAccountLinking: true, 
+    }),
     EmailProvider({
       // ส่วน server: {} ลบออกได้เลย เพราะเราใช้ Resend API แทน SMTP
       from: process.env.EMAIL_FROM, 
@@ -40,7 +82,7 @@ export const authOptions: AuthOptions = {
         try {
           const resend = new Resend(process.env.RESEND_API_KEY!)
           await resend.emails.send({
-            from: 'EA by Ai <onboarding@resend.dev>', // หรือ process.env.EMAIL_FROM
+            from: "EA BY AI <noreply@mail.ea-by-ai.com>", 
             to: email,
             subject: `รหัสเข้าสู่ระบบ EA: ${token}`,
             text: `รหัส OTP สำหรับเข้าสู่ระบบของคุณคือ: ${token}`,
@@ -69,23 +111,22 @@ export const authOptions: AuthOptions = {
     error: '/', 
   },
   callbacks: {
-    async jwt({ token, user }) {
-      // ทำงานเมื่อ User sign in ครั้งแรก หรือเมื่อ JWT ถูก update
-      if (user) {
-        token.id = user.id
-        token.role = user.role || "user"
-      }
-      return token
-    },
-    async session({ session, token }) {
-      // ส่งข้อมูลจาก Token ไปยัง Session (เพื่อให้ client เรียกใช้ได้)
-      if (session.user) {
-        session.user.id = token.id as string
-        session.user.role = token.role as string
-      }
-      return session
-    },
+  async jwt({ token, user }) {
+    if (user) {
+      token.id = user.id
+      token.role = user.role || "user"
+    }
+    return token
   },
+
+  async session({ session, token }) {
+    if (session.user) {
+      session.user.id = token.id as string
+      session.user.role = token.role as string
+    }
+    return session
+  },
+}
 }
 
 const handler = NextAuth(authOptions)

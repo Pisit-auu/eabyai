@@ -10,32 +10,40 @@ type UserType = {
   email: string;
   emailVerified: string;
   image: string | null;
+  role : string;
+  setupProgress: number[];
 };
 type BillType = {
   id: number;
   isPaid: boolean;
-  isReadyBill: boolean;
-  totalAmount: number;
-  createdAt: string; 
+  email:string
+  expire:boolean
+  profit: number;
+  commission: number;
 
-  license?: LicenseKeyType | null; 
+  exirelicendate: string;
+  createdAt: string;
+
+  licenseId: number;
+
+  license?: LicenseKeyType | null;
 };
 type LicenseKeyType = {
   id: number;
+  email: string;
   licensekey: string;
-  valid: boolean;
+  expire: boolean;
   status: boolean;
   active: boolean;
-  expireDate: string | null; // หรือ Date | null ขึ้นอยู่กับการใช้งานของคุณ
+  expireDate: string | null; 
   platformAccountId: string;
   nameEA: string;
   createdAt: string;
   updatedAt: string;
   billId: number | null;
-  // Relations (ถ้าคุณใช้ include ใน Prisma อย่าลืมเพิ่มตัวแปรเหล่านี้)
   tradeAccount?: TradeAccount; 
   model?: ModelType; // แทนค่าที่ดึงมาจาก model Model
-  bill?: BillType | null;
+   bills?: BillType[];
 };
 
 type TradeAccount = {
@@ -68,7 +76,6 @@ type LinkdownloadType = {
 type ModelType = {
   id: number;
   nameEA: string;
-  
   // Field ปกติ
   nameSymbol: string;
   timeframeName: string;
@@ -78,7 +85,7 @@ type ModelType = {
   downloadCount: number;
   
   // Enum (active) - แปลงเป็น String หรือระบุค่าเจาะจง
-  active: 'true' | 'false' | string; 
+  active: 'true' | 'false';
 
   // DateTime - เมื่อส่งผ่าน API จะกลายเป็น String (ISO)
   createdAt: string; 
@@ -88,5 +95,6 @@ type ModelType = {
   symbol?: SymbolType;
   timeframe?: TimeframeType;
   platform?: PlatformType;
+  licenses?: LicenseKeyType[];
 };
 
