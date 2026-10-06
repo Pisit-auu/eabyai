@@ -45,7 +45,7 @@ export default function Dashborad() {
     render: (type:any) => {
       const isBuy = type === 'buy';
       return (
-        <Tag color={isBuy ? 'success' : 'error'} className="font-semibold uppercase">
+        <Tag color={isBuy ? 'success' : 'error'} className="font-medium">
           {type}
         </Tag>
       );
@@ -208,7 +208,7 @@ export default function Dashborad() {
 
   // --- RENDER ---
   return (
-    <div className="h-screen bg-[#F1F5F9] flex flex-col font-sans text-slate-800 overflow-hidden">
+    <div className="h-screen bg-slate-50 flex flex-col font-sans text-slate-800 overflow-hidden">
       
       {/* Navbar */}
       <Navbar
@@ -221,14 +221,14 @@ export default function Dashborad() {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <aside className={`bg-[#1E293B] transition-all duration-300 shadow-xl z-20 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
-          <div className={`w-64 flex flex-col py-6 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                                                              <SidebarItem label="User" href="/user" />
-                                                              <SidebarItem label="Dashboard" href="/dashboard" />
-                                                              <SidebarItem label="Trade Account" href="/trade-account" />
-                                                              <SidebarItem label="Expert Advisor" href="/EA" />
-                                                              <SidebarItem label="Billing" href="/Bill" />
-                                                              <SidebarItem label="Document " href="/document" />
+        <aside className={`bg-white transition-all duration-300 z-20 overflow-hidden ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
+          <div className={`w-64 h-full border-r border-slate-200 flex flex-col py-4 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+            <SidebarItem label="User" href="/user" />
+            <SidebarItem label="Dashboard" href="/dashboard" />
+            <SidebarItem label="Trade Account" href="/trade-account" />
+            <SidebarItem label="Expert Advisor" href="/EA" />
+            <SidebarItem label="Billing" href="/Bill" />
+            <SidebarItem label="Document" href="/document" />
           </div>
         </aside>
 
@@ -237,26 +237,26 @@ export default function Dashborad() {
           <div className="max-w-7xl mx-auto space-y-8">
             
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-5 border-b border-slate-200">
               {/* ฝั่งซ้าย: ข้อความหัวข้อ */}
               <div>
-                <h1 className="text-2xl font-bold text-slate-800">Dashbord</h1>
+                <h1 className="text-[22px] font-semibold tracking-tight text-slate-900">Dashboard</h1>
                 <p className="text-slate-500 text-sm mt-1">
-                  <span className="font-semibold text-blue-600">{session?.user?.email}</span>
+                  <span className="text-slate-600">{session?.user?.email}</span>
                 </p>
               </div>
 
               {/* ฝั่งขวา: กลุ่ม Action Buttons */}
               <div className="flex flex-wrap items-center gap-3">
-                <div className="bg-blue-50 px-4 py-2 rounded-lg text-blue-700 font-semibold">
-                  Total Your EA: {licenseall.length}
+                <div className="px-1 text-sm text-slate-500">
+                  Total EA <span className="num font-semibold text-slate-900 ml-1">{licenseall.length}</span>
                 </div>
                 
               {licenseall.length !== 0 && (
                 
                  <Link href={`/EA`}>
                   <Button
-                  className="!bg-green-500 hover:!bg-green-400 !border-none !text-white"
+                  type="primary"
                 >
                   Add Your EA
                 </Button>
@@ -280,19 +280,19 @@ export default function Dashborad() {
               prefix={<SearchOutlined />}
               value={searchEA}
               onChange={(e) => setSearchEA(e.target.value)}
-              className="max-w-md rounded-xl"
+              className="max-w-md rounded-lg"
             />
         </div>
 
             <div>
-              <h3 className="text-lg font-bold text-slate-700 mb-4 px-1">Your Expert Advisor</h3>
+              <h3 className="text-base font-semibold text-slate-900 mb-3">Your Expert Advisor</h3>
         
               
               {isLoading ? (
                 <div className="flex justify-center py-20"><Spin size="large" /></div>
               ) : licenseall.length === 0 ? (
-                 <div className="bg-white rounded-2xl p-12 text-center border border-dashed border-slate-300">
-                    <Empty description="No trading accounts found. Add one above!" />
+                 <div className="bg-white rounded-lg p-10 text-center border border-slate-200">
+                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={<span>ยังไม่มี EA ให้แสดงรายงาน — <a href="/EA" className="text-blue-600 hover:underline">สร้าง EA</a></span>} />
                  </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -301,14 +301,14 @@ export default function Dashborad() {
                   <Card
                     key={license.id}
                     hoverable
-                    className="rounded-2xl border-slate-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+                    className="rounded-lg border-slate-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
                     actions={getActions(license)}
                     styles={{ body: { padding: '20px' } }}
                   >
                      <div className="flex items-start justify-between mb-2">
                       <Tag 
                         color={license.expire ? 'error' : 'success'} 
-                        className="m-0 px-3 py-0.5 rounded-full uppercase text-xs font-bold"
+                        className="m-0 text-xs font-medium"
                       >
                         {license.expire ? 'Expired : โปรดต่ออายุ' : 'ยังไม่หมดอายุ'}
                       </Tag>
@@ -336,13 +336,13 @@ export default function Dashborad() {
                       title={
                         <div className="flex items-center justify-between">
                           {/* ✅ แสดง License Key */}
-                          <span className="text-sm font-mono font-bold text-slate-800">{license.nameEA}</span>
+                          <span className="text-sm font-mono font-semibold text-slate-800">{license.nameEA}</span>
                         </div>
                       }
                       description={
                         <div className="mt-2 space-y-1">
                           {/* ✅ แสดงชื่อ EA (nameEA) */}
-                          <div className="flex items-center gap-2 text-slate-600 font-bold">
+                          <div className="flex items-center gap-2 text-slate-600 font-semibold">
                             <span className="text-blue-600">license key : {license.licensekey}</span>
                           </div>
                           
@@ -352,9 +352,9 @@ export default function Dashborad() {
                             <span>Tradding Account: {license.platformAccountId}</span>
                           </div>
                            {/* --- ส่วนกราฟที่เพิ่มเข้ามา --- */}
-                            <div className="mt-4 py-2 bg-slate-50/50 rounded-xl border border-slate-100 relative">
+                            <div className="mt-4 py-2 bg-slate-50/50 rounded-lg border border-slate-100 relative">
                                 <div className="absolute top-2 left-3 flex items-center gap-2">
-                                  <span className="text-[9px] uppercase font-bold text-slate-400">{license.model?.nameSymbol} : 100 แท่งล่าสุด</span>
+                                  <span className="text-xs text-slate-500">{license.model?.nameSymbol} : 100 แท่งล่าสุด</span>
                                   <Badge status="processing" color={license.active ? '#52c41a' : '#999'} />
                                 </div>
                                 <MiniChart 
@@ -367,7 +367,7 @@ export default function Dashborad() {
                             {/* --------------------------- */}
                           {/* ✅ แสดงวันหมดอายุ (ถ้ามี) */}
                           {license.expireDate && (
-                            <div className="text-[10px] text-orange-500 font-medium">
+                            <div className="text-xs text-amber-700 font-medium">
                               Expires: {new Date(license.expireDate).toLocaleDateString()}
                             </div>
                           )}
@@ -382,8 +382,8 @@ export default function Dashborad() {
                 <Modal
                     title={
                       <div className="flex items-center gap-2">
-                        <div className="w-1.5 h-5 bg-blue-600 rounded-full" />
-                        <span className="text-lg font-bold text-slate-800">Account Report: {selectedStats?.name}</span>
+
+                        <span className="text-lg font-semibold text-slate-800">Account Report: {selectedStats?.name}</span>
                       </div>
                     }
                     open={isDetailsOpen}
@@ -400,33 +400,33 @@ export default function Dashborad() {
                       <div className="space-y-4">
                         {/* แถวที่ 1: 3 คอลัมน์ (Highlight ตัวเลขให้เด่น) */}
                         <div className="flex gap-4">
-                          <div className="flex-1 p-4 bg-gradient-to-b from-blue-50/50 to-white border border-blue-100 rounded-2xl shadow-sm">
-                            <p className="text-blue-500 text-[11px] font-bold uppercase tracking-wider mb-1">Balance</p>
-                            <p className="text-2xl font-black text-blue-700 leading-none">
+                          <div className="flex-1 p-4 bg-white border border-slate-200 rounded-lg">
+                            <p className="text-slate-500 text-[13px] font-medium mb-1">Balance</p>
+                            <p className="text-2xl font-semibold text-slate-900 leading-none">
                               ${Number(selectedStats?.balance ?? 0).toLocaleString()}
                             </p>
                           </div>
-                          <div className="flex-1 p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
-                            <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider mb-1">Equity</p>
-                            <p className="text-2xl font-black text-slate-800 leading-none">
+                          <div className="flex-1 p-4 bg-white border border-slate-100 rounded-lg shadow-sm">
+                            <p className="text-slate-500 text-[13px] font-medium mb-1">Equity</p>
+                            <p className="text-2xl font-semibold text-slate-800 leading-none">
                               ${Number(selectedStats?.equity ?? 0).toLocaleString()}
                             </p>
                           </div>
 
                           <div 
-            className={`flex-1 p-4 border rounded-2xl shadow-sm ${
+            className={`flex-1 p-4 border rounded-lg shadow-sm ${
               Number(selectedStats.filtered_profit) >= 0 
-                ? 'bg-green-200 border-green-200'  // ปรับสีให้เข้มขึ้น (ลบ /30 ออก)
-                : 'bg-red-100 border-red-200'        // ใช้ rose แทน red จะดูแพงกว่า
+                ? 'bg-emerald-50 border-emerald-200'  // ปรับสีให้เข้มขึ้น (ลบ /30 ออก)
+                : 'bg-red-50 border-red-200'        // ใช้ rose แทน red จะดูแพงกว่า
             }`}
           >
-            <p className={`text-[11px] font-bold uppercase tracking-wider mb-1 ${
-              Number(selectedStats.filtered_profit) >= 0 ? 'text-green-300' : 'text-red-600'
+            <p className={`text-[13px] font-medium mb-1 ${
+              Number(selectedStats.filtered_profit) >= 0 ? 'text-emerald-700' : 'text-red-600'
             }`}>
               Profit
             </p>
 
-            <p className={`text-2xl font-black leading-none ${
+            <p className={`text-2xl font-semibold leading-none ${
               Number(selectedStats.filtered_profit) >= 0 ? 'text-green-700' : 'text-red-700'
             }`}>
               {/* แสดงเครื่องหมาย + ถ้าเป็นกำไร */}
@@ -437,10 +437,10 @@ export default function Dashborad() {
 
                         {/* แถวที่ 2: 2 คอลัมน์ (ขยายขนาดฟอนต์ให้สมดุลกับความยาว card) */}
                         <div className="flex gap-4">
-                          <div className="flex-1 p-4 bg-slate-50/50 border border-slate-100 rounded-2xl shadow-sm flex justify-between items-center">
+                          <div className="flex-1 p-4 bg-slate-50/50 border border-slate-100 rounded-lg shadow-sm flex justify-between items-center">
                             <div>
-                              <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider mb-1">Total Trades</p>
-                              <p className="text-xl font-bold text-slate-700">{selectedStats.trade_markers.length} <span className="text-sm font-normal text-slate-400 ml-1">Orders</span></p>
+                              <p className="text-slate-500 text-[13px] font-medium mb-1">Total Trades</p>
+                              <p className="text-xl font-semibold text-slate-700">{selectedStats.trade_markers.length} <span className="text-sm font-normal text-slate-400 ml-1">Orders</span></p>
                             </div>
                             <SearchOutlined 
                               key="LookeMore" 
@@ -449,10 +449,10 @@ export default function Dashborad() {
                             />
                
                           </div>
-                          <div className="flex-1 p-4 bg-slate-50/50 border border-slate-100 rounded-2xl shadow-sm flex justify-between items-center">
+                          <div className="flex-1 p-4 bg-slate-50/50 border border-slate-100 rounded-lg shadow-sm flex justify-between items-center">
                             <div>
-                              <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider mb-1">Success Rate</p>
-                              <p className="text-xl font-bold text-slate-700">{selectedStats.winrate}%</p>
+                              <p className="text-slate-500 text-[13px] font-medium mb-1">Success Rate</p>
+                              <p className="text-xl font-semibold text-slate-700">{selectedStats.winrate}%</p>
                             </div>
                  
                           </div>
@@ -460,9 +460,9 @@ export default function Dashborad() {
 
                         {/* ส่วนกราฟ (ปรับความโค้งและเงาให้เข้าชุดกัน) */}
                         <div className="mt-2">
-                          <div className="border border-slate-200 rounded-[2rem] p-4 bg-white shadow-md overflow-hidden">
+                          <div className="border border-slate-200 rounded-lg p-4 bg-white shadow-md overflow-hidden">
                             <div className="flex justify-between mb-2 px-2">
-                              <span className="text-xs font-bold text-slate-500 uppercase">Market View</span>
+                              <span className="text-[13px] font-medium text-slate-700">Market view</span>
                               <span className="text-xs font-mono text-blue-500 bg-blue-50 px-2 rounded">{SymbolOpen}</span>
                             </div>
                             <MiniChart 
@@ -481,8 +481,8 @@ export default function Dashborad() {
                   <Modal
                     title={
                       <div className="flex items-center gap-2">
-                        <div className="w-1.5 h-5 bg-blue-600 rounded-full" />
-                        <span className="text-lg font-bold text-slate-800">Trade History</span>
+
+                        <span className="text-lg font-semibold text-slate-800">Trade History</span>
                       </div>
                     }
                     open={isTradeOpen}
@@ -495,31 +495,31 @@ export default function Dashborad() {
                         ) : selectedStats ? (
                           <div className="space-y-4">
                              <div className="flex gap-4">
-                          <div className="flex-1 p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
-                            <p className="text-blue-500 text-[11px] font-bold uppercase tracking-wider mb-1">Total Trades</p>
-                            <p className="text-2xl font-black text-blue-700 leading-none">
+                          <div className="flex-1 p-4 bg-white border border-slate-100 rounded-lg shadow-sm">
+                            <p className="text-slate-500 text-[13px] font-medium mb-1">Total Trades</p>
+                            <p className="text-2xl font-semibold text-slate-900 leading-none">
                               {selectedStats.trades_count}
                             </p>
                           </div>
-                          <div className="flex-1 p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
-                            <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider mb-1">Win Rate</p>
-                            <p className="text-2xl font-black text-slate-800 leading-none">
+                          <div className="flex-1 p-4 bg-white border border-slate-100 rounded-lg shadow-sm">
+                            <p className="text-slate-500 text-[13px] font-medium mb-1">Win Rate</p>
+                            <p className="text-2xl font-semibold text-slate-800 leading-none">
                               {selectedStats.winrate}%
                             </p>
                           </div>
-                          <div className={`flex-1 p-4 border rounded-2xl shadow-sm ${
+                          <div className={`flex-1 p-4 border rounded-lg shadow-sm ${
                               Number(selectedStats.filtered_profit) >= 0 
-                                ? 'bg-green-200 border-green-200'  // ปรับสีให้เข้มขึ้น (ลบ /30 ออก)
-                                : 'bg-red-100 border-red-200'        // ใช้ rose แทน red จะดูแพงกว่า
+                                ? 'bg-emerald-50 border-emerald-200'  // ปรับสีให้เข้มขึ้น (ลบ /30 ออก)
+                                : 'bg-red-50 border-red-200'        // ใช้ rose แทน red จะดูแพงกว่า
                             }`}
                           >
-                            <p className={`text-[11px] font-bold uppercase tracking-wider mb-1 ${
-                              Number(selectedStats.filtered_profit) >= 0 ? 'text-green-300' : 'text-red-600'
+                            <p className={`text-[13px] font-medium mb-1 ${
+                              Number(selectedStats.filtered_profit) >= 0 ? 'text-emerald-700' : 'text-red-600'
                             }`}>
                               Profit
                             </p>
 
-                            <p className={`text-2xl font-black leading-none ${
+                            <p className={`text-2xl font-semibold leading-none ${
                               Number(selectedStats.filtered_profit) >= 0 ? 'text-green-700' : 'text-red-700'
                             }`}>
                               {/* แสดงเครื่องหมาย + ถ้าเป็นกำไร */}

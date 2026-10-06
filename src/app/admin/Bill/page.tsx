@@ -40,7 +40,7 @@ export default function BillingDashboardPage() {
     render: (type:any) => {
       const isBuy = type === 'buy';
       return (
-        <Tag color={isBuy ? 'success' : 'error'} className="font-semibold uppercase">
+        <Tag color={isBuy ? 'success' : 'error'} className="font-medium">
           {type}
         </Tag>
       );
@@ -234,7 +234,7 @@ useEffect(() => {
       dataIndex: 'profit',
       key: 'profit',
       render: (profit: number) => (
-        <span className={`font-bold ${profit > 0 ? 'text-green-600' : profit < 0 ? 'text-red-600' : 'text-slate-500'}`}>
+        <span className={`font-semibold ${profit > 0 ? 'text-green-600' : profit < 0 ? 'text-red-600' : 'text-slate-500'}`}>
           ${profit?.toFixed(2) || '0.00'}
         </span>
       ),
@@ -271,8 +271,8 @@ useEffect(() => {
 
       <div className="flex flex-1 overflow-hidden h-full">
         {/* Sidebar */}
-        <aside className={`bg-[#1E293B] transition-all duration-300 shadow-xl z-20 flex-shrink-0 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
-          <div className={`w-64 flex flex-col py-6 transition-opacity duration-300 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 overflow-hidden'}`}>
+        <aside className={`bg-white transition-all duration-300 z-20 overflow-hidden flex-shrink-0 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
+          <div className={`w-64 h-full border-r border-slate-200 flex flex-col py-4 transition-opacity duration-300 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 overflow-hidden'}`}>
             <SidebarItem label="Setup" href="/admin/setup" />
                       <SidebarItem label="Expert Advisor" href="/admin/EA" />
                       <SidebarItem label="Billing" href="/admin/Bill" />
@@ -285,9 +285,9 @@ useEffect(() => {
           <div className="max-w-full mx-auto space-y-6">
             
             {/* Header Section */}
-            <div className="bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-slate-200">
+            <div className="bg-white p-6 md:p-8 rounded-lg shadow-sm border border-slate-200">
               <div className="flex justify-between items-center">
-                <h2 className="text-2xl md:text-3xl font-bold text-slate-800">ระบบจัดการบิล (Billing)</h2>
+                <h2 className="text-2xl md:text-3xl font-semibold text-slate-800">ระบบจัดการบิล (Billing)</h2>
                 <Tag
                     color="cyan"
                     className="px-3 py-1"
@@ -299,35 +299,35 @@ useEffect(() => {
             </div>
              <div className="flex gap-4">
                           {/* ... (โค้ดกล่อง Total Trades, Win Rate, Profit ของคุณเหมือนเดิม) ... */}
-                          <div className="flex-1 p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
-                            <p className="text-green-500 text-[11px] font-bold uppercase tracking-wider mb-1">ชำระแล้ว</p>
-                            <p className="text-2xl font-black text-green-400 leading-none">
+                          <div className="flex-1 p-4 bg-white border border-slate-100 rounded-lg shadow-sm">
+                            <p className="text-slate-500 text-[13px] font-medium mb-1">ชำระแล้ว</p>
+                            <p className="text-2xl font-semibold text-emerald-600 leading-none">
                               {Paid}
                             </p>
                           </div>
 
-                          <div className="flex-1 p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
-                            <p className="text-red-400 text-[11px] font-bold uppercase tracking-wider mb-1">ยังไม่ชำระ</p>
-                            <p className="text-2xl font-black text-red-400 leading-none">
+                          <div className="flex-1 p-4 bg-white border border-slate-100 rounded-lg shadow-sm">
+                            <p className="text-slate-500 text-[13px] font-medium mb-1">ยังไม่ชำระ</p>
+                            <p className="text-2xl font-semibold text-rose-600 leading-none">
                               {unPaid}
                             </p>
                           </div>
-                          <div className="flex-1 p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
-                            <p className="text-yellow-500  text-[11px] font-bold uppercase tracking-wider mb-1">ยังไม่ถึงกำหนดชำระ</p>
-                            <p className="text-2xl font-black text-yellow-400 leading-none">
+                          <div className="flex-1 p-4 bg-white border border-slate-100 rounded-lg shadow-sm">
+                            <p className="text-slate-500 text-[13px] font-medium mb-1">ยังไม่ถึงกำหนดชำระ</p>
+                            <p className="text-2xl font-semibold text-amber-600 leading-none">
                               {unPaidnotExpired}
                             </p>
                           </div>
-                          <div className={`flex-1 p-4 border rounded-2xl shadow-sm ${
+                          <div className={`flex-1 p-4 border rounded-lg shadow-sm ${
                              0
                             }`}
                           >
-                            <p className={`text-[11px] font-bold uppercase tracking-wider mb-1 ${
-                              Number(selectedStats?.filtered_profit) >= 0 ? 'text-blue-500' : 'text-blue-500'
+                            <p className={`text-[13px] font-medium mb-1 ${
+                              Number(selectedStats?.filtered_profit) >= 0 ? 'text-slate-500' : 'text-slate-500'
                             }`}>
                               รายได้ที่ได้รับทั้งหมด นับแค่ตั้งแต่ 3.3 USD ขึ้นไป 
                             </p>
-                            <p className={`text-2xl font-black leading-none ${
+                            <p className={`text-2xl font-semibold leading-none ${
                               Number(totalProfit) >= 0 ? 'text-blue-700' : 'text-red-600'
                             }`}>
                               {(totalProfit* rateTHBtoUSD ).toFixed(2)} THB
@@ -335,7 +335,7 @@ useEffect(() => {
                           </div>
                         </div>
             {/* Data Management Card */}
-            <Card className="rounded-[2rem] shadow-sm border-slate-200 overflow-hidden min-h-[500px]">
+            <Card className="rounded-lg shadow-sm border-slate-200 overflow-hidden min-h-[500px]">
               <div className="flex flex-col gap-6">
                 <div className="overflow-x-auto">
                   <Table 
@@ -359,16 +359,16 @@ useEffect(() => {
 
               <Modal title={
                     <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-7 bg-blue-600 rounded-full" />
+
                         <div className="flex flex-col justify-center"> 
-                          <span className="text-lg font-bold text-slate-800 leading-none">Bill Detail</span> 
+                          <span className="text-lg font-semibold text-slate-800 leading-none">Bill Detail</span> 
                             <div className="flex gap-2 mt-1">
-                            <span className="text-[11px] font-semibold text-blue-500 uppercase tracking-wider">
+                            <span className="text-[13px] font-medium text-slate-500">
                              Status
                             </span>
                             <span className="text-[11px] text-blue-500">:</span>
                            <span
-                            className="text-[11px] font-semibold uppercase tracking-wider"
+                            className="text-[13px] font-medium"
                             style={{
                               color: !billselect?.expire
                                 ? "#64748b" // เทา (ยังไม่ถึงเวลา)
@@ -385,11 +385,11 @@ useEffect(() => {
                           </span>
                           </div>
                           <div className="flex gap-2 mt-1">
-                            <span className="text-[11px] font-semibold text-blue-500 uppercase tracking-wider">
+                            <span className="text-[13px] font-medium text-slate-500">
                               {new Date(billselect?.createdAt).toLocaleDateString('en-GB')}
                             </span>
                             <span className="text-[11px] text-blue-500">—</span>
-                            <span className="text-[11px] font-semibold text-blue-500 uppercase tracking-wider">
+                            <span className="text-[13px] font-medium text-slate-500">
                               {new Date(billselect?.exirelicendate).toLocaleDateString('en-GB')}
                             </span>
                           </div>
@@ -410,7 +410,7 @@ useEffect(() => {
                           
                           
                         {/* --- ส่วนตาราง Trade History --- */}
-                        <div className="border border-slate-100 rounded-xl overflow-hidden shadow-sm">
+                        <div className="border border-slate-100 rounded-lg overflow-hidden shadow-sm">
                           <Table 
                             columns={tradeColumns} 
                             dataSource={selectedStats.trade_markers}
@@ -424,40 +424,40 @@ useEffect(() => {
 
                         {/* ✨ --- ส่วนสรุปยอด (Summary) ด้านล่างตาราง --- ✨ */}
                         <div className="pt-4 pb-2">
-                          <div className="w-full bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                          <div className="w-full bg-slate-50 p-4 rounded-lg border border-slate-100 space-y-2">
                              <div className="flex justify-between items-center text-sm">
                               <span className="text-slate-500 font-medium">Email</span>
-                              <span className={`font-bold`}>
+                              <span className={`font-semibold`}>
                                   {billselect?.email}
                               </span>
                             </div>
                              <div className="flex justify-between items-center text-sm">
                               <span className="text-slate-500 font-medium">Full Name</span>
-                              <span className={`font-bold`}>
+                              <span className={`font-semibold`}>
                                   {billselect?.license?.tradeAccount?.fullname}
                               </span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-slate-500 font-medium">Platform</span>
-                              <span className={`font-bold`}>
+                              <span className={`font-semibold`}>
                                   {billselect?.license?.tradeAccount?.PlatformName}
                               </span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-slate-500 font-medium">Trader Id</span>
-                              <span className={`font-bold`}>
+                              <span className={`font-semibold`}>
                                   {billselect?.license?.tradeAccount?.platformAccountId}
                               </span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-slate-500 font-medium"> Server</span>
-                              <span className={`font-bold`}>
+                              <span className={`font-semibold`}>
                                   {billselect?.license?.tradeAccount?.Server}
                               </span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-slate-500 font-medium"> Licensekey</span>
-                              <span className={`font-bold`}>
+                              <span className={`font-semibold`}>
                                   {billselect?.license?.licensekey}
                               </span>
                             </div>
@@ -467,12 +467,12 @@ useEffect(() => {
 
 
                         <div className="pt-4 pb-2">
-                          <div className="w-full bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                          <div className="w-full bg-slate-50 p-4 rounded-lg border border-slate-100 space-y-2">
                             
                             {/* Profit */}
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-slate-500 font-medium">Profit</span>
-                              <span className={`font-bold ${Number(billselect?.profit) >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                              <span className={`font-semibold ${Number(billselect?.profit) >= 0 ? 'text-green-600' : 'text-red-500'}`}>
                                 {Number(billselect?.profit) >= 0 ? '+' : ''}
                                 {Number(billselect?.profit).toLocaleString('th-TH', { minimumFractionDigits: 2 })} USD
                               </span>
@@ -481,21 +481,21 @@ useEffect(() => {
                             {/* Commission */}
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-slate-500 font-medium">Commission</span>
-                              <span className="font-bold text-slate-700">
+                              <span className="font-semibold text-slate-700">
                                 {/* สมมติว่าค่าคอมมิชชั่นอยู่ใน selectedStats.commission */}
                                 {Number(billselect?.license?.model?.commission || 0)}%   
                               </span>
                             </div>
                              <div className="flex justify-between items-center text-sm">
                               <span className="text-slate-500 font-medium">ProfitxCommision</span>
-                              <span className="font-bold text-slate-700">
+                              <span className="font-semibold text-slate-700">
                                 {/* สมมติว่าค่าคอมมิชชั่นอยู่ใน selectedStats.commission */}
                                 {Number(billselect?.profit)} x {Number(billselect?.commission/100 ||0)} = {(Number(billselect?.profit)*Number(billselect?.commission/100 ||0)).toFixed(3)} USD
                               </span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-slate-500 font-medium">USD to THB </span>
-                              <span className="font-bold text-slate-700">
+                              <span className="font-semibold text-slate-700">
                                 {/* สมมติว่าค่าคอมมิชชั่นอยู่ใน selectedStats.commission */}
                                {(Number(billselect?.profit)*Number(billselect?.commission/100 ||0)* rateTHBtoUSD).toFixed(3)} THB
                               </span>
@@ -505,8 +505,8 @@ useEffect(() => {
 
                             {/* Total Amount */}
                             <div className="flex justify-between items-center">
-                              <span className="text-slate-800 font-bold uppercase tracking-wide text-sm">Total Amount</span>
-                              <span className="text-xl font-black text-blue-600">
+                              <span className="text-slate-800 font-medium text-sm">Total amount</span>
+                              <span className="text-xl font-semibold text-blue-600">
                                 {/* สมมติว่ายอดรวมอยู่ใน selectedStats.total_amount หรือคุณบวก/ลบเอาเองตรงนี้ได้เลย */}
                                 {(Number(billselect?.profit)*Number(billselect?.commission/100 ||0)* rateTHBtoUSD).toFixed(3)} THB
                               </span>

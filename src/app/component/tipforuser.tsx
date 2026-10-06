@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { CheckOutlined, CloseOutlined, LockOutlined, BulbOutlined } from '@ant-design/icons';
 
 export default function SetupGuideWidget({ userEmail }: { userEmail: string }) {
   const [isOpen, setIsOpen] = useState(true);
@@ -82,94 +83,91 @@ useEffect(() => {
     { id: 1, title: 'จัดการข้อมูล (User)', description: 'ลองเพิ่มชื่อหรือเปลี่ยนรูปโปรไฟล์ของคุณแล้วกดบันทึกข้อมูล', actionLabel: 'ไปหน้า User', actionPath: '/user' },
     { id: 2, title: 'ผูกบัญชีเทรด', description: 'เชื่อมต่อพอร์ตเทรดกับระบบ เพื่อนำไปใช้สร้างEA', actionLabel: 'ไปหน้า Trade Account', actionPath: '/trade-account' },
     { id: 3, title: 'สร้างกลยุทธ์ (EA)', description: 'ผูกบัญชี TradeAccount กับ Model เพื่อสร้าง EA ของคุณ', actionLabel: 'เริ่มสร้าง EA', actionPath: '/EA' },
-    { id: 4, title: 'ดาวน์โหลดไฟล์', description: 'โหลดไฟล์ไปติดตั้งใน MT5 ได้ที่ปุ่มสีเขียวในหน้า Expert Advisor Management', actionLabel: 'หรือคลิ๊กที่นี่เพื่อ Download', actionPath: '/EA' },
+    { id: 4, title: 'ดาวน์โหลดไฟล์', description: 'โหลดไฟล์ไปติดตั้งใน MT5 ได้ที่ปุ่ม Download EA ในหน้า Expert Advisor Management', actionLabel: 'หรือคลิ๊กที่นี่เพื่อ Download', actionPath: '/EA' },
     { id: 5, title: 'คู่มือการใช้งาน', description: 'สามารถเรียนรู้วิธีการใช้งานและการติดตั้งบนเครื่อง', actionLabel: 'ดู Document', actionPath: '/document' },
   ];
 
   const progressPercentage = (completedSteps.length / steps.length) * 100;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 font-sans">
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
       {isOpen && (
-        <div className="bg-white rounded-xl shadow-2xl border border-gray-200 w-80 mb-4 overflow-hidden flex flex-col">
+        <div className="bg-white rounded-lg shadow-xl border border-slate-200 w-80 mb-3 overflow-hidden flex flex-col animate-fadeIn">
           {/* Header */}
-          <div className="px-5 py-4 border-b flex justify-between items-center">
+          <div className="px-4 py-3 border-b border-slate-200 flex justify-between items-center">
             <div>
-              <h3 className="font-bold text-gray-800">Setup Guide</h3>
-              <p className="text-[10px] text-gray-400 uppercase font-bold tracking-tight">
+              <h3 className="text-sm font-semibold text-slate-900">Setup guide</h3>
+              <p className="num text-xs text-slate-500 mt-0.5">
                 {completedSteps.length} / {steps.length} completed
               </p>
             </div>
-            <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-gray-600">✕</button>
+            <button onClick={() => setIsOpen(false)} aria-label="ปิด Setup guide" className="w-8 h-8 flex items-center justify-center rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors">
+              <CloseOutlined />
+            </button>
+          </div>
+
+          {/* Progress */}
+          <div className="h-1 bg-slate-100">
+            <div className="bg-blue-600 h-full transition-[width] duration-500" style={{ width: `${progressPercentage}%` }} />
           </div>
 
           {/* List Items */}
-          <div className="max-h-[350px] overflow-y-auto">
+          <ol className="max-h-[350px] overflow-y-auto divide-y divide-slate-100">
             {steps.map((step, index) => {
               const isCompleted = completedSteps.includes(step.id);
               const isActive = activeStep === step.id;
               const isLocked = index > 0 && !completedSteps.includes(steps[index - 1].id);
 
               return (
-                <div key={step.id} className={`border-b border-gray-50 last:border-0 ${isLocked ? 'bg-gray-50/50' : ''}`}>
+                <li key={step.id}>
                   <button
                     disabled={isLocked}
                     onClick={() => setActiveStep(isActive ? null : step.id)}
-                    className={`w-full px-5 py-4 flex items-center text-left ${isLocked ? 'cursor-not-allowed' : 'hover:bg-gray-50'}`}
+                    aria-expanded={isActive}
+                    className={`w-full px-4 py-3 flex items-center gap-3 text-left transition-colors ${isLocked ? 'cursor-not-allowed' : 'hover:bg-slate-50'}`}
                   >
-                    <div className="mr-3">
-                      {isCompleted ? (
-                        <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor font-bold">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" />
-                          </svg>
-                        </div>
-                      ) : (
-                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${isActive ? 'border-blue-600' : 'border-gray-300'}`}>
-                          {isLocked && <span className="text-[10px]">🔒</span>}
-                        </div>
-                      )}
-                    </div>
-                    <span className={`text-sm flex-1 ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-700 font-medium'}`}>
+                    {isCompleted ? (
+                      <span className="w-5 h-5 shrink-0 rounded-full bg-emerald-600 text-white text-[10px] flex items-center justify-center"><CheckOutlined /></span>
+                    ) : isLocked ? (
+                      <span className="w-5 h-5 shrink-0 rounded-full border border-slate-200 text-slate-300 text-[10px] flex items-center justify-center"><LockOutlined /></span>
+                    ) : (
+                      <span className={`num w-5 h-5 shrink-0 rounded-full border text-[11px] flex items-center justify-center ${isActive ? 'border-blue-600 text-blue-600' : 'border-slate-300 text-slate-500'}`}>{step.id}</span>
+                    )}
+                    <span className={`text-sm flex-1 ${isCompleted ? 'text-slate-400 line-through' : isLocked ? 'text-slate-400' : 'text-slate-800 font-medium'}`}>
                       {step.title}
                     </span>
                   </button>
 
                   {isActive && !isLocked && (
-        <div className="px-12 pb-5 animate-in slide-in-from-top-1 duration-200">
-            <p className="text-xs text-gray-500 mb-3 leading-relaxed">
-            {step.description}
-            </p>
-            
-            <button 
-            onClick={() => clickAction(step)} 
-            className="inline-block bg-blue-600 text-white text-[10px] px-5 py-2.5 rounded-lg font-bold shadow-md hover:bg-blue-700 hover:shadow-lg transition-all active:scale-95 flex items-center gap-2"
-            >
-            <span>{step.actionLabel}</span>
-            
-            </button>
-        </div>
-)}
-                </div>
+                    <div className="pl-12 pr-4 pb-4">
+                      <p className="text-[13px] text-slate-600 mb-3 leading-relaxed">
+                        {step.description}
+                      </p>
+                      <button
+                        onClick={() => clickAction(step)}
+                        className="h-8 px-3 rounded-md bg-blue-600 text-white text-[13px] font-medium hover:bg-blue-700 transition-colors"
+                      >
+                        {step.actionLabel}
+                      </button>
+                    </div>
+                  )}
+                </li>
               );
             })}
-          </div>
-
-          {/* Progress Bar */}
-          <div className="px-5 py-3 bg-gray-50">
-            <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
-              <div className="bg-blue-600 h-full transition-all duration-700" style={{ width: `${progressPercentage}%` }} />
-            </div>
-          </div>
+          </ol>
         </div>
       )}
 
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`ml-auto w-16 h-16 rounded-full shadow-xl flex items-center justify-center transition-all ${isOpen ? 'bg-white text-gray-500' : 'bg-slate-700    text-white'}`}
+        aria-label={isOpen ? 'ซ่อน Setup guide' : 'เปิด Setup guide'}
+        aria-expanded={isOpen}
+        className="h-10 pl-3 pr-4 rounded-full shadow-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 flex items-center gap-2 transition-colors"
       >
-        {isOpen ? '✕' : '💡'}
+        {isOpen ? <CloseOutlined /> : <BulbOutlined />}
+        <span>Setup guide</span>
+        {!isOpen && <span className="num text-xs text-slate-500">{completedSteps.length}/{steps.length}</span>}
       </button>
     </div>
   );

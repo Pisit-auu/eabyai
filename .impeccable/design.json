@@ -1,0 +1,391 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-06T13:51:36.297404+00:00",
+  "title": "Design System: EA.AI",
+  "extensions": {
+    "colorMeta": {
+      "cobalt": {
+        "role": "primary",
+        "displayName": "Cobalt",
+        "canonical": "#3549d1",
+        "tonalRamp": [
+          "#232f70",
+          "#27348e",
+          "#2b3bb0",
+          "#3549d1",
+          "#5f76e8",
+          "#9daef5",
+          "#c5d0fa",
+          "#f0f3fe"
+        ]
+      },
+      "cobalt-deep": {
+        "role": "primary",
+        "displayName": "Deep Cobalt",
+        "canonical": "#2b3bb0"
+      },
+      "cobalt-wash": {
+        "role": "primary",
+        "displayName": "Cobalt Wash",
+        "canonical": "#f0f3fe"
+      },
+      "cobalt-selection": {
+        "role": "primary",
+        "displayName": "Selection Cobalt",
+        "canonical": "#c5d0fa"
+      },
+      "profit": {
+        "role": "secondary",
+        "displayName": "Ledger Green",
+        "canonical": "#127a50",
+        "tonalRamp": [
+          "#0b3d29",
+          "#0f6342",
+          "#127a50",
+          "#158a59",
+          "#1f9a66",
+          "#a7e0c3",
+          "#d3f0e1",
+          "#ecf8f2"
+        ]
+      },
+      "profit-wash": {
+        "role": "secondary",
+        "displayName": "Profit Wash",
+        "canonical": "#ecf8f2"
+      },
+      "loss": {
+        "role": "secondary",
+        "displayName": "Ledger Red",
+        "canonical": "#b8382b",
+        "tonalRamp": [
+          "#5e1d17",
+          "#962d23",
+          "#b8382b",
+          "#c4402f",
+          "#d24a3c",
+          "#f4bdb7",
+          "#fadfdc",
+          "#fdf1f0"
+        ]
+      },
+      "loss-wash": {
+        "role": "secondary",
+        "displayName": "Loss Wash",
+        "canonical": "#fdf1f0"
+      },
+      "caution": {
+        "role": "tertiary",
+        "displayName": "Ochre",
+        "canonical": "#b98010",
+        "tonalRamp": [
+          "#4f3606",
+          "#7a5409",
+          "#9a6a0b",
+          "#b98010",
+          "#d69a1c",
+          "#f1ddaa",
+          "#f8ebc9",
+          "#fcf6e8"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#151a23",
+        "tonalRamp": [
+          "#0c1018",
+          "#151a23",
+          "#232933",
+          "#353c48",
+          "#464f5d",
+          "#5b6574",
+          "#6f7988",
+          "#cdd4dd"
+        ]
+      },
+      "ink-strong": {
+        "role": "neutral",
+        "displayName": "Strong Ink",
+        "canonical": "#353c48"
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "#5b6574"
+      },
+      "ink-faint": {
+        "role": "neutral",
+        "displayName": "Faint Ink",
+        "canonical": "#6f7988"
+      },
+      "stroke": {
+        "role": "neutral",
+        "displayName": "Stroke",
+        "canonical": "#cdd4dd"
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "#e3e8ee"
+      },
+      "fill-subtle": {
+        "role": "neutral",
+        "displayName": "Subtle Fill",
+        "canonical": "#eef1f5"
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Ground",
+        "canonical": "#f6f8fa"
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Surface",
+        "canonical": "#ffffff"
+      },
+      "scrim": {
+        "role": "neutral",
+        "displayName": "Scrim",
+        "canonical": "#0c1018"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Landing H1 only; second line in Faint Ink."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Landing section headings (28px mobile, 32px md+)."
+      },
+      "page-title": {
+        "displayName": "Page Title",
+        "purpose": "H1 of every app page, above a bottom rule."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card headers (15px), modal titles and wordmark (17px)."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "App text, tables, forms; landing body 16px."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Landing hero and section intro paragraphs."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Form labels, stat labels, table headers; sentence case."
+      },
+      "figure": {
+        "displayName": "Figure",
+        "purpose": "Tabular money, percent, count and date values (.num)."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Code and API values only."
+      }
+    },
+    "shadows": [
+      {
+        "name": "hairline-lift",
+        "value": "0 1px 2px rgb(16 24 40 / 0.05)",
+        "purpose": "Cards and model sheets resting on Ground."
+      },
+      {
+        "name": "base",
+        "value": "0 1px 3px rgb(16 24 40 / 0.07), 0 1px 2px rgb(16 24 40 / 0.04)",
+        "purpose": "Ant Design default boxShadow."
+      },
+      {
+        "name": "popover",
+        "value": "0 12px 28px -8px rgb(16 24 40 / 0.14), 0 2px 6px rgb(16 24 40 / 0.05)",
+        "purpose": "Account dropdown, Ant popups, demo video frame."
+      },
+      {
+        "name": "overlay",
+        "value": "0 20px 40px -12px rgb(16 24 40 / 0.18)",
+        "purpose": "Large modal panels only."
+      }
+    ],
+    "motion": [
+      {
+        "name": "fade-rise",
+        "value": "fadeIn 0.24s cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Dropdowns and preview overlay: opacity 0 and 6px rise to rest. Disabled under prefers-reduced-motion."
+      },
+      {
+        "name": "color-transition",
+        "value": "transition-property: color, background-color, border-color; 150ms",
+        "purpose": "Button, nav item and menu row hover. No transform."
+      },
+      {
+        "name": "sidebar-collapse",
+        "value": "width 300ms, opacity 200ms",
+        "purpose": "Sidebar open and close."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Cobalt action; one per view region.",
+      "html": "<button class=\"ds-btn-primary\">เริ่มใช้งาน</button>",
+      "css": ".ds-btn-primary{height:40px;padding:0 16px;border:0;border-radius:6px;background:#3549d1;color:#fff;font:500 14px/1 var(--font-sans, Geist, Anuphan, system-ui, sans-serif);cursor:pointer;transition:background-color .15s}.ds-btn-primary:hover{background:#2b3bb0}.ds-btn-primary:focus-visible{outline:2px solid #3549d1;outline-offset:2px}.ds-btn-primary:disabled{opacity:.6}"
+    },
+    {
+      "name": "Ink Button",
+      "kind": "button",
+      "refersTo": "button-ink",
+      "description": "Second strong action when cobalt is already present; landing nav Log in.",
+      "html": "<button class=\"ds-btn-ink\">Log in</button>",
+      "css": ".ds-btn-ink{height:36px;padding:0 16px;border:0;border-radius:6px;background:#151a23;color:#fff;font:500 14px/1 var(--font-sans, Geist, Anuphan, system-ui, sans-serif);cursor:pointer;transition:background-color .15s}.ds-btn-ink:hover{background:#232933}.ds-btn-ink:focus-visible{outline:2px solid #3549d1;outline-offset:2px}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Outlined alternative action.",
+      "html": "<button class=\"ds-btn-secondary\">ดูผลทดสอบ</button>",
+      "css": ".ds-btn-secondary{height:40px;padding:0 20px;border:1px solid #cdd4dd;border-radius:6px;background:#fff;color:#353c48;font:500 14px/1 var(--font-sans, Geist, Anuphan, system-ui, sans-serif);cursor:pointer;transition:background-color .15s,border-color .15s}.ds-btn-secondary:hover{background:#f6f8fa;border-color:#6f7988}.ds-btn-secondary:focus-visible{outline:2px solid #3549d1;outline-offset:2px}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Header links, sidebar toggle, Log out.",
+      "html": "<button class=\"ds-btn-ghost\">Log out</button>",
+      "css": ".ds-btn-ghost{height:36px;padding:0 12px;border:0;border-radius:6px;background:transparent;color:#5b6574;font:400 14px/1 var(--font-sans, Geist, Anuphan, system-ui, sans-serif);cursor:pointer;transition:background-color .15s,color .15s}.ds-btn-ghost:hover{background:#eef1f5;color:#151a23}.ds-btn-ghost:focus-visible{outline:2px solid #3549d1;outline-offset:2px}"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Form field with label above.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Email</span><input class=\"ds-input\" type=\"email\" placeholder=\"you@example.com\"></label>",
+      "css": ".ds-field{display:grid;gap:6px;width:280px}.ds-field-label{font:500 14px/1.4 var(--font-sans, Geist, Anuphan, system-ui, sans-serif);color:#353c48}.ds-input{height:40px;padding:0 12px;border:1px solid #cdd4dd;border-radius:6px;background:#fff;color:#151a23;font:400 14px var(--font-sans, Geist, Anuphan, system-ui, sans-serif);outline:none;transition:box-shadow .15s,border-color .15s}.ds-input::placeholder{color:#6f7988}.ds-input:focus{border-color:#3549d1;box-shadow:0 0 0 2px #e1e7fd}"
+    },
+    {
+      "name": "Sidebar Navigation",
+      "kind": "nav",
+      "refersTo": "nav-item",
+      "description": "App sidebar items; active item on Subtle Fill.",
+      "html": "<nav class=\"ds-side\"><a class=\"ds-side-item\" href=\"#\">Dashboard</a><a class=\"ds-side-item is-active\" aria-current=\"page\" href=\"#\">Expert Advisor</a><a class=\"ds-side-item\" href=\"#\">Billing</a></nav>",
+      "css": ".ds-side{width:256px;padding:16px 0;background:#fff;border-right:1px solid #e3e8ee;display:flex;flex-direction:column}.ds-side-item{display:block;margin:2px 12px;padding:8px 12px;border-radius:6px;font:400 14px/1.4 var(--font-sans, Geist, Anuphan, system-ui, sans-serif);color:#5b6574;text-decoration:none;transition:background-color .15s,color .15s}.ds-side-item:hover{background:#f6f8fa;color:#151a23}.ds-side-item.is-active{background:#eef1f5;color:#151a23;font-weight:500}.ds-side-item:focus-visible{outline:2px solid #3549d1;outline-offset:2px}"
+    },
+    {
+      "name": "Tag",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "Status and meta tags; semantic color only for P&L and states.",
+      "html": "<span class=\"ds-tag\">MT5</span> <span class=\"ds-tag ds-tag-profit\">BUY</span> <span class=\"ds-tag ds-tag-loss\">SELL</span>",
+      "css": ".ds-tag{display:inline-block;padding:2px 8px;border-radius:4px;background:#eef1f5;color:#353c48;border:1px solid #e3e8ee;font:500 12px/1.5 var(--font-sans, Geist, Anuphan, system-ui, sans-serif)}.ds-tag-profit{background:#ecf8f2;color:#127a50;border-color:#a7e0c3}.ds-tag-loss{background:#fdf1f0;color:#b8382b;border-color:#f4bdb7}"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "White sheet on Ground; no nesting.",
+      "html": "<article class=\"ds-card\"><h3 class=\"ds-card-title\">Add Expert Advisor</h3><p class=\"ds-card-body\">Link a trade account, symbol, timeframe and model.</p></article>",
+      "css": ".ds-card{width:320px;padding:20px;background:#fff;border:1px solid #e3e8ee;border-radius:8px;box-shadow:0 1px 2px rgb(16 24 40 / .05)}.ds-card-title{margin:0;font:600 15px/1.4 var(--font-sans, Geist, Anuphan, system-ui, sans-serif);color:#151a23}.ds-card-body{margin:6px 0 0;font:400 14px/1.55 var(--font-sans, Geist, Anuphan, system-ui, sans-serif);color:#5b6574}"
+    },
+    {
+      "name": "Model Result Sheet",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "Signature: dated stat block with tabular figures and P&L color.",
+      "html": "<article class=\"ds-sheet\"><header class=\"ds-sheet-head\"><div><h3>XAUUSD</h3><p>Gold · H1</p></div><span class=\"ds-badge\">MT5</span></header><div class=\"ds-stat-head\"><h4>Backtest (1 ปี)</h4><span>17/01/25 – 30/01/26</span></div><dl class=\"ds-stats\"><div><dt>Net profit</dt><dd class=\"p\">+$502.34</dd></div><div><dt>Win rate</dt><dd>94.48%</dd></div><div><dt>Profit factor</dt><dd>2.95</dd></div><div><dt>Max drawdown</dt><dd class=\"l\">47.97%</dd></div></dl></article>",
+      "css": ".ds-sheet{width:420px;padding:20px;background:#fff;border:1px solid #e3e8ee;border-radius:8px;box-shadow:0 1px 2px rgb(16 24 40 / .05);font-family:var(--font-sans, Geist, Anuphan, system-ui, sans-serif);color:#151a23}.ds-sheet-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}.ds-sheet-head h3{margin:0;font-size:24px;font-weight:600;letter-spacing:-.025em}.ds-sheet-head p{margin:2px 0 0;font-size:13px;color:#5b6574}.ds-badge{font-size:12px;font-weight:500;color:#464f5d;border:1px solid #e3e8ee;border-radius:4px;padding:2px 8px}.ds-stat-head{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:8px;border-bottom:1px solid #e3e8ee}.ds-stat-head h4{margin:0;font-size:13px;font-weight:500}.ds-stat-head span{font-size:12px;color:#5b6574;font-variant-numeric:tabular-nums}.ds-stats{display:grid;grid-template-columns:1fr 1fr;column-gap:24px;margin:0}.ds-stats div{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid #eef1f5}.ds-stats dt{font-size:13px;color:#5b6574}.ds-stats dd{margin:0;font-size:14px;font-weight:500;font-variant-numeric:tabular-nums;letter-spacing:-.01em}.ds-stats dd.p{color:#127a50}.ds-stats dd.l{color:#b8382b}"
+    },
+    {
+      "name": "Empty State",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Solid hairline box with a simple illustration and next-step copy.",
+      "html": "<div class=\"ds-empty\"><svg width=\"64\" height=\"41\" viewBox=\"0 0 64 41\" fill=\"none\" aria-hidden=\"true\"><ellipse cx=\"32\" cy=\"33\" rx=\"32\" ry=\"7\" fill=\"#f6f8fa\"/><path d=\"M55 13.7L44.9 2.2C44.4 1.5 43.7 1 42.9 1H21.1c-.8 0-1.5.5-2 1.2L9 13.7V23h46v-9.3z\" stroke=\"#cdd4dd\" fill=\"#fff\"/><path d=\"M41.6 16.9c0-1.6 1-3 2.3-3H55v18.1c0 2.1-1.3 3.9-2.9 3.9H11.9C10.3 35.9 9 34.1 9 32V13.9h11.1c1.3 0 2.3 1.4 2.3 3v.1c0 1.6 1 2.9 2.3 2.9h14.6c1.3 0 2.3-1.3 2.3-2.9z\" stroke=\"#cdd4dd\" fill=\"#f6f8fa\"/></svg><p>No EA yet. Select an account, symbol, timeframe and model above, then press Add.</p></div>",
+      "css": ".ds-empty{width:360px;padding:40px 24px;background:#fff;border:1px solid #e3e8ee;border-radius:8px;text-align:center;font:400 14px/1.55 var(--font-sans, Geist, Anuphan, system-ui, sans-serif);color:#5b6574}.ds-empty p{margin:12px 0 0}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Quiet Ledger",
+    "overview": "EA.AI is a financial tool, and it looks like one. Everything sits on white sheets over a cool grey-blue ground, with hairline rules where other products use boxes. The content is mostly figures: win rate, drawdown, net profit, balance. The visual system steps back so those figures can be read and compared at a glance. It works the way a well-kept statement does. Nothing in it tries to excite; it tries to be exact.\n\nThe tone is restrained and almost monochrome. Ink and a grey ramp carry nearly every surface. Cobalt appears only where the user can act or where focus lands. Green and red appear only to show which way the money moved. Type is Geist for Latin text and Anuphan for Thai, both in one sans stack, so mixed Thai and English lines keep one voice. Every numeral is tabular. Depth comes from soft, low shadows and 1px rules, never from color or glow.\n\nThe density is moderate. The landing page breathes (80px section rhythm, a 56px display line). App pages are working surfaces: 36px controls, 14px body text, tables with a ground-colored header row. Both share one header height (56px), one wordmark, and one radius family.",
+    "keyCharacteristics": [
+      "White surface on a cool #f6f8fa ground; 1px #e3e8ee hairlines separate things.",
+      "One cobalt accent, used for actions and focus only.",
+      "Green and red mean profit and loss, nothing else.",
+      "Geist and Anuphan in one stack; weights 400, 500 and 600 only; tabular numerals everywhere.",
+      "Small radii (4, 6, 8px) and soft, short, neutral shadows."
+    ],
+    "rules": [
+      {
+        "name": "The One Accent Rule",
+        "body": "Cobalt marks what can be clicked or what has focus. In charts it is also the one data-series color: the price line and the buy marker. Outside a chart, a label, heading, icon tile or figure is never cobalt.",
+        "section": "colors"
+      },
+      {
+        "name": "The Money Colors Rule",
+        "body": "Green and red appear only on profit/loss figures, P&L, buy/sell and active/expired status, chart candles, and destructive actions. A tinted tile pairs its wash with the deep text step: Profit Wash with green #0f6342, Loss Wash with red #962d23. They are never decoration or a brand tint.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Figures Rule",
+        "body": "The body sets `font-feature-settings: \"tnum\" 1, \"cv11\" 1` globally. Figures that line up in tables or stat lists also take the `.num` class (tabular-nums, -0.01em). Every money figure, percentage, count and date range uses it, and numbers in tables are right-aligned.",
+        "section": "typography"
+      },
+      {
+        "name": "The Count Label Rule",
+        "body": "Page and section counts read as a Muted Ink label followed by the number in Ink, weight 600, with `.num` (\"Total EA 4\", \"Total bills 12\", \"Total accounts 2\").",
+        "section": "typography"
+      },
+      {
+        "name": "The Three Weights Rule",
+        "body": "Use 400 for reading, 500 for labels and controls, and 600 for headings and key figures. Bold (700) and black (900) are not part of the system.",
+        "section": "typography"
+      },
+      {
+        "name": "The Float-Only Shadow Rule",
+        "body": "A resting card gets at most the hairline lift. Larger shadows are for things that float above the page (menus, popovers, modals). Shadows are never colored, and they never grow on hover.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Small Corner Rule",
+        "body": "No surface gets a corner larger than 8px. Cards, tiles, empty states and modals on every page use 8px. `globals.css` still clamps `rounded-xl`, `rounded-2xl` and `rounded-3xl` to 10, 12 and 14px as a safety net, but they are not part of the system.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "**Do** put every surface on the Ground (#f6f8fa) / Surface (#ffffff) pair and separate it with 1px Rule (#e3e8ee) lines.",
+      "**Do** keep Cobalt (#3549d1) for buttons, links, focus and the chart series. Use the Ink button for the second strong action.",
+      "**Do** set every figure with tabular numerals (`.num`) and right-align numeric table columns.",
+      "**Do** show a test's date range next to its figures, and put drawdown in Ledger Red right after the win rate.",
+      "**Do** keep corners at 4, 6 or 8px and shadows at the hairline lift for resting cards.",
+      "**Do** use page titles at 22px weight 600 with a bottom rule. Use labels, placeholders and tags in sentence case at 13px weight 500 in Muted Ink.",
+      "**Do** give every empty state next-step copy inside a solid Rule box."
+    ],
+    "donts": [
+      "**Don't** use gradient backgrounds, glass or backdrop blur, or colored shadows on surfaces or controls. The chart area fade is the one exception.",
+      "**Don't** color a text figure, label or badge Cobalt outside a chart. Cobalt means \"you can act here.\"",
+      "**Don't** set status in uppercase pills. Use an Ant Design Tag at 4px in natural case.",
+      "**Don't** put a card inside a card, or use corners above 8px.",
+      "**Don't** use weights above 600."
+    ]
+  }
+}

@@ -23,7 +23,7 @@ export default function Billpage() {
       title: 'EA Name',
       dataIndex: 'nameEA',
       key: 'nameEA',
-      render: (text: string) => <span className="font-bold text-slate-700">{text}</span>
+      render: (text: string) => <span className="font-semibold text-slate-700">{text}</span>
     },
     {
       title: 'Config',
@@ -479,7 +479,7 @@ const handleEdit = async () => {
  
 ];
    return (
-      <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans text-[#1E293B]">
+      <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
         {/* Navbar ขนาดใหญ่ (h-20) */}
         <Navbar
           isSidebarOpen={isSidebarOpen}
@@ -491,8 +491,8 @@ const handleEdit = async () => {
 
         <div className="flex flex-1 overflow-hidden">
                       {/* Sidebar */}
-                      <aside className={`bg-[#1E293B] transition-all duration-300 shadow-xl z-20 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
-                        <div className={`w-64 flex flex-col py-6 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                      <aside className={`bg-white transition-all duration-300 z-20 overflow-hidden ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
+                        <div className={`w-64 h-full border-r border-slate-200 flex flex-col py-4 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                                       <SidebarItem label="Setup" href="/admin/setup" />
                                                 <SidebarItem label="Expert Advisor" href="/admin/EA" />
                                                 <SidebarItem label="Billing" href="/admin/Bill" />
@@ -505,10 +505,10 @@ const handleEdit = async () => {
         
             
             {/* Header Section */}
-            <div className="bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-slate-200 mb-4">
+            <div className="bg-white p-6 md:p-8 rounded-lg shadow-sm border border-slate-200 mb-4">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4  border-slate-100 ">
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-800">Model EA Management</h1>
+                        <h1 className="text-[22px] font-semibold tracking-tight text-slate-900">Model EA Management</h1>
                         <p className="text-slate-500 text-sm mt-1">จัดการข้อมูล EA, ตั้งค่าราคา และสถานะ</p>
                     </div>
                     <div className="flex gap-2">
@@ -527,22 +527,22 @@ const handleEdit = async () => {
             </div>
               <div className="flex gap-4 mb-4">
                           {/* ... (โค้ดกล่อง Total Trades, Win Rate, Profit ของคุณเหมือนเดิม) ... */}
-                          <div className="flex-1 p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
-                            <p className=" text-blue-500 text-[11px] font-bold uppercase tracking-wider mb-1">ถูกใช้สร้าง license มากสุด</p>
-                            <p className="text-xl font-black text-black-400 leading-none">
+                          <div className="flex-1 p-4 bg-white border border-slate-100 rounded-lg shadow-sm">
+                            <p className=" text-slate-500 text-[13px] font-medium mb-1">ถูกใช้สร้าง license มากสุด</p>
+                            <p className="text-xl font-semibold text-black-400 leading-none">
                              { nameMaxCreate } จำนวน {MaxCreate}
                             </p>
                           </div>
-                <div className="flex-1 p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
+                <div className="flex-1 p-4 bg-white border border-slate-100 rounded-lg shadow-sm">
                   {/* เพิ่ม div ครอบเป็น flex เพื่อแยกซ้าย-ขวา */}
                   <div className="flex justify-between items-center">
                     
                     {/* ฝั่งซ้าย: กล่องข้อความและตัวเลข */}
                     <div>
-                      <p className="text-blue-400 text-[11px] font-bold uppercase tracking-wider mb-1">
+                      <p className="text-slate-500 text-[13px] font-medium mb-1">
                         จำนวน license ทั้งหมด
                       </p>
-                      <p className="text-2xl font-black text-slate-800 leading-none">
+                      <p className="text-2xl font-semibold text-slate-800 leading-none">
                         {selectedStats.length}
                       </p>
                     </div>
@@ -559,19 +559,19 @@ const handleEdit = async () => {
                           
                         </div>
                         
-          <div className="bg-white rounded-[1rem] shadow-sm border border-slate-200 min-h-[600px] p-6 md:p-8 flex-1">
+          <div className="bg-white rounded-lg shadow-sm border border-slate-200 min-h-[600px] p-6 md:p-8 flex-1">
             <div className="">
 
           {addnewModelOpen && (
                   <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
                     {/* ส่วนของ Overlay (พื้นหลังที่ทำให้จอมืดลงและเบลอ) */}
                     <div 
-                      className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+                      className="absolute inset-0 bg-slate-900/40"
                       onClick={() => setAddnewModelOpen(false)} // คลิกพื้นที่ว่างเพื่อปิด
                     ></div>
 
                     {/* ตัว Popup Card */}
-                    <section className="relative bg-white/90 backdrop-blur-xl p-6 sm:p-8 md:p-10 rounded-3xl border border-white/20 shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <section className="relative bg-white p-6 sm:p-8 md:p-10 rounded-lg border border-slate-200 shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
                       
                       {/* ปุ่มปิดมุมขวาบน */}
                       <button 
@@ -584,7 +584,7 @@ const handleEdit = async () => {
                       </button>
 
                       <div className="mb-6 sm:mb-8 border-b border-slate-200/50 pb-4">
-                        <h2 className="text-xl sm:text-2xl font-bold text-slate-800 mb-2">สร้าง Model ใหม่</h2>
+                        <h2 className="text-xl sm:text-2xl font-semibold text-slate-800 mb-2">สร้าง Model ใหม่</h2>
                         <p className="text-slate-500 text-sm">ระบุรายละเอียดและอัปโหลดไฟล์ (.ex5 หรือ .zip) เพื่อเพิ่ม EA เข้าสู่ระบบ</p>
                       </div>
 
@@ -645,7 +645,7 @@ const handleEdit = async () => {
                             placeholder="ระบุชื่อ EA" 
                             value={nameEA}
                             onChange={(e) => setnameEA(e.target.value)}
-                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all bg-white/50"
+                            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all bg-white/50"
                           />
                         </div>
 
@@ -659,7 +659,7 @@ const handleEdit = async () => {
                             placeholder="ระบุค่า Commission" 
                             value={commission || 0}
                             onChange={(e) => setCommission(parseFloat(e.target.value) || 0)}
-                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 outline-none transition-all bg-white/50"
+                            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 outline-none transition-all bg-white/50"
                           />
                         </div>
                       </div>
@@ -670,14 +670,14 @@ const handleEdit = async () => {
                       <div className="flex flex-col sm:flex-row gap-3 mt-8">
                         <button 
                           onClick={() => setAddnewModelOpen(false)}
-                          className="flex-1 px-6 py-3.5 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition-all"
+                          className="flex-1 px-6 py-3.5 rounded-lg font-semibold text-slate-600 hover:bg-slate-100 transition-all"
                         >
                           ยกเลิก
                         </button>
                         <button 
                           onClick={handleModel} 
                           disabled={!nameEA} 
-                          className="flex-[2] bg-slate-800 hover:bg-slate-900 disabled:bg-slate-300 text-white font-bold py-3.5 rounded-xl transition-all shadow-xl flex justify-center items-center gap-2"
+                          className="flex-[2] bg-slate-800 hover:bg-slate-900 disabled:bg-slate-300 text-white font-semibold py-3.5 rounded-lg transition-all shadow-xl flex justify-center items-center gap-2"
                         >
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                           Create New EA
@@ -690,12 +690,12 @@ const handleEdit = async () => {
                   <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
                     {/* ส่วนของ Overlay (พื้นหลังที่ทำให้จอมืดลงและเบลอ) */}
                     <div 
-                      className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+                      className="absolute inset-0 bg-slate-900/40"
                       onClick={() => setaddLinkEAOpen(false)} // คลิกพื้นที่ว่างเพื่อปิด
                     ></div>
 
                     {/* ตัว Popup Card */}
-                    <section className="relative bg-white/90 backdrop-blur-xl p-6 sm:p-8 md:p-10 rounded-3xl border border-white/20 shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <section className="relative bg-white p-6 sm:p-8 md:p-10 rounded-lg border border-slate-200 shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
                       
                       {/* ปุ่มปิดมุมขวาบน */}
                       <button 
@@ -708,7 +708,7 @@ const handleEdit = async () => {
                       </button>
 
                       <div className="mb-6 sm:mb-8 border-b border-slate-200/50 pb-4">
-                        <h2 className="text-xl sm:text-2xl font-bold text-slate-800 mb-2">เพิ่ม หรือ อัพเดต Link Download EA </h2>
+                        <h2 className="text-xl sm:text-2xl font-semibold text-slate-800 mb-2">เพิ่ม หรือ อัพเดต Link Download EA </h2>
                         <p className="text-slate-500 text-sm">พิมพ์ชื่อ และอัปโหลดไฟล์ (.ex5 หรือ .zip) เพื่อเพิ่ม Link Download EA</p>
                       </div>
 
@@ -724,7 +724,7 @@ const handleEdit = async () => {
                             placeholder="ระบุชื่อ link" 
                             value={Linkname}
                             onChange={(e) => setLinkname(e.target.value)}
-                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all bg-white/50"
+                            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all bg-white/50"
                           />
                         </div>
 
@@ -732,17 +732,17 @@ const handleEdit = async () => {
                       </div>
 
                       {/* โซนอัปโหลดไฟล์ (Glassy Style) */}
-                      <div className="bg-slate-50/50 p-6 rounded-2xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center">
+                      <div className="bg-slate-50/50 p-6 rounded-lg border-2 border-dashed border-slate-300 flex flex-col items-center justify-center">
                         <UploadButton<OurFileRouter, "eaUploader">
                           endpoint="eaUploader"
                           onClientUploadComplete={(res) => setfilePath(res[0].ufsUrl)}
                           content={{
                             button({ ready }) {
-                              return <div className="text-white font-bold">{ready ? "เลือกไฟล์ EA" : "กำลังโหลด..."}</div>;
+                              return <div className="text-white font-semibold">{ready ? "เลือกไฟล์ EA" : "กำลังโหลด..."}</div>;
                             }
                           }}
                           appearance={{
-                            button: "bg-blue-600 hover:bg-blue-700 rounded-xl px-8 py-3 transition-all shadow-lg shadow-blue-500/30",
+                            button: "bg-blue-600 hover:bg-blue-700 rounded-md px-6 py-2 transition-colors",
                             container: "w-full",
                             allowedContent: "hidden" 
                           }}
@@ -760,14 +760,14 @@ const handleEdit = async () => {
                       <div className="flex flex-col sm:flex-row gap-3 mt-8">
                         <button 
                           onClick={() => setaddLinkEAOpen(false)}
-                          className="flex-1 px-6 py-3.5 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition-all"
+                          className="flex-1 px-6 py-3.5 rounded-lg font-semibold text-slate-600 hover:bg-slate-100 transition-all"
                         >
                           ยกเลิก
                         </button>
                         <button 
                           onClick={handleLinkmodel} 
                           disabled={filePath === "null" || !Linkname} 
-                          className="flex-[2] bg-slate-800 hover:bg-slate-900 disabled:bg-slate-300 text-white font-bold py-3.5 rounded-xl transition-all shadow-xl flex justify-center items-center gap-2"
+                          className="flex-[2] bg-slate-800 hover:bg-slate-900 disabled:bg-slate-300 text-white font-semibold py-3.5 rounded-lg transition-all shadow-xl flex justify-center items-center gap-2"
                         >
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                           Add new Link
@@ -780,7 +780,7 @@ const handleEdit = async () => {
                       { linkEA.length === 0 ? (
                           <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b border-slate-100 pb-6">
                           <div>
-                              <h1 className="text-2xl font-bold text-slate-800">Link Download EA ปัจจุบัน</h1>
+                              <h1 className="text-[22px] font-semibold tracking-tight text-slate-900">Link Download EA ปัจจุบัน</h1>
                               <p className="text-slate-500 text-sm mt-1">ไม่มี Link EA</p>
                           </div>
                           <div className="flex gap-2">
@@ -798,7 +798,7 @@ const handleEdit = async () => {
                       ) : (
                         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b border-slate-100 pb-6">
                           <div>
-                              <h1 className="text-2xl font-bold text-slate-800">Link Download EA ปัจจุบัน</h1>
+                              <h1 className="text-[22px] font-semibold tracking-tight text-slate-900">Link Download EA ปัจจุบัน</h1>
                               <p className="text-slate-500 text-sm mt-1">Name : {linkEA[0].namefile}</p>
                               <p className="text-slate-500 text-sm mt-1">Link : {linkEA[0].Pathname}</p>
                           </div>
@@ -810,7 +810,7 @@ const handleEdit = async () => {
                                   Edit Link EA
                               </Button>
                                <Button 
-                                onClick={handleDownloadEA}  className="!bg-green-500 hover:!bg-green-400 !border-none !text-white">
+                                onClick={handleDownloadEA}  type="primary">
                                   Download EA
                               </Button>
                               <Popconfirm 
@@ -908,8 +908,8 @@ const handleEdit = async () => {
                                 <Modal
                                   title={
                                     <div className="flex items-center gap-2">
-                                      <div className="w-1.5 h-5 bg-blue-600 rounded-full" />
-                                      <span className="text-lg font-bold text-slate-800">License</span>
+
+                                      <span className="text-lg font-semibold text-slate-800">License</span>
                                     </div>
                                   }
                                   open={islicenseOpen}
