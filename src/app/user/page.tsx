@@ -124,7 +124,7 @@ export default function UserProfilePage() {
 
   // --- RENDER ---
   return (
-    <div className="h-screen bg-[#F1F5F9] flex flex-col font-sans text-slate-800 overflow-hidden">
+    <div className="h-screen bg-slate-50 flex flex-col font-sans text-slate-800 overflow-hidden">
       
       {/* Navbar */}
       <Navbar
@@ -137,8 +137,8 @@ export default function UserProfilePage() {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <aside className={`bg-[#1E293B] transition-all duration-300 shadow-xl z-20 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
-          <div className={`w-64 flex flex-col py-6 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <aside className={`bg-white transition-all duration-300 z-20 overflow-hidden ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
+          <div className={`w-64 h-full border-r border-slate-200 flex flex-col py-4 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                  <SidebarItem label="Document " href="/document" />
                                    <SidebarItem label="Dashboard" href="/dashboard" />
                                    <SidebarItem label="User Profile" href="/user" />
@@ -153,23 +153,23 @@ export default function UserProfilePage() {
           <div className="w-full max-w-3xl space-y-6 mt-4">
             
             {/* Header Section */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-              <h1 className="text-2xl font-bold text-slate-800">My Profile</h1>
+            <div className="pb-5 border-b border-slate-200">
+              <h1 className="text-[22px] font-semibold tracking-tight text-slate-900">My Profile</h1>
               <p className="text-slate-500 text-sm mt-1">
                 จัดการข้อมูลส่วนตัวของคุณ
               </p>
             </div>
 
             {isLoading ? (
-                <div className="flex flex-col items-center justify-center py-20 bg-white rounded-2xl shadow-sm border border-slate-200 gap-4">
+                <div className="flex flex-col items-center justify-center py-20 bg-white rounded-lg shadow-sm border border-slate-200 gap-4">
                     <Spin size="large" />
                     <span className="text-slate-500 text-sm font-medium">กำลังโหลดข้อมูล...</span>
                 </div>
                 ) : (
-              <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+              <div className="bg-white p-6 md:p-8 rounded-lg shadow-sm border border-slate-200">
                 
                 {/* 1. Avatar & Upload Section (ปรับปรุงใหม่) */}
-                <div className="flex flex-col sm:flex-row items-center gap-6 p-6 mb-8 bg-slate-50 border border-slate-200 rounded-xl">
+                <div className="flex flex-col sm:flex-row items-center gap-6 p-6 mb-8 bg-slate-50 border border-slate-200 rounded-lg">
                   
                   {/* Avatar Display */}
                   <div className="relative shrink-0">
@@ -177,10 +177,10 @@ export default function UserProfilePage() {
                       size={100} 
                       src={image || undefined} 
                       icon={<UserOutlined />} 
-                      className="shadow-md border-4 border-white"
+                      className="!bg-slate-100 !text-slate-500 border-4 border-white shadow-sm"
                     />
                     <div className="absolute -bottom-3 left-1/2 -translate-x-1/2">
-                      <Tag color={userData?.role === 'admin' ? 'purple' : 'blue'} className="m-0 px-3 py-0.5 text-xs font-bold uppercase rounded-full shadow-sm">
+                      <Tag className="m-0 text-xs font-medium">
                         {userData?.role || 'USER'}
                       </Tag>
                     </div>
@@ -270,8 +270,8 @@ export default function UserProfilePage() {
                   <button 
                     onClick={handleUpdateProfile} 
                     disabled={isSubmitting}
-                    className={`px-6 py-2.5 rounded-lg font-semibold text-white transition-all shadow-md flex items-center gap-2
-                      ${isSubmitting ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg active:scale-95'}
+                    className={`px-6 py-2.5 rounded-lg font-semibold text-white transition-colors flex items-center gap-2
+                      ${isSubmitting ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}
                     `}
                   >
                     {isSubmitting ? <Spin size="small" /> : <SaveOutlined />} 

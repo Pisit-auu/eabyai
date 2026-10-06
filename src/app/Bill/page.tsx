@@ -81,7 +81,7 @@ export default function Bill() {
     render: (type:any) => {
       const isBuy = type === 'buy';
       return (
-        <Tag color={isBuy ? 'success' : 'error'} className="font-semibold uppercase">
+        <Tag color={isBuy ? 'success' : 'error'} className="font-medium">
           {type}
         </Tag>
       );
@@ -236,7 +236,7 @@ const fetchData = useCallback(async () => {
 
   // --- RENDER ---
   return (
-    <div className="h-screen bg-[#F1F5F9] flex flex-col font-sans text-slate-800 overflow-hidden">
+    <div className="h-screen bg-slate-50 flex flex-col font-sans text-slate-800 overflow-hidden">
       
       {/* Navbar */}
       <Navbar
@@ -249,8 +249,8 @@ const fetchData = useCallback(async () => {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <aside className={`bg-[#1E293B] transition-all duration-300 shadow-xl z-20 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
-          <div className={`w-64 flex flex-col py-6 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <aside className={`bg-white transition-all duration-300 z-20 overflow-hidden ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
+          <div className={`w-64 h-full border-r border-slate-200 flex flex-col py-4 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                            <SidebarItem label="Document " href="/document" />
                           <SidebarItem label="Dashboard" href="/dashboard" />
                           <SidebarItem label="User Profile" href="/user" />
@@ -266,12 +266,12 @@ const fetchData = useCallback(async () => {
             
 
            {/* Header Section */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-5 border-b border-slate-200">
               {/* ฝั่งซ้าย: ข้อความหัวข้อ */}
               <div>
-                <h1 className="text-2xl font-bold text-slate-800">Bill</h1>
+                <h1 className="text-[22px] font-semibold tracking-tight text-slate-900">Bill</h1>
                 <p className="text-slate-500 text-sm mt-1">
-                  <span className="font-semibold text-blue-600">{session?.user?.email}</span>
+                  <span className="text-slate-600">{session?.user?.email}</span>
                 </p>
               </div>
 
@@ -292,8 +292,8 @@ const fetchData = useCallback(async () => {
                 />
 
                 {/* อัปเดตตัวเลขให้แสดงตามจำนวนที่ Filter แล้ว */}
-                <div className="bg-blue-50 px-4 py-2 rounded-lg text-blue-700 font-semibold h-10 flex items-center">
-                  Total Your Bill: {filteredbillall.length}
+                <div className="px-1 text-sm text-slate-500 h-10 flex items-center">
+                  Total bills <span className="num font-semibold text-slate-900 ml-1">{filteredbillall.length}</span>
                 </div>
                 
                 <Button 
@@ -309,13 +309,13 @@ const fetchData = useCallback(async () => {
  
 
             <div>
-              <h3 className="text-lg font-bold text-slate-700 mb-4 px-1">Your Billing</h3>
+              <h3 className="text-base font-semibold text-slate-900 mb-3">Your Billing</h3>
               
               {isLoading ? (
                   <div className="flex justify-center py-20"><Spin size="large" /></div>
                 ) : filteredbillall.length === 0 ? ( // ✅ เปลี่ยนตรงนี้
-                 <div className="bg-white rounded-2xl p-12 text-center border border-dashed border-slate-300">
-                    <Empty description="ไม่มีบิลในสถานะที่คุณเลือก" />
+                 <div className="bg-white rounded-lg p-10 text-center border border-slate-200">
+                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="ไม่มีบิลในสถานะที่คุณเลือก" />
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -330,17 +330,17 @@ const fetchData = useCallback(async () => {
                         <Card
                           key={bill.license.id}
                       hoverable
-                      className={`rounded-2xl border-2 shadow-sm hover:shadow-md transition-all overflow-hidden relative ${
+                      className={`rounded-lg border-2 shadow-sm hover:shadow-md transition-all overflow-hidden relative ${
                         isPaid ? 'border-transparent' : 'border-orange-200 bg-orange-50/30'
                       }`}
                       actions={
                         !isPaid && bill?.profit < 3.3 ? [
                               <button
                                 key="pay" 
-                                className="text-orange-600 font-bold hover:text-orange-700 w-full py-1 flex items-center justify-center gap-2"
+                                className="text-orange-600 font-semibold hover:text-orange-700 w-full py-1 flex items-center justify-center gap-2"
                                 onClick={() => purchecsefreebill(bill)}
                                 style={{
-                                color: "#38ac3e",       // orange-600
+                                color: "#127a50",       // orange-600
                                   fontWeight: "bold",
                                   width: "100%",
                                   padding: "4px 0",
@@ -356,10 +356,10 @@ const fetchData = useCallback(async () => {
                           : !isPaid ? [
                               <button
                                 key="pay" 
-                                className="text-orange-600 font-bold hover:text-orange-700 w-full py-1 flex items-center justify-center gap-2"
+                                className="text-orange-600 font-semibold hover:text-orange-700 w-full py-1 flex items-center justify-center gap-2"
                                 onClick={() => handleBill(bill)}
                                 style={{
-                                color: "#38ac3e",       // orange-600
+                                color: "#127a50",       // orange-600
                                   fontWeight: "bold",
                                   width: "100%",
                                   padding: "4px 0",
@@ -389,7 +389,7 @@ const fetchData = useCallback(async () => {
 
             <div className="flex items-start justify-between mb-4">
               <div>
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                <span className="text-[13px] font-medium text-slate-500">
                   Invoice #INV-{billId}
                 </span>
                 <div style={{ color: 'red' }} className="text-xs mt-1">
@@ -400,7 +400,7 @@ const fetchData = useCallback(async () => {
               {/* Status Tag */}
               <Tag 
                 color={isPaid ? 'success' : 'warning'} 
-                className="m-0 px-3 py-1 rounded-full uppercase text-xs font-bold border-0"
+                className="m-0 text-xs font-medium"
               >
                 {isPaid ? 'PAID (ชำระแล้ว)' : 'UNPAID (รอชำระ)'}
               </Tag>
@@ -409,7 +409,7 @@ const fetchData = useCallback(async () => {
             <div className="py-4 border-t border-b border-slate-100 border-dashed mb-4">
               {/* รายละเอียดสินค้า */}
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-bold text-slate-700">{bill.license.nameEA}</span>
+                <span className="text-sm font-semibold text-slate-700">{bill.license.nameEA}</span>
 
               </div>
               <div className="flex items-center gap-2 text-slate-500 text-xs mb-1">
@@ -424,7 +424,7 @@ const fetchData = useCallback(async () => {
             <div className="flex items-end justify-between">
               <span className="text-sm text-slate-500 font-semibold">Total Amount</span>
               <div className="text-right">
-                <span className={`text-2xl font-black ${isPaid ? 'text-slate-800' : 'text-orange-600'}`}>
+                <span className={`text-2xl font-semibold ${isPaid ? 'text-slate-800' : 'text-orange-600'}`}>
                   { Number((parseFloat(amount) * parseFloat(commission)*0.01 * rateTHBtoUSD ).toFixed(3))} THB
                 </span>
               </div>
@@ -438,8 +438,8 @@ const fetchData = useCallback(async () => {
                        <Modal
                     title={
                       <div className="flex items-center gap-2">
-                        <div className="w-1.5 h-5 bg-blue-600 rounded-full" />
-                        <span className="text-lg font-bold text-slate-800">Bill Detail</span>
+
+                        <span className="text-lg font-semibold text-slate-800">Bill Detail</span>
                       </div>
                     }
                     open={BillOpen}
@@ -455,7 +455,7 @@ const fetchData = useCallback(async () => {
                        
 
                         {/* --- ส่วนตาราง Trade History --- */}
-                        <div className="border border-slate-100 rounded-xl overflow-hidden shadow-sm">
+                        <div className="border border-slate-100 rounded-lg overflow-hidden shadow-sm">
                           <Table 
                             columns={tradeColumns} 
                             dataSource={selectedStats.trade_markers}
@@ -469,12 +469,12 @@ const fetchData = useCallback(async () => {
 
                         {/* ✨ --- ส่วนสรุปยอด (Summary) ด้านล่างตาราง --- ✨ */}
                         <div className="pt-4 pb-2">
-                          <div className="w-full bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                          <div className="w-full bg-slate-50 p-4 rounded-lg border border-slate-100 space-y-2">
                             
                             {/* Profit */}
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-slate-500 font-medium">Profit</span>
-                              <span className={`font-bold ${Number(billselect?.profit) >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                              <span className={`font-semibold ${Number(billselect?.profit) >= 0 ? 'text-green-600' : 'text-red-500'}`}>
                                 {Number(billselect?.profit) >= 0 ? '+' : ''}
                                 {Number(billselect?.profit).toLocaleString('th-TH', { minimumFractionDigits: 2 })} USD
                               </span>
@@ -483,21 +483,21 @@ const fetchData = useCallback(async () => {
                             {/* Commission */}
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-slate-500 font-medium">Commission</span>
-                              <span className="font-bold text-slate-700">
+                              <span className="font-semibold text-slate-700">
                                 {/* สมมติว่าค่าคอมมิชชั่นอยู่ใน selectedStats.commission */}
                                 {Number(billselect?.license?.model?.commission || 0)}%   
                               </span>
                             </div>
                              <div className="flex justify-between items-center text-sm">
                               <span className="text-slate-500 font-medium">ProfitxCommision</span>
-                              <span className="font-bold text-slate-700">
+                              <span className="font-semibold text-slate-700">
                                 {/* สมมติว่าค่าคอมมิชชั่นอยู่ใน selectedStats.commission */}
                                 {Number(billselect?.profit)} x {Number(billselect?.commission/100 ||0)} = {(Number(billselect?.profit)*Number(billselect?.commission/100 ||0)).toFixed(3)} USD
                               </span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-slate-500 font-medium">USD to THB </span>
-                              <span className="font-bold text-slate-700">
+                              <span className="font-semibold text-slate-700">
                                 {/* สมมติว่าค่าคอมมิชชั่นอยู่ใน selectedStats.commission */}
                                {(Number(billselect?.profit)*Number(billselect?.commission/100 ||0)* rateTHBtoUSD).toFixed(3)} THB
                               </span>
@@ -507,8 +507,8 @@ const fetchData = useCallback(async () => {
 
                             {/* Total Amount */}
                             <div className="flex justify-between items-center">
-                              <span className="text-slate-800 font-bold uppercase tracking-wide text-sm">Total Amount</span>
-                              <span className="text-xl font-black text-blue-600">
+                              <span className="text-slate-800 font-medium text-sm">Total amount</span>
+                              <span className="text-xl font-semibold text-blue-600">
                                 {/* สมมติว่ายอดรวมอยู่ใน selectedStats.total_amount หรือคุณบวก/ลบเอาเองตรงนี้ได้เลย */}
                                 {(Number(billselect?.profit)*Number(billselect?.commission/100 ||0)* rateTHBtoUSD).toFixed(3)} THB
                               </span>
@@ -522,7 +522,7 @@ const fetchData = useCallback(async () => {
                               size="large"
                               icon={<DollarOutlined />}
                               onClick={() => purchecsebill(billselect?.profit,billselect?.id, billselect?.commission) }
-                              className="w-full mt-2 rounded-xl shadow-md flex items-center justify-center font-bold border-none"
+                              className="w-full mt-2 rounded-lg shadow-md flex items-center justify-center font-semibold border-none"
                               style={{ 
                                 backgroundColor: '#2b0b9e', 
                                 color: 'white',
@@ -536,12 +536,12 @@ const fetchData = useCallback(async () => {
                             {/* ถ้าจ่ายแล้ว โชว์เป็นป้ายกำกับแทน */}
                             {billselect?.isPaid && (
                                   <div 
-                                    className="w-full mt-2 py-3 px-4 text-sm font-bold rounded-xl border flex items-center justify-center gap-2"
+                                    className="w-full mt-2 py-3 px-4 text-sm font-semibold rounded-lg border flex items-center justify-center gap-2"
                                     // 2. ยัดสไตล์สีเขียวลงไปตรงๆ ป้องกัน CSS ตีกัน
                                     style={{
                                       backgroundColor: '#f0fdf4', // สี bg-green-50
                                       borderColor: '#bbf7d0',     // สี border-green-200
-                                      color: '#16a34a'            // สี text-green-600
+                                      color: '#127a50'            // สี text-green-600
                                     }}
                                   >
                  

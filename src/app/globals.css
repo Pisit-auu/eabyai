@@ -1,33 +1,185 @@
 @import "tailwindcss";
 
+/*
+  EA.AI tokens. One cool neutral ramp, one cobalt accent for actions and focus,
+  green/red only for profit and loss. Tailwind's palette names are remapped so
+  existing utilities (slate-*, blue-*, emerald-*, rose-*) resolve to this system.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ground: #f6f8fa;
+  --surface: #ffffff;
+  --ink: #151a23;
+  --ink-muted: #5b6574;
+  --rule: #e3e8ee;
+  --accent: #3549d1;
+  --accent-hover: #2b3bb0;
+  --profit: #127a50;
+  --loss: #b8382b;
+  --background: var(--surface);
+  --foreground: var(--ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-geist-sans), var(--font-anuphan), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+@theme {
+  --color-slate-50: #f6f8fa;
+  --color-slate-100: #eef1f5;
+  --color-slate-200: #e3e8ee;
+  --color-slate-300: #cdd4dd;
+  --color-slate-400: #6f7988;
+  --color-slate-500: #5b6574;
+  --color-slate-600: #464f5d;
+  --color-slate-700: #353c48;
+  --color-slate-800: #232933;
+  --color-slate-900: #151a23;
+  --color-slate-950: #0c1018;
+
+  --color-gray-50: #f6f8fa;
+  --color-gray-100: #eef1f5;
+  --color-gray-200: #e3e8ee;
+  --color-gray-300: #cdd4dd;
+  --color-gray-400: #6f7988;
+  --color-gray-500: #5b6574;
+  --color-gray-600: #464f5d;
+  --color-gray-700: #353c48;
+  --color-gray-800: #232933;
+  --color-gray-900: #151a23;
+
+  --color-blue-50: #f0f3fe;
+  --color-blue-100: #e1e7fd;
+  --color-blue-200: #c5d0fa;
+  --color-blue-300: #9daef5;
+  --color-blue-400: #5f76e8;
+  --color-blue-500: #4259dc;
+  --color-blue-600: #3549d1;
+  --color-blue-700: #2b3bb0;
+  --color-blue-800: #27348e;
+  --color-blue-900: #232f70;
+
+  /* indigo/violet/purple collapse into the one accent */
+  --color-indigo-50: #f0f3fe;
+  --color-indigo-100: #e1e7fd;
+  --color-indigo-200: #c5d0fa;
+  --color-indigo-400: #5f76e8;
+  --color-indigo-500: #4259dc;
+  --color-indigo-600: #3549d1;
+  --color-indigo-700: #2b3bb0;
+  --color-violet-500: #4259dc;
+  --color-violet-600: #3549d1;
+  --color-purple-50: #f0f3fe;
+  --color-purple-500: #4259dc;
+  --color-purple-600: #3549d1;
+
+  --color-emerald-50: #ecf8f2;
+  --color-emerald-100: #d3f0e1;
+  --color-emerald-200: #a7e0c3;
+  --color-emerald-400: #1f9a66;
+  --color-emerald-500: #158a59;
+  --color-emerald-600: #127a50;
+  --color-emerald-700: #0f6342;
+  --color-emerald-900: #0b3d29;
+  --color-green-50: #ecf8f2;
+  --color-green-100: #d3f0e1;
+  --color-green-400: #1f9a66;
+  --color-green-500: #158a59;
+  --color-green-600: #127a50;
+  --color-green-700: #0f6342;
+
+  --color-rose-50: #fdf1f0;
+  --color-rose-100: #fadfdc;
+  --color-rose-200: #f4bdb7;
+  --color-rose-400: #d24a3c;
+  --color-rose-500: #c4402f;
+  --color-rose-600: #b8382b;
+  --color-rose-700: #962d23;
+  --color-red-50: #fdf1f0;
+  --color-red-100: #fadfdc;
+  --color-red-400: #d24a3c;
+  --color-red-500: #c4402f;
+  --color-red-600: #b8382b;
+  --color-red-700: #962d23;
+
+  --color-amber-50: #fcf6e8;
+  --color-amber-100: #f8ebc9;
+  --color-amber-200: #f1ddaa;
+  --color-amber-400: #d69a1c;
+  --color-amber-500: #b98010;
+  --color-amber-600: #9a6a0b;
+  --color-amber-700: #7a5409;
+  --color-orange-50: #fdf3ea;
+  --color-orange-500: #c7651a;
+  --color-orange-600: #a95413;
+
+  --radius-xl: 0.625rem;
+  --radius-2xl: 0.75rem;
+  --radius-3xl: 0.875rem;
+
+  --shadow-sm: 0 1px 2px rgb(16 24 40 / 0.05);
+  --shadow: 0 1px 3px rgb(16 24 40 / 0.07), 0 1px 2px rgb(16 24 40 / 0.04);
+  --shadow-md: 0 2px 6px -1px rgb(16 24 40 / 0.08), 0 1px 2px rgb(16 24 40 / 0.04);
+  --shadow-lg: 0 8px 20px -6px rgb(16 24 40 / 0.12), 0 2px 4px rgb(16 24 40 / 0.04);
+  --shadow-xl: 0 12px 28px -8px rgb(16 24 40 / 0.14), 0 2px 6px rgb(16 24 40 / 0.05);
+  --shadow-2xl: 0 20px 40px -12px rgb(16 24 40 / 0.18);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  @apply bg-white text-slate-900;
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "tnum" 1, "cv11" 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: #c5d0fa;
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+a {
+  text-underline-offset: 3px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cdd4dd transparent;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
 
 @keyframes fadeIn {
   from {
-    opacity:0;
-    transform: translateY(20px);
+    opacity: 0;
+    transform: translateY(6px);
   }
   to {
-    opacity:1;
+    opacity: 1;
     transform: translateY(0);
   }
 }
 
-.animate-fadeIn{
-  animation:fadeIn 0.8s ease;
+.animate-fadeIn {
+  animation: fadeIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fadeIn {
+    animation: none;
+  }
 }

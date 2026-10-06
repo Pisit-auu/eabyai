@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Anuphan } from "next/font/google";
 import "./globals.css";
 import { NextAuthProvider } from "./component/NextAuthProvider"
+import { AntdProvider } from "./component/AntdProvider"
 import "@/lib/cron";
 
 const geistSans = Geist({
@@ -14,9 +15,15 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const anuphan = Anuphan({
+  variable: "--font-anuphan",
+  subsets: ["thai", "latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 export const metadata: Metadata = {
-  title: "Ea by Ai",
-  description: "Ea by Ai",
+  title: "EA.AI — AI Expert Advisor for MT5",
+  description: "เช่า Expert Advisor สำหรับ MT5 แบบแบ่งกำไร พร้อมผลทดสอบย้อนหลังและ forward test",
 };
 
 export default function RootLayout({
@@ -25,12 +32,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="th" className={`${geistSans.variable} ${geistMono.variable} ${anuphan.variable}`}>
+      <body className="antialiased">
         <NextAuthProvider>
-          {children}
+          <AntdProvider>
+            {children}
+          </AntdProvider>
         </NextAuthProvider>
       </body>
     </html>

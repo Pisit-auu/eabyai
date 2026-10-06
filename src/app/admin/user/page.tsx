@@ -181,7 +181,7 @@ const openAccountsModal = (user: any) => {
       dataIndex: 'role',
       key: 'role',
       render: (role: string) => (
-        <Tag color={role === 'admin' ? 'purple' : 'blue'} className="uppercase font-semibold">
+        <Tag color={role === 'admin' ? 'purple' : 'blue'} className="font-medium">
           {role || 'USER'}
         </Tag>
       ),
@@ -246,7 +246,7 @@ const openAccountsModal = (user: any) => {
 
   // --- RENDER ---
   return (
-    <div className="h-screen bg-[#F1F5F9] flex flex-col font-sans text-slate-800 overflow-hidden">
+    <div className="h-screen bg-slate-50 flex flex-col font-sans text-slate-800 overflow-hidden">
       
       <Navbar
         isSidebarOpen={isSidebarOpen}
@@ -257,8 +257,8 @@ const openAccountsModal = (user: any) => {
       />
 
       <div className="flex flex-1 overflow-hidden">
-        <aside className={`bg-[#1E293B] transition-all duration-300 shadow-xl z-20 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
-          <div className={`w-64 flex flex-col py-6 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <aside className={`bg-white transition-all duration-300 z-20 overflow-hidden ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
+          <div className={`w-64 h-full border-r border-slate-200 flex flex-col py-4 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                <SidebarItem label="Setup" href="/admin/setup" />
                      <SidebarItem label="Expert Advisor" href="/admin/EA" />
                      <SidebarItem label="Billing" href="/admin/Bill" />
@@ -269,8 +269,8 @@ const openAccountsModal = (user: any) => {
         <main className="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth">
           <div className="w-full max-w-7xl mx-auto space-y-6 mt-4">
             
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-              <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-3">
+            <div className="pb-5 border-b border-slate-200">
+              <h1 className="text-[22px] font-semibold tracking-tight text-slate-900 flex items-center gap-3">
                 <TeamOutlined className="text-blue-600" /> Users Management
               </h1>
               <p className="text-slate-500 text-sm mt-1">
@@ -279,7 +279,7 @@ const openAccountsModal = (user: any) => {
             </div>
 
             {isLoading ? (
-              <div className="flex flex-col items-center justify-center py-20 bg-white rounded-2xl shadow-sm border border-slate-200 gap-4">
+              <div className="flex flex-col items-center justify-center py-20 bg-white rounded-lg shadow-sm border border-slate-200 gap-4">
                 <Spin size="large" />
                 <span className="text-slate-500 text-sm font-medium">กำลังโหลดข้อมูลผู้ใช้งาน...</span>
               </div>
@@ -287,7 +287,7 @@ const openAccountsModal = (user: any) => {
               <>
                 <Row gutter={[16, 16]}>
                   <Col xs={24} sm={8}>
-                    <Card className="rounded-2xl shadow-sm border-slate-200">
+                    <Card className="rounded-lg shadow-sm border-slate-200">
                       <Statistic 
                         title="ผู้ใช้งานทั้งหมด (Total Users)" 
                         value={totalUsers} 
@@ -297,7 +297,7 @@ const openAccountsModal = (user: any) => {
                     </Card>
                   </Col>
                   <Col xs={24} sm={8}>
-                    <Card className="rounded-2xl shadow-sm border-slate-200">
+                    <Card className="rounded-lg shadow-sm border-slate-200">
                       <Statistic 
                         title="ผู้ดูแลระบบ (Admins)" 
                         value={adminCount} 
@@ -307,7 +307,7 @@ const openAccountsModal = (user: any) => {
                     </Card>
                   </Col>
                   <Col xs={24} sm={8}>
-                    <Card className="rounded-2xl shadow-sm border-slate-200">
+                    <Card className="rounded-lg shadow-sm border-slate-200">
                       <Statistic 
                         title="บัญชีเทรดในระบบ (Total Accounts)" 
                         value={totalTradeAccounts} 
@@ -318,9 +318,9 @@ const openAccountsModal = (user: any) => {
                   </Col>
                 </Row>
 
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mt-6">
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-slate-200 mt-6">
                   <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-lg font-bold text-slate-800">รายชื่อผู้ใช้งานทั้งหมด</h2>
+                    <h2 className="text-lg font-semibold text-slate-800">รายชื่อผู้ใช้งานทั้งหมด</h2>
                   </div>
                   
                   <Table 

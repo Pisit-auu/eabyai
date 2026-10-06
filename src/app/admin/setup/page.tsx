@@ -202,8 +202,8 @@ export default function SetupPage() {
 
     <div className="flex flex-1 overflow-hidden h-full">
       {/* Sidebar */}
-      <aside className={`bg-[#1E293B] transition-all duration-300 shadow-xl z-20 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
-        <div className={`w-64 flex flex-col py-6 transition-opacity ${isSidebarOpen ? 'opacity-100' : 'opacity-0'}`}>
+      <aside className={`bg-white transition-all duration-300 z-20 overflow-hidden ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
+        <div className={`w-64 h-full border-r border-slate-200 flex flex-col py-4 transition-opacity ${isSidebarOpen ? 'opacity-100' : 'opacity-0'}`}>
           <SidebarItem label="Setup" href="/admin/setup" />
           <SidebarItem label="Expert Advisor" href="/admin/EA" />
           <SidebarItem label="Billing" href="/admin/Bill" />
@@ -218,8 +218,8 @@ export default function SetupPage() {
         <div className="max-w-full mx-auto space-y-4">
           
           {/* 1. Header Section */}
-          <div className="bg-white p-6 md:p-10 rounded-[2rem] shadow-sm border border-slate-200 text-center">
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-800">ระบบจัดการข้อมูลพื้นฐาน</h2>
+          <div className="bg-white p-6 md:p-10 rounded-lg shadow-sm border border-slate-200 text-center">
+            <h2 className="text-2xl md:text-3xl font-semibold text-slate-800">ระบบจัดการข้อมูลพื้นฐาน</h2>
             <div className="mt-4">
               <Radio.Group 
                 value={activeTab} 
@@ -236,18 +236,18 @@ export default function SetupPage() {
           </div>
 
           {/* 2. Data Management Card: ปรับให้กว้างเต็มพิกัด */}
-          <Card className="rounded-[2rem] shadow-sm border-slate-200 overflow-hidden min-h-[500px]">
+          <Card className="rounded-lg shadow-sm border-slate-200 overflow-hidden min-h-[500px]">
             <div className="flex flex-col gap-6">
               
               {/* ฟอร์มเพิ่มข้อมูล */}
               <div className="border-b border-slate-100 pb-8 p-2">
-                <h3 className="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-semibold text-slate-700 mb-4 flex items-center gap-2">
                
                   จัดการข้อมูล {activeTab}
                 </h3>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <input 
-                    className="flex-1 px-5 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 outline-none transition-all text-lg bg-slate-50/50"
+                    className="flex-1 px-5 py-4 rounded-lg border-2 border-slate-100 focus:border-blue-500 outline-none transition-all text-lg bg-slate-50/50"
                     placeholder={`ระบุชื่อ ${activeTab} ที่ต้องการเพิ่ม...`}
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
@@ -256,7 +256,7 @@ export default function SetupPage() {
                     type="primary" 
                     onClick={handleAddData} 
                     loading={isAdding}
-                    className="bg-blue-600 rounded-2xl h-auto px-10 text-lg font-bold shadow-lg shadow-blue-200 hover:scale-[1.02] transition-transform"
+                    className="h-10 px-6 font-medium"
                   >
                     เพิ่มข้อมูล
                   </Button>

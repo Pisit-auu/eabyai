@@ -234,7 +234,7 @@ export default function UserPage() {
   };
   // --- RENDER ---
   return (
-    <div className="h-screen bg-[#F1F5F9] flex flex-col font-sans text-slate-800 overflow-hidden">
+    <div className="h-screen bg-slate-50 flex flex-col font-sans text-slate-800 overflow-hidden">
       
       {/* Navbar */}
       <Navbar
@@ -247,8 +247,8 @@ export default function UserPage() {
 
         <div className="flex flex-1 overflow-hidden">
               {/* Sidebar */}
-              <aside className={`bg-[#1E293B] transition-all duration-300 shadow-xl z-20 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
-                <div className={`w-64 flex flex-col py-6 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+              <aside className={`bg-white transition-all duration-300 z-20 overflow-hidden ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
+                <div className={`w-64 h-full border-r border-slate-200 flex flex-col py-4 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                    
                                   <SidebarItem label="Document " href="/document" />
                                                     <SidebarItem label="Dashboard" href="/dashboard" />
@@ -265,32 +265,30 @@ export default function UserPage() {
           <div className="max-w-7xl mx-auto space-y-8">
             
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-5 border-b border-slate-200">
               <div>
-                <h1 className="text-2xl font-bold text-slate-800">Account Management</h1>
+                <h1 className="text-[22px] font-semibold tracking-tight text-slate-900">Account Management</h1>
                 <p className="text-slate-500 text-sm mt-1">
-                  Manage your trading accounts linked to <span className="font-semibold text-blue-600">{session?.user?.email}</span>
+                  Manage your trading accounts linked to <span className="text-slate-600">{session?.user?.email}</span>
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                 <div className="bg-blue-50 px-4 py-2 rounded-lg text-blue-700 font-semibold">
-                    Trading Account : {traderAccountAll.length} Account
+                 <div className="px-1 text-sm text-slate-500">
+                    Total accounts <span className="num font-semibold text-slate-900 ml-1">{traderAccountAll.length}</span>
                  </div>
                  <Button shape="circle" icon={<ReloadOutlined />} onClick={fetchData} loading={isLoading} />
               </div>
             </div>
 
             {/* Add New Account Section */}
-            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+            <div className="bg-white p-6 md:p-8 rounded-lg shadow-sm border border-slate-200">
               <div className="flex items-center gap-2 mb-6">
-                <div className="bg-blue-600 p-2 rounded-lg">
-                </div>
-                <h2 className="text-lg font-bold text-slate-700">Add New Account</h2>
+                <h2 className="text-base font-semibold text-slate-900">Add trading account</h2>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                 <div className="md:col-span-5 space-y-2">
-                  <label className="text-sm font-semibold text-slate-600 pl-1">Trading Account ID</label>
+                  <label className="text-sm font-medium text-slate-700">Trading Account ID</label>
                   <input 
                     type="text" 
                     placeholder="Ex. 88990011" 
@@ -306,9 +304,9 @@ export default function UserPage() {
                 </div>
                 
                 <div className="md:col-span-5 space-y-2">
-                  <label className="text-sm font-semibold text-slate-600 pl-1">Platform</label>
+                  <label className="text-sm font-medium text-slate-700">Platform</label>
                   <Select
-                    className="w-full h-[46px]"
+                    className="w-full h-10"
                     size="large"
                     placeholder="Select Platform"
                     value={platformSelect}
@@ -324,7 +322,7 @@ export default function UserPage() {
                   />
                 </div>
                        <div className="md:col-span-5 space-y-2">
-                  <label className="text-sm font-semibold text-slate-600 pl-1">Investor Password</label>
+                  <label className="text-sm font-medium text-slate-700">Investor Password</label>
                   <input 
                     type="text" 
                     placeholder="Ex. 123456aB@" 
@@ -337,8 +335,8 @@ export default function UserPage() {
                   <button 
                     onClick={handleAddTrader} 
                     disabled={isSubmitting}
-                    className={`w-full h-[46px] rounded-lg font-semibold text-white transition-all shadow-md flex items-center justify-center gap-2
-                      ${isSubmitting ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg active:scale-95'}
+                    className={`w-full h-10 rounded-lg font-semibold text-white transition-colors flex items-center justify-center gap-2
+                      ${isSubmitting ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}
                     `}
                   >
                     {isSubmitting ? <Spin size="small" /> : <> Add</>}
@@ -349,20 +347,20 @@ export default function UserPage() {
 
             {/* Accounts Grid List */}
             <div>
-              <h3 className="text-lg font-bold text-slate-700 mb-4 px-1">Your Portfolios</h3>
+              <h3 className="text-base font-semibold text-slate-900 mb-3">Your Portfolios</h3>
                         {isEditTradeAccountOpen  && (
-                    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
+                    <div className="fixed inset-0 bg-slate-900/40 flex justify-center items-center z-50">
                       <div className="relative bg-white p-6 rounded-lg w-96">
 
                         {/* ปุ่มปิด */}
                         <button
                           onClick={onClose}
-                          className="absolute top-3 right-3 text-gray-500 hover:text-black text-xl font-bold">
+                          className="absolute top-3 right-3 text-gray-500 hover:text-black text-xl font-semibold">
                           ×
                         </button>
 
                         {/* หัวข้อ */}
-                <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                <h2 className="text-xl font-semibold text-slate-800 mb-6 flex items-center gap-2">
                   <EditOutlined /> แก้ไขบัญชีเทรด
                 </h2>
 
@@ -373,7 +371,7 @@ export default function UserPage() {
               <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Platform</label>
                   <Select
-                    className="w-full h-[46px]"
+                    className="w-full h-10"
                     size="large"
                     placeholder="Select Platform"
                     value={platformedit}
@@ -408,7 +406,7 @@ export default function UserPage() {
                <div>
                 
                 <div >
-                  <label className="text-sm font-semibold text-slate-600 pl-1">Investor Password</label>
+                  <label className="text-sm font-medium text-slate-700">Investor Password</label>
                   <input 
                     type="text" 
                     placeholder="Ex. 123456aB@" 
@@ -454,8 +452,8 @@ export default function UserPage() {
               {isLoading ? (
                 <div className="flex justify-center py-20"><Spin size="large" /></div>
               ) : traderAccountAll.length === 0 ? (
-                 <div className="bg-white rounded-2xl p-12 text-center border border-dashed border-slate-300">
-                    <Empty description="No trading accounts found. Add one above!" />
+                 <div className="bg-white rounded-lg p-10 text-center border border-slate-200">
+                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="ยังไม่มีบัญชีเทรด — กรอก Platform ID และ Investor Password ด้านบนเพื่อเพิ่มบัญชี" />
                  </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -463,12 +461,12 @@ export default function UserPage() {
                     <Card 
                       key={account.id}
                       hoverable
-                      className="rounded-2xl border-slate-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+                      className="rounded-lg border-slate-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
                       actions={getActions(account)}
                       styles={{ body: { padding: '20px' } }}
                     >
                       <div className="flex items-start justify-between mb-2">
-                        <Tag color={'success'} className="m-0 px-3 py-0.5 rounded-full uppercase text-xs font-bold">
+                        <Tag color={'success'} className="m-0 text-xs font-medium">
                            {'Connected'}
                         </Tag>
                         <span className="text-xs text-slate-400">{new Date(account.createdAt).toLocaleDateString()}</span>
@@ -488,7 +486,7 @@ export default function UserPage() {
                         }
                         title={
                           <div className="flex items-center justify-between">
-                            <span className="text-lg font-bold text-slate-800">
+                            <span className="text-lg font-semibold text-slate-800">
                               {account?.platformAccountId || 'Unknown ID'}
                             </span>
                           </div>

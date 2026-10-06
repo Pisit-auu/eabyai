@@ -39,7 +39,7 @@ export const MiniChart = ({
     trades = [],
     height = 200,
     chartType = 'candlestick',
-    color = '#2962FF',
+    color = '#3549d1',
     count = 100,
     timeframe = 'H1'
 }: MiniChartProps) => {
@@ -102,14 +102,14 @@ export const MiniChart = ({
         const chart = createChart(chartContainerRef.current, {
             layout: {
                 background: { type: ColorType.Solid, color: 'transparent' },
-                textColor: '#333'
+                textColor: '#5b6574'
             },
             width: chartContainerRef.current.clientWidth,
             height: height,
             timeScale: {
                 visible: true,
                 timeVisible: true,
-                borderColor: '#D1D4DC'
+                borderColor: '#e3e8ee'
             },
             grid: {
                 vertLines: { visible: false },
@@ -130,8 +130,8 @@ export const MiniChart = ({
                 }
             })
             : chart.addSeries(CandlestickSeries, {
-                upColor: '#26a69a',
-                downColor: '#ef5350',
+                upColor: '#127a50',
+                downColor: '#b8382b',
                 priceFormat: {
                 type: 'price',
                 precision: 4,
@@ -208,7 +208,7 @@ export const MiniChart = ({
             return {
                 time: candle.time,
                 position: t.type === 'buy' ? 'belowBar' : 'aboveBar',
-                color: t.type === 'buy' ? '#2196F3' : '#e91e63',
+                color: t.type === 'buy' ? '#3549d1' : '#b8382b',
                 shape: t.type === 'buy' ? 'arrowUp' : 'arrowDown',
                 text: t.text || t.type.toUpperCase(),
                 price: price
