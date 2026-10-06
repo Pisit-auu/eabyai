@@ -30,12 +30,12 @@ const DocumentationPage = () => {
       <div className="flex flex-1 min-h-0 overflow-hidden">
       <aside className={`bg-white transition-all duration-300 z-20 overflow-hidden shrink-0 ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
         <div className={`w-64 h-full border-r border-slate-200 flex flex-col py-4 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-          <SidebarItem label="Document" href="/document" />
+          <SidebarItem label="User" href="/user" />
           <SidebarItem label="Dashboard" href="/dashboard" />
-          <SidebarItem label="User Profile" href="/user" />
           <SidebarItem label="Trade Account" href="/trade-account" />
           <SidebarItem label="Expert Advisor" href="/EA" />
           <SidebarItem label="Billing" href="/Bill" />
+          <SidebarItem label="Document" href="/document" />
         </div>
       </aside>
 
@@ -141,6 +141,9 @@ const DocumentationPage = () => {
                 <div className="flex items-center gap-3 mb-6">
                   <span className="flex-shrink-0 w-7 h-7 bg-slate-900 text-white text-sm rounded-full flex items-center justify-center font-medium">4</span>
                   <h3 className="font-semibold text-lg text-slate-800">การติดตั้งบน MetaTrader 5 (MT5)</h3>
+                  <a href="https://youtu.be/xeLtkYELNwI?si=ueideVGX3PaVHR6w" target="_blank" rel="noopener noreferrer" className="ml-auto inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline">
+                    วิธีติดตั้ง EA บนเครื่อง <ExportOutlined />
+                  </a>
                 </div>
                 
                 <div className="ml-0 md:ml-11 space-y-10">

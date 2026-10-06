@@ -251,12 +251,12 @@ const fetchData = useCallback(async () => {
         {/* Sidebar */}
         <aside className={`bg-white transition-all duration-300 z-20 overflow-hidden ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
           <div className={`w-64 h-full border-r border-slate-200 flex flex-col py-4 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                           <SidebarItem label="Document " href="/document" />
-                          <SidebarItem label="Dashboard" href="/dashboard" />
-                          <SidebarItem label="User Profile" href="/user" />
-                          <SidebarItem label="Trade Account" href="/trade-account" />
-                          <SidebarItem label="Expert Advisor" href="/EA" />
-                          <SidebarItem label="Billing" href="/Bill" />
+            <SidebarItem label="User" href="/user" />
+            <SidebarItem label="Dashboard" href="/dashboard" />
+            <SidebarItem label="Trade Account" href="/trade-account" />
+            <SidebarItem label="Expert Advisor" href="/EA" />
+            <SidebarItem label="Billing" href="/Bill" />
+            <SidebarItem label="Document" href="/document" />
           </div>
         </aside>
 
@@ -350,7 +350,7 @@ const fetchData = useCallback(async () => {
                                   gap: "8px"
                                 }}
                                                           >
-                            <DollarOutlined className="text-lg" /> เนื่องจากได้กำไรไม่ถึง  3.3 คลิกปุ่มนี้เพื่อต่อ license
+                             เนื่องจากได้กำไรไม่ถึง 3.3 USD คลิกปุ่มนี้เพื่อต่อ license ฟรี
                           </button>
                             ]
                           : !isPaid ? [
@@ -485,7 +485,7 @@ const fetchData = useCallback(async () => {
                               <span className="text-slate-500 font-medium">Commission</span>
                               <span className="font-semibold text-slate-700">
                                 {/* สมมติว่าค่าคอมมิชชั่นอยู่ใน selectedStats.commission */}
-                                {Number(billselect?.license?.model?.commission || 0)}%   
+                                {Number(billselect?.commission || 0)}%   
                               </span>
                             </div>
                              <div className="flex justify-between items-center text-sm">

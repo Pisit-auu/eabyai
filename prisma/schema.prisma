@@ -18,6 +18,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   tradeAccounts TradeAccount[]
+  setupProgress Int[]          @default([])
  
 }
 enum role {
@@ -124,7 +125,7 @@ model linkModel {
 
 model VerificationToken {
   identifier String
-  token      String   @unique
+  token      String   
   expires    DateTime
 
   @@unique([identifier, token])

@@ -54,7 +54,7 @@ export default function Navbar({
           >
             <Avatar
               size={32}
-              src={userImage}
+              src={userImage || undefined}
               icon={<UserOutlined />}
               className="!bg-slate-100 !text-slate-500 cursor-pointer"
             />

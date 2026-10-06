@@ -61,98 +61,113 @@ export async function GET(
 /**
  * @swagger
  * /api/user/{id}:
- *   put:
- *     summary: อัปเดตข้อมูล User
- *     description: |
- *       อัปเดตข้อมูล user โดยใช้ email เป็น id
- *       สามารถอัปเดต:
- *       - name
- *       - image
- *       - role
- *     tags:
- *       - User
- *
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: email ของ user
- *         example: user@email.com
- *
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 example: John Doe
- *               image:
- *                 type: string
- *                 example: https://example.com/profile.jpg
- *               role:
- *                 type: string
- *                 example: admin
- *
- *     responses:
- *       200:
- *         description: อัปเดตสำเร็จ
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *
- *       400:
- *         description: ไม่พบข้อมูล Email (ID)
- *
- *       500:
- *         description: เกิดข้อผิดพลาดในการอัปเดตข้อมูล
+ * put:
+ * summary: อัปเดตข้อมูล User และสถานะ Setup Guide (Step 1)
+ * description: |
+ * อัปเดตข้อมูลโปรไฟล์ user โดยใช้ email เป็น id
+ * เมื่อมีการอัปเดตสำเร็จ ระบบจะทำการติ๊กถูกใน Setup Guide ขั้นตอนที่ 1 (จัดการข้อมูล User) ให้โดยอัตโนมัติ
+ * tags:
+ * - User
+ * parameters:
+ * - in: path
+ * name: id
+ * required: true
+ * schema:
+ * type: string
+ * description: email ของ user
+ * example: user@email.com
+ * requestBody:
+ * required: true
+ * content:
+ * application/json:
+ * schema:
+ * type: object
+ * properties:
+ * name:
+ * type: string
+ * example: John Doe
+ * image:
+ * type: string
+ * example: https://example.com/profile.jpg
+ * role:
+ * type: string
+ * example: user
+ * responses:
+ * 200:
+ * description: อัปเดตโปรไฟล์และสถานะ Setup Guide สำเร็จ
+ * 400:
+ * description: ไม่พบข้อมูล Email หรือข้อมูลไม่ถูกต้อง
+ * 500:
+ * description: เกิดข้อผิดพลาดที่ Server
  */
 export async function PUT(
   req: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    // 1. รับค่า id (ในที่นี้คือ email) จาก params
-    const { id } = await context.params;
-
-    // 2. รับข้อมูลที่ส่งมาจากฝั่ง Client (เช่น name, image)
+    const { id } = await context.params; // คือ email
     const body = await req.json();
-    const { name, image ,role} = body;
+    
+    // รับค่า stepId จาก body ที่ส่งมาจาก Axios
+    const { name, image, role, stepId } = body; 
 
-    // 3. ตรวจสอบว่ามี id หรือไม่
     if (!id) {
-      return NextResponse.json(
-        { error: "ไม่พบข้อมูล Email (ID) ที่ต้องการแก้ไข" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "ไม่พบข้อมูล Email" }, { status: 400 });
     }
 
-    // 4. อัปเดตข้อมูล User ในฐานข้อมูล
+    // 1. ดึงข้อมูล User เดิม
+    const currentUser = await prisma.user.findUnique({
+      where: { email: id },
+      select: { setupProgress: true }
+    });
+
+    if (!currentUser) {
+      return NextResponse.json({ error: "ไม่พบผู้ใช้งาน" }, { status: 404 });
+    }
+
+    // ทำสำเนา Array เดิม
+    let newProgress = [...(currentUser.setupProgress || [])];
+
+    // 2. Logic การจัดการ SetupProgress
+    if (stepId) {
+      // --- กันการข้าม Step ---
+      if (stepId > 1) {
+        const previousStep = stepId - 1;
+        if (!newProgress.includes(previousStep)) {
+          return NextResponse.json(
+            { error: `กรุณาทำขั้นตอนที่ ${previousStep} ให้เสร็จก่อน` },
+            { status: 400 }
+          );
+        }
+      }
+
+      // เพิ่ม stepId ที่ส่งมา (ถ้ายังไม่มี)
+      if (!newProgress.includes(Number(stepId))) {
+        newProgress.push(Number(stepId));
+      }
+    } else {
+      // กรณีหน้า User (ถ้าส่งแค่ name/image มาเฉยๆ ให้ถือว่าเป็น Step 1)
+      if (!newProgress.includes(1)) {
+        newProgress.push(1);
+      }
+    }
+
+    // 3. อัปเดตข้อมูลลง Database
     const updatedUser = await prisma.user.update({
-      where: { 
-        email: id 
-      },
+      where: { email: id },
       data: {
-        name: name,
-        image: image,
-        role : role,
+        // อัปเดตเฉพาะฟิลด์ที่มีการส่งมาจริง (ป้องกันค่า null ทับค่าเดิม)
+        ...(name !== undefined && { name }),
+        ...(image !== undefined && { image }),
+        ...(role !== undefined && { role }),
+        setupProgress: newProgress,
       },
     });
 
-    // 5. ส่งข้อมูลที่อัปเดตแล้วกลับไปให้ Client
-    return NextResponse.json(updatedUser, { status: 200 });
-
+    return NextResponse.json(updatedUser);
   } catch (error) {
-    console.error("PUT User Error:", error);
-    return NextResponse.json(
-      { error: "เกิดข้อผิดพลาดในการอัปเดตข้อมูล" },
-      { status: 500 }
-    );
+    console.error("Update Error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 

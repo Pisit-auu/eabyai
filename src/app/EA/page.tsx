@@ -16,14 +16,15 @@ import {
   UserOutlined,
   DesktopOutlined,
   DeleteOutlined,
-  DownloadOutlined
+  DownloadOutlined,
+  InfoCircleOutlined
 } from '@ant-design/icons';
-import { InfoCircleOutlined } from "@ant-design/icons";
 
 
 export default function EA() {
   const router = useRouter()
   const { data: session, status } = useSession()
+  const [downloaddetailopen, setdownloaddetailopen] = useState(false)
 
   // --- DATA STATES ---
   const [SymbolAll, setSymbolAll] = useState<SymbolType[]>([])
@@ -53,6 +54,7 @@ export default function EA() {
   const [timeframeSelect, settimeframeSelect] = useState<string | null>(null)
   const [ModelSelect, setModelSelect] = useState<string | null>(null)
   const [comissionofModelselect, setcomissionofModelselect] = useState(0)
+      const [eadetailopen, seteadetailopen] = useState(false)
 
   // --- EDIT MODAL STATES ---
   const [isViewOpen, setIsViewOpen] = useState(false)
@@ -239,10 +241,16 @@ export default function EA() {
 
       await axios.post('/api/license', payload);
       message.success("เพิ่มสำเร็จ");
+
+      
       await axios.put(`/api/model/${ModelSelect}` , {
             downloadCount : 1
       }
       );
+      await axios.put(`/api/user/${session?.user?.email}`, { 
+          stepId: 3
+      });
+      window.location.reload()
       setSymbolSelect(null);
       settimeframeSelect(null);
       settradderAccountSelect(null);
@@ -282,7 +290,6 @@ export default function EA() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const [modeldetailopen, setmodeldetailopen] = useState(false)
-  const [ Documentopen , setDocumentopen] = useState(false)
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const openPreview = (src: string) => {
   setPreviewImage(src);
@@ -300,12 +307,12 @@ export default function EA() {
       <div className="flex flex-1 overflow-hidden">
         <aside className={`bg-white transition-all duration-300 z-20 overflow-hidden ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
           <div className={`w-64 h-full border-r border-slate-200 flex flex-col py-4 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                         <SidebarItem label="Document " href="/document" />
-                                           <SidebarItem label="Dashboard" href="/dashboard" />
-                                           <SidebarItem label="User Profile" href="/user" />
-                                           <SidebarItem label="Trade Account" href="/trade-account" />
-                                           <SidebarItem label="Expert Advisor" href="/EA" />
-                                           <SidebarItem label="Billing" href="/Bill" />
+            <SidebarItem label="User" href="/user" />
+            <SidebarItem label="Dashboard" href="/dashboard" />
+            <SidebarItem label="Trade Account" href="/trade-account" />
+            <SidebarItem label="Expert Advisor" href="/EA" />
+            <SidebarItem label="Billing" href="/Bill" />
+            <SidebarItem label="Document" href="/document" />
           </div>
         </aside>
 
@@ -327,13 +334,21 @@ export default function EA() {
                 </div>
                 
                 {licenseall.length !== 0 && (
-                  <Button
-                    icon={<DownloadOutlined />}
-                    onClick={handleDownloadEA}
-                    type="primary"
-                  >
-                    Download EA
-                  </Button>
+                  <>
+                    <Button
+                      icon={<DownloadOutlined />}
+                      onClick={handleDownloadEA}
+                      type="primary"
+                    >
+                      Download EA
+                    </Button>
+                    <Button
+                      icon={<InfoCircleOutlined />}
+                      onClick={() => setdownloaddetailopen(true)}
+                    >
+                      วิธีติดตั้ง EA บนเครื่อง
+                    </Button>
+                  </>
                 )}
 
                 <Button 
@@ -351,19 +366,23 @@ export default function EA() {
             <div className="bg-white p-5 md:p-6 rounded-lg shadow-sm border border-slate-200">
               <div className="flex items-center gap-2 mb-6">
                     <h2 className="text-base font-semibold text-slate-900">Add expert advisor</h2>
+                    <button onClick={() => seteadetailopen(true)} aria-label="วิธีเพิ่ม EA" className="text-slate-400 hover:text-blue-600 transition-colors">
+                      <InfoCircleOutlined />
+                    </button>
               
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
               
                 <div className="md:col-span-5 space-y-2">
-                  <label className="text-sm font-semibold text-slate-600 ">Platform ID</label>
+                  <label className="text-sm font-medium text-slate-700">Trading account ID</label>
                   <Select
                     className="w-full h-10"
                     size="large"
-                    placeholder="Select platform ID"
+                    placeholder="Select trading account ID"
                     value={tradderAccountSelect}
                     onChange={onChangePlatformId}
+                    notFoundContent={<Empty description="ไม่พบ Trading Account โปรดเพิ่มบัญชีที่หน้า Trade Account" />}
                     options={traderAccountAll.map((item) => ({
                       value: item.platformAccountId,
                       label: (
@@ -677,6 +696,40 @@ export default function EA() {
             </div>
 
           </div>
+           <Modal
+              title=" วิดีโอสอนเชื่อม Trade Account กับ model เพื่อสร้าง EA"
+              open={eadetailopen}
+              onCancel={() => seteadetailopen(false)}
+              footer={null}
+              width={900}
+              centered
+              destroyOnHidden
+            >
+              <div className="aspect-video w-full overflow-hidden rounded-lg">
+                <iframe
+                  className="w-full h-full"
+                  src="https://www.youtube.com/embed/2Rngq_HoFQs?start=54"
+                  allowFullScreen
+                />
+              </div>
+            </Modal>
+                      <Modal
+              title=" วิดีโอสอนติดตั้ง EA ลงบนเครื่อง"
+              open={downloaddetailopen}
+              onCancel={() => setdownloaddetailopen(false)}
+              footer={null}
+              width={900}
+              centered
+              destroyOnHidden
+            >
+              <div className="aspect-video w-full overflow-hidden rounded-lg">
+                <iframe
+                  className="w-full h-full"
+                  src="https://www.youtube.com/embed/79Ela1oOr6E?start=0"
+                  allowFullScreen
+                />
+              </div>
+            </Modal>
         </main>
       </div>
     </div>

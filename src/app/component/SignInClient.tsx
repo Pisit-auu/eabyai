@@ -51,7 +51,7 @@ export default function SignInPage() {
   const handleVerify = (e: React.FormEvent) => {
     e.preventDefault()
     if (otp.length !== 6) return alert("กรอกรหัสให้ครบ 6 หลัก")
-    const destination = '/document'
+    const destination = '/user'
     window.location.href = `/api/auth/callback/email?email=${encodeURIComponent(email)}&token=${otp}&callbackUrl=${encodeURIComponent(destination)}`
   }
   
@@ -113,7 +113,7 @@ export default function SignInPage() {
             <iframe
               className="w-full h-full"
               title="EA.AI demo"
-              src="https://www.youtube.com/embed/xeLtkYELNwI?autoplay=1&mute=1&loop=1&playlist=xeLtkYELNwI"
+              src="https://www.youtube.com/embed/fSNUthpy4-c?autoplay=1&mute=1&loop=1&playlist=fSNUthpy4-c"
               allowFullScreen
             ></iframe>
           </div>
@@ -167,6 +167,25 @@ export default function SignInPage() {
         </div>
       </section>
 
+      <section className="border-b border-slate-200">
+        <div className="max-w-6xl mx-auto px-4 md:px-6 py-16 md:py-20">
+          <h2 className="text-[28px] md:text-[32px] font-semibold tracking-tight max-w-2xl">ใช้งานอะไรได้บ้าง</h2>
+          <dl className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 border-t border-slate-200">
+            {[
+              ['ไม่จำกัด Trade Account', 'เชื่อม Trade Account ได้ไม่จำกัด เชื่อมต่อง่าย ใช้แค่ Trade Account ID และ Investor Password'],
+              ['เลือก Model ได้เอง', 'เลือก Model ตาม Timeframe และ Symbol ที่จะเชื่อมกับ Trade Account ได้ตามต้องการ'],
+              ['Dashboard ใช้งานง่าย', 'ดู Balance, Equity, กราฟ, Profit และ Trade History ได้ทันที'],
+              ['ระบบ Bill', 'แสดงกำไร จุดเข้าเทรด และประวัติการเทรด ให้ตรวจสอบความถูกต้องได้'],
+            ].map(([title, body]) => (
+              <div key={title} className="pt-6 pb-2">
+                <dt className="font-medium text-slate-900">{title}</dt>
+                <dd className="text-slate-600 text-[15px] leading-relaxed mt-2">{body}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
       <section id="results" className="bg-slate-50 border-b border-slate-200 scroll-mt-14">
         <div className="max-w-6xl mx-auto px-4 md:px-6 py-16 md:py-20">
           <div className="max-w-2xl mb-10">
@@ -198,7 +217,7 @@ export default function SignInPage() {
             <div className="py-6 grid sm:grid-cols-[160px_1fr] gap-2 sm:gap-6">
               <dt className="font-medium">Profit sharing</dt>
               <dd className="text-slate-600 leading-relaxed">
-                คิดค่าบริการจากกำไรจริงเท่านั้น หากไม่มีกำไร <span className="text-slate-900 font-medium">เราไม่คิดค่าบริการใดๆ</span> ให้คุณได้มั่นใจในประสิทธิภาพ
+                คิดค่าบริการเพียง 10% จากกำไรจริงเท่านั้น หากไม่มีกำไร <span className="text-slate-900 font-medium">เราไม่คิดค่าบริการใดๆ</span> ให้คุณได้มั่นใจในประสิทธิภาพ
               </dd>
             </div>
             <div className="py-6 grid sm:grid-cols-[160px_1fr] gap-2 sm:gap-6">
@@ -227,7 +246,7 @@ export default function SignInPage() {
       >
         <div className="pt-2 pb-1">
           <h2 className="text-xl font-semibold tracking-tight">เข้าสู่ระบบ EA.AI</h2>
-          <p className="text-slate-500 text-sm mt-1">เราจะส่งรหัส OTP 6 หลักไปที่อีเมลของคุณ</p>
+          <p className="text-slate-500 text-sm mt-1">ไม่ต้องสมัครสมาชิก ใช้เพียงแค่ Email — เราจะส่งรหัส OTP 6 หลักไปให้</p>
 
           <form onSubmit={handleLogin} className="space-y-3 mt-6">
             <label htmlFor="login-email" className="block text-sm font-medium text-slate-700">Email</label>

@@ -301,20 +301,20 @@ useEffect(() => {
                           {/* ... (โค้ดกล่อง Total Trades, Win Rate, Profit ของคุณเหมือนเดิม) ... */}
                           <div className="flex-1 p-4 bg-white border border-slate-100 rounded-lg shadow-sm">
                             <p className="text-slate-500 text-[13px] font-medium mb-1">ชำระแล้ว</p>
-                            <p className="text-2xl font-semibold text-blue-700 leading-none">
+                            <p className="text-2xl font-semibold text-emerald-600 leading-none">
                               {Paid}
                             </p>
                           </div>
 
                           <div className="flex-1 p-4 bg-white border border-slate-100 rounded-lg shadow-sm">
                             <p className="text-slate-500 text-[13px] font-medium mb-1">ยังไม่ชำระ</p>
-                            <p className="text-2xl font-semibold text-slate-800 leading-none">
+                            <p className="text-2xl font-semibold text-rose-600 leading-none">
                               {unPaid}
                             </p>
                           </div>
                           <div className="flex-1 p-4 bg-white border border-slate-100 rounded-lg shadow-sm">
                             <p className="text-slate-500 text-[13px] font-medium mb-1">ยังไม่ถึงกำหนดชำระ</p>
-                            <p className="text-2xl font-semibold text-slate-800 leading-none">
+                            <p className="text-2xl font-semibold text-amber-600 leading-none">
                               {unPaidnotExpired}
                             </p>
                           </div>
@@ -323,7 +323,7 @@ useEffect(() => {
                             }`}
                           >
                             <p className={`text-[13px] font-medium mb-1 ${
-                              Number(selectedStats?.filtered_profit) >= 0 ? 'text-blue-600' : 'text-red-500'
+                              Number(selectedStats?.filtered_profit) >= 0 ? 'text-slate-500' : 'text-slate-500'
                             }`}>
                               รายได้ที่ได้รับทั้งหมด นับแค่ตั้งแต่ 3.3 USD ขึ้นไป 
                             </p>

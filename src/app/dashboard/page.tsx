@@ -223,12 +223,12 @@ export default function Dashborad() {
         {/* Sidebar */}
         <aside className={`bg-white transition-all duration-300 z-20 overflow-hidden ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
           <div className={`w-64 h-full border-r border-slate-200 flex flex-col py-4 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                                                  <SidebarItem label="Document " href="/document" />
-                                                                    <SidebarItem label="Dashboard" href="/dashboard" />
-                                                                    <SidebarItem label="User Profile" href="/user" />
-                                                                    <SidebarItem label="Trade Account" href="/trade-account" />
-                                                                    <SidebarItem label="Expert Advisor" href="/EA" />
-                                                                    <SidebarItem label="Billing" href="/Bill" />
+            <SidebarItem label="User" href="/user" />
+            <SidebarItem label="Dashboard" href="/dashboard" />
+            <SidebarItem label="Trade Account" href="/trade-account" />
+            <SidebarItem label="Expert Advisor" href="/EA" />
+            <SidebarItem label="Billing" href="/Bill" />
+            <SidebarItem label="Document" href="/document" />
           </div>
         </aside>
 
@@ -240,7 +240,7 @@ export default function Dashborad() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-5 border-b border-slate-200">
               {/* ฝั่งซ้าย: ข้อความหัวข้อ */}
               <div>
-                <h1 className="text-[22px] font-semibold tracking-tight text-slate-900">Report Your EA</h1>
+                <h1 className="text-[22px] font-semibold tracking-tight text-slate-900">Dashboard</h1>
                 <p className="text-slate-500 text-sm mt-1">
                   <span className="text-slate-600">{session?.user?.email}</span>
                 </p>

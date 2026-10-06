@@ -42,7 +42,7 @@ export default function AdminUserManagementPage() {
       router.push('/')
     }
     if (status === 'authenticated' && session?.user?.role !== 'admin') {
-      router.push('/dashboard')
+      router.push('/user')
     }
   }, [status, session, router])
 
@@ -218,7 +218,7 @@ const openAccountsModal = (user: any) => {
           >
             แก้ไข
           </Button>
-          <Popconfirm
+          {/* <Popconfirm
             title="ยืนยันการลบ"
             description={`คุณต้องการลบ ${record.email} ใช่หรือไม่?`}
             okText="ลบ"
@@ -232,7 +232,7 @@ const openAccountsModal = (user: any) => {
             >
                 ลบ
             </Button>
-            </Popconfirm>
+            </Popconfirm> */}
         </Space>
       ),
     },
